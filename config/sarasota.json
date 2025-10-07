@@ -1,0 +1,70 @@
+{
+  "location": "Sarasota",
+  "domain": "dbsrq.com",
+  "title": "The Dog Bar - Sarasota",
+  "subtitle": "Sarasota's Premier Dog Park & Bar",
+  "address": "123 Main Street, Sarasota, FL 34236",
+  "phone": "(941) 555-0123",
+  "email": "hello@dbsrq.com",
+  "hours": {
+    "monday": "Closed",
+    "tuesday": "4:00 PM - 10:00 PM",
+    "wednesday": "4:00 PM - 10:00 PM",
+    "thursday": "4:00 PM - 10:00 PM",
+    "friday": "4:00 PM - 11:00 PM",
+    "saturday": "11:00 AM - 11:00 PM",
+    "sunday": "11:00 AM - 9:00 PM"
+  },
+  "features": [
+    "4,500+ Sq Ft Play Area",
+    "31+ Draft Beers",
+    "100% Fun & Safety"
+  ],
+  "stats": {
+    "sqft": "6,500",
+    "beers": "25+",
+    "rating": "4.7"
+  },
+  "cta": {
+    "primary": "Register Your Dog",
+    "secondary": "Learn More"
+  },
+  "social": {
+    "instagram": "https://instagram.com/dogbarsarasota",
+    "facebook": "https://facebook.com/dogbarsarasota"
+  },
+  "events": {
+    "featured": [
+      {
+        "title": "Kielbasa Bus Food Truck",
+        "date": "Every Friday",
+        "time": "5:00 PM - 9:00 PM",
+        "description": "Authentic Polish cuisine with your furry friends",
+        "image": "uploads/2024/01/kielbasa_and_potato_pancakes_facebook.jpg"
+      },
+      {
+        "title": "Nevada's Pierogi",
+        "date": "Every Saturday",
+        "time": "12:00 PM - 8:00 PM",
+        "description": "Delicious pierogi and Eastern European specialties",
+        "image": "uploads/2023/03/johnny_nevadas_menu_3.16_1024x577.png"
+      }
+    ],
+    "regular": [
+      {
+        "title": "Yoga with Your Dog",
+        "date": "Sundays",
+        "time": "10:00 AM",
+        "description": "Relaxing yoga session for you and your pup",
+        "image": "uploads/2024/04/yoga_2_1_1024x1024.png"
+      },
+      {
+        "title": "Birthday Parties",
+        "date": "Any Day",
+        "time": "By Appointment",
+        "description": "Celebrate your dog's special day with us",
+        "image": "uploads/2020/01/birthday_1.jpg"
+      }
+    ]
+  }
+}

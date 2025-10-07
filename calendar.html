@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Events Calendar - The Dog Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="shared/app.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared/styles.css" />
+    <style>
+      .calendar-day {
+        min-height: 120px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        border: 1px solid #e5e7eb;
+      }
+
+      .calendar-day:hover {
+        background-color: rgba(16, 185, 129, 0.05);
+        transform: scale(1.02);
+      }
+
+      .has-event {
+        background-color: rgba(16, 185, 129, 0.02);
+      }
+
+      .event-label {
+        font-size: 10px;
+        padding: 2px 6px;
+        margin: 1px 0;
+        border-radius: 4px;
+        color: white;
+        font-weight: 600;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .event-food-truck {
+        background-color: #3b82f6;
+      }
+      .event-trivia {
+        background-color: #10b981;
+      }
+      .event-bingo {
+        background-color: #8b5cf6;
+      }
+      .event-yoga {
+        background-color: #f59e0b;
+      }
+      .event-special {
+        background-color: #ef4444;
+      }
+      .event-bath {
+        background-color: #06b6d4;
+      }
+
+      .featured-event-card {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .featured-event-card.purple {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      }
+
+      .calendar-header {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        padding: 12px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Header Component -->
+    <div id="header-root"></div>
+
+    <!-- Calendar Section -->
+    <section class="py-12 md:py-20">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Events Calendar 📅
+          </h1>
+          <p class="text-lg text-gray-600">
+            Click on a date to see events and details
+          </p>
+        </div>
+
+        <!-- Calendar Controls -->
+        <div class="max-w-5xl mx-auto mb-8">
+          <div
+            class="flex justify-between items-center bg-white rounded-xl shadow-md p-6"
+          >
+            <button
+              onclick="changeMonth(-1)"
+              class="px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition-colors min-h-[48px] min-w-[48px]"
+            >
+              ← Prev
+            </button>
+            <h2
+              id="current-month"
+              class="text-2xl md:text-3xl font-bold text-gray-900"
+            ></h2>
+            <button
+              onclick="changeMonth(1)"
+              class="px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition-colors min-h-[48px] min-w-[48px]"
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="max-w-6xl mx-auto">
+          <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <!-- Day Headers -->
+            <div class="grid grid-cols-7 calendar-header">
+              <div class="p-4 text-center font-bold">SUN</div>
+              <div class="p-4 text-center font-bold">MON</div>
+              <div class="p-4 text-center font-bold">TUE</div>
+              <div class="p-4 text-center font-bold">WED</div>
+              <div class="p-4 text-center font-bold">THU</div>
+              <div class="p-4 text-center font-bold">FRI</div>
+              <div class="p-4 text-center font-bold">SAT</div>
+            </div>
+
+            <!-- Calendar Days -->
+            <div id="calendar-grid" class="grid grid-cols-7">
+              <!-- Days populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Details -->
+        <div id="event-details" class="max-w-5xl mx-auto mt-12 hidden">
+          <div class="bg-white rounded-2xl shadow-xl p-8">
+            <h3
+              class="text-3xl font-bold text-gray-900 mb-6"
+              id="selected-date"
+            ></h3>
+            <div id="events-list" class="space-y-6">
+              <!-- Events populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Events Section -->
+    <section class="py-20 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Featured Events</h2>
+          <p class="text-lg text-gray-600">
+            Don't miss out on these exciting events at The Dog Bar!
+          </p>
+        </div>
+
+        <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 mb-12">
+          <!-- Featured Event Card 1 -->
+          <div class="featured-event-card">
+            <div class="flex">
+              <div
+                class="w-32 h-32 bg-white/20 flex items-center justify-center"
+              >
+                <img
+                  src="uploads/2024/01/menu_1_731x1024.jpg"
+                  alt="Food Truck"
+                  class="w-24 h-24 object-cover rounded-lg"
+                />
+              </div>
+              <div class="flex-1 p-6 flex flex-col justify-center">
+                <div class="text-sm font-bold mb-1">TUE</div>
+                <div class="text-2xl font-bold mb-1">07</div>
+                <div class="text-sm font-bold mb-2">OCT</div>
+                <div class="text-xl font-bold">KIELBASA BUS</div>
+                <div class="text-sm opacity-90">5:00 PM - 9:00 PM</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Featured Event Card 2 -->
+          <div class="featured-event-card purple">
+            <div class="flex">
+              <div
+                class="w-32 h-32 bg-white/20 flex items-center justify-center"
+              >
+                <img
+                  src="uploads/2020/01/birthday_1.jpg"
+                  alt="Bingo Night"
+                  class="w-24 h-24 object-cover rounded-lg"
+                />
+              </div>
+              <div class="flex-1 p-6 flex flex-col justify-center">
+                <div class="text-sm font-bold mb-1">TUE</div>
+                <div class="text-2xl font-bold mb-1">07</div>
+                <div class="text-sm font-bold mb-2">OCT</div>
+                <div class="text-xl font-bold">BINGO NIGHT</div>
+                <div class="text-sm opacity-90">6:30 PM - 9:30 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Events Grid -->
+        <div class="max-w-6xl mx-auto">
+          <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">
+            All Events
+          </h3>
+          <div
+            id="upcoming-events-cards"
+            class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <!-- Event cards populated by JavaScript -->
+          </div>
+        </div>
+
+        <div class="text-center mt-12">
+          <a
+            href="site.html?location=st-pete"
+            class="inline-block px-8 py-4 bg-emerald-600 text-white font-bold rounded-full hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl"
+          >
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Component -->
+    <div id="footer-root"></div>
+
+    <script>
+      let currentDate = new Date();
+      const events = {
+        // Real events from Dog Bar - scraped from site and upload data
+        // October 2025
+        "2025-10-03": [
+          {
+            title: "Food Truck Friday - Latin Lunchbox",
+            time: "5:00 PM - 9:00 PM",
+            description:
+              "Delicious Latin cuisine from Latin Lunchbox food truck featuring authentic tacos, burritos, and fresh guacamole. Bring your pup and enjoy the outdoor dining experience!",
+            image: "uploads/2025/08/latin_lunchbox_menu_820x1024.jpg",
+            type: "Food Truck",
+            price: "Free Entry",
+            location: "Outdoor Patio",
+            capacity: "50+ people",
+            requirements: "Dogs must be leashed while ordering",
+          },
+        ],
+        "2025-10-05": [
+          {
+            title: "Yoga with Pups",
+            time: "10:00 AM - 11:00 AM",
+            description:
+              "First Sunday monthly yoga session - Stretch and relax with your furry friend in our beautiful outdoor space. Certified instructor leads gentle yoga while your pup plays nearby.",
+            image: "uploads/2024/04/yoga_2_1_1024x1024.png",
+            type: "Wellness",
+            price: "$15 per person",
+            location: "Main Play Area",
+            capacity: "20 people",
+            requirements: "Bring your own mat, dogs must be well-behaved",
+          },
+        ],
+        "2025-10-06": [
+          {
+            title: "Trivia Night",
+            time: "7:00 PM - 9:00 PM",
+            description:
+              "Every Monday - Test your knowledge and win prizes! Categories include pop culture, history, and dog trivia. Teams of up to 6 people welcome.",
+            image: "uploads/2020/01/birthday_1.jpg",
+            type: "Entertainment",
+            price: "Free Entry",
+            location: "Indoor Bar Area",
+            capacity: "40 people",
+            requirements: "Teams of 2-6 people, dogs welcome",
+          },
+        ],
+        "2025-10-07": [
+          {
+            title: "Bingo Night",
+            time: "6:30 PM - 9:30 PM",
+            description: "Fun bingo with prizes for you and your pup!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-10-10": [
+          {
+            title: "Food Truck Friday - Poke 'Em",
+            time: "5:00 PM - 9:00 PM",
+            description: "Fresh poke bowls and Hawaiian cuisine",
+            image: "uploads/2025/09/poke_em_menu_no_prices_1_791x1024.png",
+          },
+        ],
+        "2025-10-13": [
+          {
+            title: "Trivia Night",
+            time: "7:00 PM - 9:00 PM",
+            description: "Every Monday - Test your knowledge and win prizes!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-10-14": [
+          {
+            title: "Bingo Night",
+            time: "6:30 PM - 9:30 PM",
+            description: "Fun bingo with prizes for you and your pup!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-10-17": [
+          {
+            title: "Food Truck Friday - Go Stuff Urself",
+            time: "5:00 PM - 9:00 PM",
+            description: "Amazing wings and loaded fries",
+            image: "uploads/2024/06/go_stuff_urself_menu_798x1024.jpg",
+          },
+        ],
+        "2025-10-20": [
+          {
+            title: "Trivia Night",
+            time: "7:00 PM - 9:00 PM",
+            description: "Every Monday - Test your knowledge and win prizes!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-10-21": [
+          {
+            title: "Bingo Night",
+            time: "6:30 PM - 9:30 PM",
+            description: "Fun bingo with prizes for you and your pup!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-10-24": [
+          {
+            title: "Food Truck Friday - Saucin Wings",
+            time: "5:00 PM - 9:00 PM",
+            description: "The best wings in Tampa Bay!",
+            image: "uploads/2023/04/saucin_wings_menu_1_683x1024.png",
+          },
+        ],
+        "2025-10-27": [
+          {
+            title: "Trivia Night",
+            time: "7:00 PM - 9:00 PM",
+            description: "Every Monday - Test your knowledge and win prizes!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-10-28": [
+          {
+            title: "Bingo Night",
+            time: "6:30 PM - 9:30 PM",
+            description: "Fun bingo with prizes for you and your pup!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-10-31": [
+          {
+            title: "Halloween Howl-o-ween Party 🎃",
+            time: "5:00 PM - 10:00 PM",
+            description:
+              "Costume contest, treats, and spooky fun for dogs and their humans!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        // November 2025
+        "2025-11-02": [
+          {
+            title: "Yoga with Pups",
+            time: "10:00 AM - 11:00 AM",
+            description: "First Sunday monthly yoga session",
+            image: "uploads/2024/04/yoga_2_1_1024x1024.png",
+          },
+        ],
+        "2025-11-03": [
+          {
+            title: "Trivia Night",
+            time: "7:00 PM - 9:00 PM",
+            description: "Every Monday - Test your knowledge!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-11-07": [
+          {
+            title: "Food Truck Friday - Johnny Nevada's",
+            time: "5:00 PM - 9:00 PM",
+            description: "Gourmet tacos and Mexican street food",
+            image: "uploads/2023/03/johnny_nevadas_menu_3.16_1024x577.png",
+          },
+        ],
+        "2025-11-10": [
+          {
+            title: "Trivia Night",
+            time: "7:00 PM - 9:00 PM",
+            description: "Every Monday - Test your knowledge!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-11-14": [
+          {
+            title: "Food Truck Friday - Got Lobstah",
+            time: "5:00 PM - 9:00 PM",
+            description: "Fresh lobster rolls and seafood",
+            image: "uploads/2021/04/got_lobstah_menu_2_298x400.jpg",
+          },
+        ],
+        "2025-11-17": [
+          {
+            title: "Trivia Night",
+            time: "7:00 PM - 9:00 PM",
+            description: "Every Monday - Test your knowledge!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-11-21": [
+          {
+            title: "Food Truck Friday - Polish Kitchen",
+            time: "5:00 PM - 9:00 PM",
+            description: "Authentic Polish pierogis and kielbasa",
+            image: "uploads/2024/01/menu_1_731x1024.jpg",
+          },
+        ],
+        "2025-11-24": [
+          {
+            title: "Trivia Night",
+            time: "7:00 PM - 9:00 PM",
+            description: "Every Monday - Test your knowledge!",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+        "2025-11-28": [
+          {
+            title: "Food Truck Friday - Thanksgiving Weekend",
+            time: "5:00 PM - 9:00 PM",
+            description: "Special Thanksgiving weekend food truck",
+            image: "uploads/2020/01/birthday_1.jpg",
+          },
+        ],
+      };
+
+      function getEventType(eventTitle) {
+        const title = eventTitle.toLowerCase();
+        if (
+          title.includes("food truck") ||
+          title.includes("bus") ||
+          title.includes("truck") ||
+          title.includes("kielbasa") ||
+          title.includes("johnny") ||
+          title.includes("got lobstah") ||
+          title.includes("latin lunchbox") ||
+          title.includes("go stuff") ||
+          title.includes("boss ross") ||
+          title.includes("el indio") ||
+          title.includes("fat racoon") ||
+          title.includes("drift kitchen") ||
+          title.includes("nino") ||
+          title.includes("salsa") ||
+          title.includes("mae tao")
+        ) {
+          return "food-truck";
+        }
+        if (title.includes("trivia")) return "trivia";
+        if (title.includes("bingo")) return "bingo";
+        if (title.includes("yoga")) return "yoga";
+        if (title.includes("bath")) return "bath";
+        if (
+          title.includes("halloween") ||
+          title.includes("special") ||
+          title.includes("cruise")
+        )
+          return "special";
+        return "food-truck"; // default
+      }
+
+      function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        // Update month header
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        document.getElementById("current-month").textContent = `${monthNames[
+          month
+        ].toUpperCase()}, ${year}`;
+
+        // Get first day of month and number of days
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Create calendar grid
+        const grid = document.getElementById("calendar-grid");
+        grid.innerHTML = "";
+
+        // Empty cells for days before month starts
+        for (let i = 0; i < firstDay; i++) {
+          const cell = document.createElement("div");
+          cell.className = "calendar-day p-3 bg-gray-50";
+          grid.appendChild(cell);
+        }
+
+        // Days of month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const cell = document.createElement("div");
+          const dateStr = `${year}-${String(month + 1).padStart(
+            2,
+            "0"
+          )}-${String(day).padStart(2, "0")}`;
+          const dayEvents = events[dateStr] || [];
+
+          cell.className = `calendar-day p-3 relative ${
+            dayEvents.length > 0 ? "has-event" : ""
+          }`;
+
+          let cellContent = `<div class="text-lg font-bold text-gray-900 mb-2">${day}</div>`;
+
+          // Add event labels
+          if (dayEvents.length > 0) {
+            dayEvents.forEach((event) => {
+              const eventType = getEventType(event.title);
+              const shortTitle =
+                event.title.length > 12
+                  ? event.title.substring(0, 12) + "..."
+                  : event.title;
+              cellContent += `<div class="event-label event-${eventType}">${shortTitle}</div>`;
+            });
+          }
+
+          cell.innerHTML = cellContent;
+          cell.onclick = () => showEvents(dateStr, day);
+
+          grid.appendChild(cell);
+        }
+      }
+
+      function showEvents(dateStr, day) {
+        const eventsForDay = events[dateStr];
+        const detailsDiv = document.getElementById("event-details");
+        const dateHeader = document.getElementById("selected-date");
+        const eventsList = document.getElementById("events-list");
+
+        if (eventsForDay) {
+          dateHeader.textContent = `Events on ${currentDate.toLocaleString(
+            "default",
+            { month: "long" }
+          )} ${day}`;
+          eventsList.innerHTML = eventsForDay
+            .map(
+              (event) => `
+            <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow">
+              ${
+                event.image
+                  ? `<img src="${event.image}" alt="${event.title}" class="w-full h-64 object-cover" />`
+                  : ""
+              }
+              <div class="p-8">
+                <div class="flex items-start justify-between mb-4">
+                  <h4 class="text-3xl font-bold text-gray-900">${
+                    event.title
+                  }</h4>
+                  <span class="px-4 py-2 text-sm font-semibold rounded-full ${
+                    event.type === "Special Event"
+                      ? "bg-red-100 text-red-800"
+                      : event.type === "Wellness"
+                      ? "bg-purple-100 text-purple-800"
+                      : event.type === "Food Truck"
+                      ? "bg-orange-100 text-orange-800"
+                      : "bg-emerald-100 text-emerald-800"
+                  }">
+                    ${event.type}
+                  </span>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                  <div class="space-y-4">
+                    <div class="flex items-center text-lg">
+                      <span class="text-emerald-600 mr-3">🕐</span>
+                      <span class="font-semibold">${event.time}</span>
+                    </div>
+                    <div class="flex items-center text-lg">
+                      <span class="text-emerald-600 mr-3">💰</span>
+                      <span class="font-semibold">${
+                        event.price || "Free Entry"
+                      }</span>
+                    </div>
+                    <div class="flex items-center text-lg">
+                      <span class="text-emerald-600 mr-3">📍</span>
+                      <span>${event.location || "Main Area"}</span>
+                    </div>
+                  </div>
+                  <div class="space-y-4">
+                    <div class="flex items-center text-lg">
+                      <span class="text-emerald-600 mr-3">👥</span>
+                      <span>${event.capacity || "Open to all"}</span>
+                    </div>
+                    <div class="flex items-center text-lg">
+                      <span class="text-emerald-600 mr-3">🐕</span>
+                      <span>${event.requirements || "Dogs welcome"}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                  <h5 class="font-bold text-gray-900 mb-2">Event Description:</h5>
+                  <p class="text-gray-700 leading-relaxed">${
+                    event.description
+                  }</p>
+                </div>
+                
+                <div class="flex gap-4">
+                  <button class="px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition-colors">
+                    RSVP Now
+                  </button>
+                  <button class="px-6 py-3 border-2 border-emerald-600 text-emerald-600 font-bold rounded-lg hover:bg-emerald-50 transition-colors">
+                    Share Event
+                  </button>
+                </div>
+              </div>
+            </div>
+          `
+            )
+            .join("");
+          detailsDiv.classList.remove("hidden");
+          detailsDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          dateHeader.textContent = `No events on ${currentDate.toLocaleString(
+            "default",
+            { month: "long" }
+          )} ${day}`;
+          eventsList.innerHTML =
+            '<p class="text-gray-600 text-center py-8">No events scheduled for this day</p>';
+          detailsDiv.classList.remove("hidden");
+          detailsDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
+
+      function changeMonth(direction) {
+        currentDate.setMonth(currentDate.getMonth() + direction);
+        renderCalendar();
+        document.getElementById("event-details").classList.add("hidden");
+      }
+
+      // Function to render upcoming events cards
+      function renderUpcomingEventsCards() {
+        const cardsContainer = document.getElementById("upcoming-events-cards");
+        const today = new Date();
+        const upcomingEvents = [];
+
+        // Get events for the next 30 days
+        for (let i = 0; i < 30; i++) {
+          const checkDate = new Date(today);
+          checkDate.setDate(today.getDate() + i);
+          const dateStr = checkDate.toISOString().split("T")[0];
+
+          if (events[dateStr]) {
+            events[dateStr].forEach((event) => {
+              upcomingEvents.push({
+                ...event,
+                date: checkDate,
+                dateStr: dateStr,
+              });
+            });
+          }
+        }
+
+        // Sort by date and take first 6
+        upcomingEvents.sort((a, b) => a.date - b.date);
+        const displayEvents = upcomingEvents.slice(0, 6);
+
+        cardsContainer.innerHTML = displayEvents
+          .map(
+            (event) => `
+          <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+            <div class="relative">
+              <img
+                src="${event.image}"
+                alt="${event.title}"
+                class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div class="absolute top-4 right-4">
+                <span class="px-3 py-1 text-xs font-semibold rounded-full ${
+                  event.type === "Special Event"
+                    ? "bg-red-100 text-red-800"
+                    : event.type === "Wellness"
+                    ? "bg-purple-100 text-purple-800"
+                    : event.type === "Food Truck"
+                    ? "bg-orange-100 text-orange-800"
+                    : "bg-emerald-100 text-emerald-800"
+                }">
+                  ${event.type}
+                </span>
+              </div>
+              <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1">
+                <span class="text-sm font-semibold text-gray-900">
+                  ${event.date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">
+                ${event.title}
+              </h3>
+              <p class="text-emerald-600 font-semibold mb-3 flex items-center">
+                <span class="mr-2">🕐</span>
+                ${event.time}
+              </p>
+              <p class="text-gray-600 leading-relaxed mb-4 text-sm">
+                ${
+                  event.description.length > 120
+                    ? event.description.substring(0, 120) + "..."
+                    : event.description
+                }
+              </p>
+              
+              <div class="space-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center">
+                  <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
+                  <span class="font-medium">${event.price}</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                  <span>📍 ${event.location}</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                  <span>👥 ${event.capacity}</span>
+                </div>
+              </div>
+              
+              <div class="pt-4 border-t border-gray-100">
+                <button 
+                  onclick="showEvents('${
+                    event.dateStr
+                  }', ${event.date.getDate()})"
+                  class="w-full px-4 py-2 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors text-sm"
+                >
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      // Initialize calendar and events cards
+      renderCalendar();
+      renderUpcomingEventsCards();
+    </script>
+  </body>
+</html>

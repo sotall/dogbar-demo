@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Menu - The Dog Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="shared/app.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared/styles.css" />
+  </head>
+  <body class="bg-gray-50">
+    <!-- Header Component -->
+    <div id="header-root"></div>
+
+    <!-- Food Menu Section -->
+    <section class="py-12 md:py-20">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Food Menu 🍔
+          </h1>
+          <p class="text-lg text-gray-600 mb-4">
+            Delicious food from our rotating selection of food trucks
+          </p>
+          <p class="text-emerald-600 font-semibold">
+            📅 Food Trucks every Friday 5-9 PM • Check our calendar for this
+            week's truck!
+          </p>
+        </div>
+
+        <!-- Featured Food Trucks -->
+        <div class="max-w-6xl mx-auto">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+            Featured Food Trucks
+          </h2>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <!-- Latin Lunchbox -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <img
+                src="uploads/2025/08/latin_lunchbox_food_truck_logo_1024x1024.jpg"
+                alt="Latin Lunchbox"
+                class="w-full h-48 object-cover"
+              />
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Latin Lunchbox
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  Authentic Latin cuisine including empanadas, arepas, and more
+                </p>
+                <a
+                  href="uploads/2025/08/latin_lunchbox_menu_820x1024.jpg"
+                  target="_blank"
+                  class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Poke 'Em -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <img
+                src="uploads/2025/09/549753469_823993363531776_6210672982574680374_n_1024x1024.jpg"
+                alt="Poke Em"
+                class="w-full h-48 object-cover"
+              />
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Poke 'Em</h3>
+                <p class="text-gray-600 mb-4">
+                  Fresh Hawaiian poke bowls with premium ingredients
+                </p>
+                <a
+                  href="uploads/2025/09/poke_em_menu_no_prices_1_791x1024.png"
+                  target="_blank"
+                  class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Go Stuff Urself -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <img
+                src="uploads/2024/06/img_9645_801x1024.jpg"
+                alt="Go Stuff Urself"
+                class="w-full h-48 object-cover"
+              />
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Go Stuff Urself
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  Amazing wings, loaded fries, and comfort food favorites
+                </p>
+                <a
+                  href="uploads/2024/06/go_stuff_urself_menu_798x1024.jpg"
+                  target="_blank"
+                  class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Saucin Wings -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <img
+                src="uploads/2023/04/saucin_wings_menu_1_683x1024.png"
+                alt="Saucin Wings"
+                class="w-full h-48 object-cover"
+              />
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Saucin Wings
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  The best wings in Tampa Bay with signature sauces
+                </p>
+                <a
+                  href="uploads/2023/04/saucin_wings_menu_1_683x1024.png"
+                  target="_blank"
+                  class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Johnny Nevada's -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <img
+                src="uploads/2023/03/johnny_nevadas_menu_3.16_1024x577.png"
+                alt="Johnny Nevadas"
+                class="w-full h-48 object-cover"
+              />
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Johnny Nevada's
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  Gourmet tacos and authentic Mexican street food
+                </p>
+                <a
+                  href="uploads/2023/03/johnny_nevadas_menu_3.16_1024x577.png"
+                  target="_blank"
+                  class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Polish Kitchen -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <img
+                src="uploads/2024/01/menu_1_731x1024.jpg"
+                alt="Polish Kitchen"
+                class="w-full h-48 object-cover"
+              />
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Polish Kitchen
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  Authentic Polish pierogis, kielbasa, and traditional dishes
+                </p>
+                <a
+                  href="uploads/2024/01/menu_1_731x1024.jpg"
+                  target="_blank"
+                  class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Got Lobstah -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <img
+                src="uploads/2021/04/got_lobstah_menu_2_298x400.jpg"
+                alt="Got Lobstah"
+                class="w-full h-48 object-cover"
+              />
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Got Lobstah
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  Fresh lobster rolls and premium seafood
+                </p>
+                <a
+                  href="uploads/2021/04/got_lobstah_menu_2_298x400.jpg"
+                  target="_blank"
+                  class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Sous x Dog Bar -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <img
+                src="uploads/2024/09/sous_x_dog_bar_fill_in_menu_1024x791.png"
+                alt="Sous x Dog Bar"
+                class="w-full h-48 object-cover"
+              />
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Sous x Dog Bar
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  Gourmet prepared meals and elevated comfort food
+                </p>
+                <a
+                  href="uploads/2024/09/sous_x_dog_bar_fill_in_menu_1024x791.png"
+                  target="_blank"
+                  class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Ibbi's -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <img
+                src="uploads/2021/03/ibbis_menu_1024x768.jpg"
+                alt="Ibbis"
+                class="w-full h-48 object-cover"
+              />
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Ibbi's</h3>
+                <p class="text-gray-600 mb-4">
+                  Mediterranean cuisine with fresh ingredients
+                </p>
+                <a
+                  href="uploads/2021/03/ibbis_menu_1024x768.jpg"
+                  target="_blank"
+                  class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Section -->
+          <div
+            class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-8 text-white text-center"
+          >
+            <h3 class="text-2xl font-bold mb-4">
+              Want to Know This Week's Food Truck?
+            </h3>
+            <p class="text-lg mb-6">
+              Check our Events Calendar to see which delicious food truck is
+              visiting us!
+            </p>
+            <a
+              href="calendar.html"
+              class="inline-block px-8 py-4 bg-white text-emerald-600 font-bold rounded-full hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
+            >
+              View Events Calendar
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Component -->
+    <div id="footer-root"></div>
+  </body>
+</html>
