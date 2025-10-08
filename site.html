@@ -12,16 +12,20 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       // Suppress Tailwind production warning without affecting styles
-      window.tailwind = { 
-        config: { 
+      window.tailwind = {
+        config: {
           theme: {},
-          plugins: []
-        }
+          plugins: [],
+        },
       };
       // Override console.warn to suppress Tailwind warning
       const originalWarn = console.warn;
-      console.warn = function(message) {
-        if (message.includes('cdn.tailwindcss.com should not be used in production')) {
+      console.warn = function (message) {
+        if (
+          message.includes(
+            "cdn.tailwindcss.com should not be used in production"
+          )
+        ) {
           return;
         }
         originalWarn.apply(console, arguments);
@@ -304,6 +308,48 @@
             message.classList.add("hidden");
           }, 5000);
         });
+    </script>
+
+    <!-- Supabase Connection Test -->
+    <script>
+      // Test Supabase connection
+      window.addEventListener('load', async function() {
+        console.log('🔍 Testing Supabase connection...');
+        
+        try {
+          const supabaseUrl = 'https://pkomfbezaollhvcpezaw.supabase.co';
+          const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0';
+          
+          const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+          
+          // Test database connection
+          const { data, error } = await supabase
+            .from('site_content')
+            .select('*')
+            .limit(1);
+            
+          if (error) {
+            console.error('❌ Supabase connection failed:', error);
+          } else {
+            console.log('✅ Supabase connection successful!', data);
+          }
+          
+          // Test events
+          const { data: events, error: eventsError } = await supabase
+            .from('events')
+            .select('*')
+            .limit(3);
+            
+          if (eventsError) {
+            console.error('❌ Events query failed:', eventsError);
+          } else {
+            console.log('✅ Events loaded from database:', events);
+          }
+          
+        } catch (error) {
+          console.error('❌ Supabase test failed:', error);
+        }
+      });
     </script>
   </body>
 </html>

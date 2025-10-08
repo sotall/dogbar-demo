@@ -70,6 +70,8 @@ class DogBarApp {
 
   async loadConfigFromDatabase() {
     try {
+      console.log("🔍 Loading config from database for location:", this.location);
+      
       const { data, error } = await this.supabase
         .from("site_content")
         .select("*")
@@ -77,15 +79,17 @@ class DogBarApp {
         .limit(1);
 
       if (error) {
-        console.error("Error loading config from database:", error);
+        console.error("❌ Error loading config from database:", error);
         // Fallback to JSON config
+        console.log("🔄 Falling back to JSON config...");
         await this.loadConfig();
         return;
       }
 
       if (!data || data.length === 0) {
-        console.warn("No site content found for location:", this.location);
+        console.warn("⚠️ No site content found for location:", this.location);
         // Fallback to JSON config
+        console.log("🔄 Falling back to JSON config...");
         await this.loadConfig();
         return;
       }
@@ -137,16 +141,19 @@ class DogBarApp {
 
   async loadConfig() {
     try {
+      console.log("🔄 Loading fallback JSON config for:", this.location);
       const response = await fetch(`config/${this.location}.json`);
       this.config = await response.json();
+      console.log("✅ Fallback config loaded:", this.config);
     } catch (error) {
-      console.error("Error loading config:", error);
+      console.error("❌ Error loading fallback config:", error);
       // Fallback config
       this.config = {
         name: "The Dog Bar",
         location: this.location === "st-pete" ? "St. Petersburg" : "Sarasota",
         subtitle: "Florida's Premier Dog Park & Bar",
       };
+      console.log("⚠️ Using emergency fallback config:", this.config);
     }
   }
 
