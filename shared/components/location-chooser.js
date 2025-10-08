@@ -4,7 +4,7 @@
     render(location) {
       // In the new architecture, location switching is handled by the URL parameter
       // Users can switch by going back to index.html or using the header links
-      console.log("Location chooser not needed in component architecture");
+      // This component is kept for compatibility but does nothing
     },
   };
 
