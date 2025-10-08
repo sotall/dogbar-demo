@@ -285,12 +285,15 @@
           const location = urlParams.get("location") || "st-pete";
 
           // Fetch all events from database
+          console.log(`🔍 Fetching events for location: ${location}`);
           const { data: eventsData, error } = await supabase
             .from("events")
             .select("*")
             .eq("location", location)
             .eq("status", "published")
             .order("date", { ascending: true });
+            
+          console.log(`📊 Database query result:`, { eventsData, error });
 
           if (error) {
             console.error("❌ Error loading events from database:", error);
@@ -331,7 +334,7 @@
 
           // Re-render calendar with new data
           renderCalendar();
-          renderFeaturedEvents();
+          renderUpcomingEventsCards();
         } catch (error) {
           console.error("❌ Error in loadEventsFromDatabase:", error);
           loadFallbackEvents();
@@ -560,7 +563,7 @@
 
         // Re-render calendar with fallback data
         renderCalendar();
-        renderFeaturedEvents();
+        renderUpcomingEventsCards();
       }
 
       // Initialize calendar when page loads

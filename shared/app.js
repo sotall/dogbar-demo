@@ -314,18 +314,18 @@ console.log("🚀 App script loaded, initializing Dog Bar App...");
 
 // Wait for both DOM and Supabase to be available
 function waitForBothAndInit() {
-  if (document.readyState === 'loading') {
+  if (document.readyState === "loading") {
     console.log("⏳ Waiting for DOM to be ready...");
     setTimeout(waitForBothAndInit, 100);
     return;
   }
-  
+
   if (!window.supabase) {
     console.log("⏳ Waiting for Supabase to be available...");
     setTimeout(waitForBothAndInit, 100);
     return;
   }
-  
+
   console.log("✅ Both DOM and Supabase ready, initializing app...");
   window.DogBarApp = new DogBarApp();
 }
