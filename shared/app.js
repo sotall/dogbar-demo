@@ -70,8 +70,11 @@ class DogBarApp {
 
   async loadConfigFromDatabase() {
     try {
-      console.log("🔍 Loading config from database for location:", this.location);
-      
+      console.log(
+        "🔍 Loading config from database for location:",
+        this.location
+      );
+
       const { data, error } = await this.supabase
         .from("site_content")
         .select("*")

@@ -5,7 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Events Calendar - The Dog Bar</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="shared/app.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Wait for Supabase to load, then start app -->
+    <script>
+      // Wait for Supabase to be available
+      function waitForSupabase() {
+        if (window.supabase) {
+          console.log('✅ Supabase loaded, starting app...');
+          // Load the main app script
+          const script = document.createElement('script');
+          script.src = 'shared/app.js';
+          document.head.appendChild(script);
+        } else {
+          console.log('⏳ Waiting for Supabase to load...');
+          setTimeout(waitForSupabase, 100);
+        }
+      }
+      
+      // Start checking when DOM is ready
+      document.addEventListener('DOMContentLoaded', waitForSupabase);
+    </script>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"

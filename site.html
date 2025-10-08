@@ -43,9 +43,26 @@
 
     <!-- Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-
-    <!-- Main App Controller -->
-    <script src="shared/app.js"></script>
+    
+    <!-- Wait for Supabase to load, then start app -->
+    <script>
+      // Wait for Supabase to be available
+      function waitForSupabase() {
+        if (window.supabase) {
+          console.log('✅ Supabase loaded, starting app...');
+          // Load the main app script
+          const script = document.createElement('script');
+          script.src = 'shared/app.js';
+          document.head.appendChild(script);
+        } else {
+          console.log('⏳ Waiting for Supabase to load...');
+          setTimeout(waitForSupabase, 100);
+        }
+      }
+      
+      // Start checking when DOM is ready
+      document.addEventListener('DOMContentLoaded', waitForSupabase);
+    </script>
   </head>
 
   <body class="bg-gray-50">
@@ -313,41 +330,44 @@
     <!-- Supabase Connection Test -->
     <script>
       // Test Supabase connection
-      window.addEventListener('load', async function() {
-        console.log('🔍 Testing Supabase connection...');
-        
+      window.addEventListener("load", async function () {
+        console.log("🔍 Testing Supabase connection...");
+
         try {
-          const supabaseUrl = 'https://pkomfbezaollhvcpezaw.supabase.co';
-          const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0';
-          
-          const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-          
+          const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
+          const supabaseKey =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+
+          const supabase = window.supabase.createClient(
+            supabaseUrl,
+            supabaseKey
+          );
+
           // Test database connection
           const { data, error } = await supabase
-            .from('site_content')
-            .select('*')
+            .from("site_content")
+            .select("*")
             .limit(1);
-            
+
           if (error) {
-            console.error('❌ Supabase connection failed:', error);
+            console.error("❌ Supabase connection failed:", error);
           } else {
-            console.log('✅ Supabase connection successful!', data);
+            console.log("✅ Supabase connection successful!", data);
           }
-          
+
           // Test events
           const { data: events, error: eventsError } = await supabase
-            .from('events')
-            .select('*')
+            .from("events")
+            .select("*")
             .limit(3);
-            
+
           if (eventsError) {
-            console.error('❌ Events query failed:', eventsError);
+            console.error("❌ Events query failed:", eventsError);
           } else {
-            console.log('✅ Events loaded from database:', events);
+            console.log("✅ Events loaded from database:", events);
           }
-          
         } catch (error) {
-          console.error('❌ Supabase test failed:', error);
+          console.error("❌ Supabase test failed:", error);
         }
       });
     </script>
