@@ -8,7 +8,7 @@
         const app = window.DogBarApp;
         if (!app || !app.getSupabase()) {
           console.warn("Supabase not available, using fallback data");
-          return this.getFallbackEvents(limit);
+          return EventsComponent.getFallbackEvents(limit);
         }
 
         const supabase = app.getSupabase();
@@ -26,7 +26,7 @@
 
         if (error) {
           console.error("Error fetching events from database:", error);
-          return this.getFallbackEvents(limit);
+          return EventsComponent.getFallbackEvents(limit);
         }
 
         // Transform database events to expected format
@@ -35,13 +35,13 @@
           time: `${event.start_time || "TBD"} - ${event.end_time || "TBD"}`,
           description: event.description || "Join us for this exciting event!",
           image: event.image_url || "uploads/2020/01/birthday_1.jpg",
-          type: this.getEventType(event.event_type),
+          type: EventsComponent.getEventType(event.event_type),
           date: new Date(event.date),
           dateStr: event.date,
         }));
       } catch (error) {
         console.error("Error in getUpcomingEvents:", error);
-        return this.getFallbackEvents(limit);
+        return EventsComponent.getFallbackEvents(limit);
       }
     },
 
@@ -273,33 +273,6 @@
       };
     },
 
-    getUpcomingEvents(limit = 2) {
-      const eventsData = this.getEventsData();
-      const today = new Date();
-      const upcomingEvents = [];
-
-      // Get events for the next 60 days
-      for (let i = 0; i < 60; i++) {
-        const checkDate = new Date(today);
-        checkDate.setDate(today.getDate() + i);
-        const dateStr = checkDate.toISOString().split("T")[0];
-
-        if (eventsData[dateStr]) {
-          eventsData[dateStr].forEach((event) => {
-            upcomingEvents.push({
-              ...event,
-              date: checkDate,
-              dateStr: dateStr,
-            });
-          });
-        }
-      }
-
-      // Sort by date and return first N events
-      upcomingEvents.sort((a, b) => a.date - b.date);
-      return upcomingEvents.slice(0, limit);
-    },
-
     async render(location, config) {
       const root = document.getElementById("events-root");
       if (!root) return;
@@ -320,16 +293,16 @@
       `;
 
       // Get upcoming events from database
-      const upcomingEvents = await this.getUpcomingEvents(2);
+      const upcomingEvents = await EventsComponent.getUpcomingEvents(2);
 
       const eventsHTML = upcomingEvents
         .map(
           (event, index) => `
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group event-card" data-event-index="${index}">
           <div class="relative cursor-pointer" onclick="toggleEventDetails(${index})">
-            <img
-              src="${event.image}"
-              alt="${event.title}"
+          <img
+            src="${event.image}"
+            alt="${event.title}"
               class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div class="absolute top-4 right-4">
