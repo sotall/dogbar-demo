@@ -161,6 +161,8 @@ class DogBarApp {
   }
 
   async loadComponents() {
+    console.log('📦 Loading components...');
+    
     // Load all component scripts
     const components = [
       "header",
@@ -173,14 +175,17 @@ class DogBarApp {
 
     for (const component of components) {
       try {
+        console.log(`📦 Loading ${component} component...`);
         await this.loadScript(`shared/components/${component}.js`);
+        console.log(`✅ ${component} component loaded`);
       } catch (error) {
-        console.warn(`Component ${component} failed to load:`, error);
+        console.warn(`❌ Component ${component} failed to load:`, error);
       }
     }
 
     // Give components time to register
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    console.log('⏳ Waiting for components to register...');
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
     // Render components
     this.renderComponents();
@@ -197,33 +202,57 @@ class DogBarApp {
   }
 
   renderComponents() {
+    console.log('🎨 Rendering components...');
+    console.log('Available components:', window.DogBarComponents);
+    console.log('Config:', this.config);
+    
     // Each component will have a render function
     if (window.DogBarComponents) {
       const components = window.DogBarComponents;
 
       if (components.Header) {
+        console.log('✅ Rendering Header component');
         components.Header.render(this.location, this.config);
+      } else {
+        console.warn('❌ Header component not found');
       }
 
       if (components.Hero) {
+        console.log('✅ Rendering Hero component');
         components.Hero.render(this.location, this.config);
+      } else {
+        console.warn('❌ Hero component not found');
       }
 
       if (components.Stats) {
+        console.log('✅ Rendering Stats component');
         components.Stats.render(this.location, this.config);
+      } else {
+        console.warn('❌ Stats component not found');
       }
 
       if (components.Events) {
+        console.log('✅ Rendering Events component');
         components.Events.render(this.location, this.config);
+      } else {
+        console.warn('❌ Events component not found');
       }
 
       if (components.Footer) {
+        console.log('✅ Rendering Footer component');
         components.Footer.render(this.location, this.config);
+      } else {
+        console.warn('❌ Footer component not found');
       }
 
       if (components.LocationChooser) {
+        console.log('✅ Rendering LocationChooser component');
         components.LocationChooser.render(this.location);
+      } else {
+        console.warn('❌ LocationChooser component not found');
       }
+    } else {
+      console.error('❌ DogBarComponents not available!');
     }
   }
 
