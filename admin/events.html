@@ -4,12 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dog Bar Admin - Events</title>
-    
+
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="../uploads/2019/12/logo.png">
+    <link rel="icon" type="image/png" href="../uploads/2019/12/logo.png" />
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Suppress Tailwind production warning without affecting styles
+      const originalWarn = console.warn;
+      console.warn = function(message) {
+        if (message.includes('cdn.tailwindcss.com should not be used in production')) {
+          return;
+        }
+        originalWarn.apply(console, arguments);
+      };
+    </script>
 
     <!-- Google Fonts -->
     <link
