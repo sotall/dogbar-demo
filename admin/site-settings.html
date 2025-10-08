@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Bar Admin - Site Settings</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    
+    <!-- Navigation Header -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <img src="../uploads/2019/12/logo.png" alt="Dog Bar Logo" class="h-8 w-auto mr-3">
+                    <h1 class="text-xl font-bold text-gray-900">Dog Bar Admin</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="dashboard.html" class="text-gray-600 hover:text-gray-900">Dashboard</a>
+                    <a href="events.html" class="text-gray-600 hover:text-gray-900">Events</a>
+                    <span class="text-gray-600" id="userEmail"></span>
+                    <button id="logoutBtn" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900">Site Settings</h2>
+            <p class="text-gray-600">Manage location-specific content, hours, and contact information</p>
+        </div>
+
+        <!-- Location Selector -->
+        <div class="mb-8">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Select Location to Edit:</label>
+            <select id="locationSelector" class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                <option value="st-pete">St. Pete</option>
+                <option value="sarasota">Sarasota</option>
+            </select>
+        </div>
+
+        <!-- Settings Form -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900" id="locationTitle">St. Pete Settings</h3>
+            </div>
+            
+            <form id="settingsForm" class="p-6 space-y-8">
+                
+                <!-- Basic Information -->
+                <div>
+                    <h4 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+                            <input type="text" id="address" name="address" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="email" name="email" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label for="heroText" class="block text-sm font-medium text-gray-700">Hero Text</label>
+                            <input type="text" id="heroText" name="hero_text" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="St. Pete's Premier Dog Park & Bar">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operating Hours -->
+                <div>
+                    <h4 class="text-lg font-medium text-gray-900 mb-4">Operating Hours</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <label for="monday" class="block text-sm font-medium text-gray-700">Monday</label>
+                            <input type="text" id="monday" name="monday" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Closed">
+                        </div>
+                        <div>
+                            <label for="tuesday" class="block text-sm font-medium text-gray-700">Tuesday</label>
+                            <input type="text" id="tuesday" name="tuesday" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="4:00 PM - 10:00 PM">
+                        </div>
+                        <div>
+                            <label for="wednesday" class="block text-sm font-medium text-gray-700">Wednesday</label>
+                            <input type="text" id="wednesday" name="wednesday" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="4:00 PM - 10:00 PM">
+                        </div>
+                        <div>
+                            <label for="thursday" class="block text-sm font-medium text-gray-700">Thursday</label>
+                            <input type="text" id="thursday" name="thursday" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="4:00 PM - 10:00 PM">
+                        </div>
+                        <div>
+                            <label for="friday" class="block text-sm font-medium text-gray-700">Friday</label>
+                            <input type="text" id="friday" name="friday" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="4:00 PM - 11:00 PM">
+                        </div>
+                        <div>
+                            <label for="saturday" class="block text-sm font-medium text-gray-700">Saturday</label>
+                            <input type="text" id="saturday" name="saturday" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="11:00 AM - 11:00 PM">
+                        </div>
+                        <div>
+                            <label for="sunday" class="block text-sm font-medium text-gray-700">Sunday</label>
+                            <input type="text" id="sunday" name="sunday" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="11:00 AM - 9:00 PM">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div>
+                    <h4 class="text-lg font-medium text-gray-900 mb-4">Location Stats</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label for="sqft" class="block text-sm font-medium text-gray-700">Square Footage</label>
+                            <input type="text" id="sqft" name="sqft" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="4,500">
+                        </div>
+                        <div>
+                            <label for="beers" class="block text-sm font-medium text-gray-700">Draft Beers</label>
+                            <input type="text" id="beers" name="beers" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="31+">
+                        </div>
+                        <div>
+                            <label for="rating" class="block text-sm font-medium text-gray-700">Rating</label>
+                            <input type="text" id="rating" name="rating" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="4.8">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div>
+                    <h4 class="text-lg font-medium text-gray-900 mb-4">Social Media</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="instagram" class="block text-sm font-medium text-gray-700">Instagram URL</label>
+                            <input type="url" id="instagram" name="instagram" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="https://instagram.com/dogbarstpete">
+                        </div>
+                        <div>
+                            <label for="facebook" class="block text-sm font-medium text-gray-700">Facebook URL</label>
+                            <input type="url" id="facebook" name="facebook" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="https://facebook.com/dogbarstpete">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors">
+                        Save Settings
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="hidden mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+            Settings saved successfully!
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const supabaseUrl = 'https://pkomfbezaollhvcpezaw.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0';
+        
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentLocation = 'st-pete';
+
+        // Check authentication
+        window.addEventListener('load', async function() {
+            const session = localStorage.getItem('admin_session');
+            if (!session) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Set user email
+            const user = JSON.parse(localStorage.getItem('admin_user'));
+            document.getElementById('userEmail').textContent = user.email;
+
+            // Load initial settings
+            await loadSettings();
+        });
+
+        // Load settings for selected location
+        async function loadSettings() {
+            try {
+                const { data, error } = await supabase
+                    .from('site_content')
+                    .select('*')
+                    .eq('location', currentLocation)
+                    .limit(1);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    const settings = data[0];
+                    
+                    // Update form fields
+                    document.getElementById('address').value = settings.address || '';
+                    document.getElementById('phone').value = settings.phone || '';
+                    document.getElementById('email').value = settings.email || '';
+                    document.getElementById('heroText').value = settings.hero_text || '';
+                    
+                    // Update hours
+                    if (settings.hours) {
+                        Object.keys(settings.hours).forEach(day => {
+                            const input = document.getElementById(day);
+                            if (input) {
+                                input.value = settings.hours[day] || '';
+                            }
+                        });
+                    }
+                    
+                    // Update stats
+                    if (settings.stats) {
+                        document.getElementById('sqft').value = settings.stats.sqft || '';
+                        document.getElementById('beers').value = settings.stats.beers || '';
+                        document.getElementById('rating').value = settings.stats.rating || '';
+                    }
+                    
+                    // Update social media
+                    if (settings.social) {
+                        document.getElementById('instagram').value = settings.social.instagram || '';
+                        document.getElementById('facebook').value = settings.social.facebook || '';
+                    }
+                }
+
+                // Update location title
+                document.getElementById('locationTitle').textContent = 
+                    currentLocation === 'st-pete' ? 'St. Pete Settings' : 'Sarasota Settings';
+
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Location selector change
+        document.getElementById('locationSelector').addEventListener('change', async function() {
+            currentLocation = this.value;
+            await loadSettings();
+        });
+
+        // Form submission
+        document.getElementById('settingsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                // Collect form data
+                const formData = new FormData(this);
+                const settingsData = {
+                    location: currentLocation,
+                    address: formData.get('address'),
+                    phone: formData.get('phone'),
+                    email: formData.get('email'),
+                    hero_text: formData.get('heroText'),
+                    hours: {
+                        monday: formData.get('monday'),
+                        tuesday: formData.get('tuesday'),
+                        wednesday: formData.get('wednesday'),
+                        thursday: formData.get('thursday'),
+                        friday: formData.get('friday'),
+                        saturday: formData.get('saturday'),
+                        sunday: formData.get('sunday')
+                    },
+                    stats: {
+                        sqft: formData.get('sqft'),
+                        beers: formData.get('beers'),
+                        rating: formData.get('rating')
+                    },
+                    social: {
+                        instagram: formData.get('instagram'),
+                        facebook: formData.get('facebook')
+                    }
+                };
+
+                // Check if settings exist for this location
+                const { data: existingData, error: checkError } = await supabase
+                    .from('site_content')
+                    .select('id')
+                    .eq('location', currentLocation)
+                    .limit(1);
+
+                if (checkError) throw checkError;
+
+                let result;
+                if (existingData && existingData.length > 0) {
+                    // Update existing settings
+                    result = await supabase
+                        .from('site_content')
+                        .update(settingsData)
+                        .eq('location', currentLocation);
+                } else {
+                    // Insert new settings
+                    result = await supabase
+                        .from('site_content')
+                        .insert([settingsData]);
+                }
+
+                if (result.error) throw result.error;
+
+                // Show success message
+                showSuccessMessage();
+
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                alert('Error saving settings. Please try again.');
+            }
+        });
+
+        function showSuccessMessage() {
+            const message = document.getElementById('successMessage');
+            message.classList.remove('hidden');
+            setTimeout(() => {
+                message.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+            await supabase.auth.signOut();
+            localStorage.removeItem('admin_user');
+            localStorage.removeItem('admin_session');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
