@@ -161,8 +161,8 @@ class DogBarApp {
   }
 
   async loadComponents() {
-    console.log('📦 Loading components...');
-    
+    console.log("📦 Loading components...");
+
     // Load all component scripts
     const components = [
       "header",
@@ -184,7 +184,7 @@ class DogBarApp {
     }
 
     // Give components time to register
-    console.log('⏳ Waiting for components to register...');
+    console.log("⏳ Waiting for components to register...");
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     // Render components
@@ -202,57 +202,57 @@ class DogBarApp {
   }
 
   renderComponents() {
-    console.log('🎨 Rendering components...');
-    console.log('Available components:', window.DogBarComponents);
-    console.log('Config:', this.config);
-    
+    console.log("🎨 Rendering components...");
+    console.log("Available components:", window.DogBarComponents);
+    console.log("Config:", this.config);
+
     // Each component will have a render function
     if (window.DogBarComponents) {
       const components = window.DogBarComponents;
 
       if (components.Header) {
-        console.log('✅ Rendering Header component');
+        console.log("✅ Rendering Header component");
         components.Header.render(this.location, this.config);
       } else {
-        console.warn('❌ Header component not found');
+        console.warn("❌ Header component not found");
       }
 
       if (components.Hero) {
-        console.log('✅ Rendering Hero component');
+        console.log("✅ Rendering Hero component");
         components.Hero.render(this.location, this.config);
       } else {
-        console.warn('❌ Hero component not found');
+        console.warn("❌ Hero component not found");
       }
 
       if (components.Stats) {
-        console.log('✅ Rendering Stats component');
+        console.log("✅ Rendering Stats component");
         components.Stats.render(this.location, this.config);
       } else {
-        console.warn('❌ Stats component not found');
+        console.warn("❌ Stats component not found");
       }
 
       if (components.Events) {
-        console.log('✅ Rendering Events component');
+        console.log("✅ Rendering Events component");
         components.Events.render(this.location, this.config);
       } else {
-        console.warn('❌ Events component not found');
+        console.warn("❌ Events component not found");
       }
 
       if (components.Footer) {
-        console.log('✅ Rendering Footer component');
+        console.log("✅ Rendering Footer component");
         components.Footer.render(this.location, this.config);
       } else {
-        console.warn('❌ Footer component not found');
+        console.warn("❌ Footer component not found");
       }
 
       if (components.LocationChooser) {
-        console.log('✅ Rendering LocationChooser component');
+        console.log("✅ Rendering LocationChooser component");
         components.LocationChooser.render(this.location);
       } else {
-        console.warn('❌ LocationChooser component not found');
+        console.warn("❌ LocationChooser component not found");
       }
     } else {
-      console.error('❌ DogBarComponents not available!');
+      console.error("❌ DogBarComponents not available!");
     }
   }
 
@@ -311,5 +311,18 @@ window.DogBarComponents = {};
 
 // Initialize app when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-  window.DogBarApp = new DogBarApp();
+  console.log("🚀 DOM loaded, initializing Dog Bar App...");
+  
+  // Wait for Supabase to be available before initializing
+  function waitForSupabaseAndInit() {
+    if (window.supabase) {
+      console.log("✅ Supabase available, initializing app...");
+      window.DogBarApp = new DogBarApp();
+    } else {
+      console.log("⏳ Waiting for Supabase to be available...");
+      setTimeout(waitForSupabaseAndInit, 100);
+    }
+  }
+  
+  waitForSupabaseAndInit();
 });
