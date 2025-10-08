@@ -74,7 +74,7 @@ class DogBarApp {
         .from("site_content")
         .select("*")
         .eq("location", this.location)
-        .single();
+        .limit(1);
 
       if (error) {
         console.error("Error loading config from database:", error);
@@ -83,23 +83,33 @@ class DogBarApp {
         return;
       }
 
+      if (!data || data.length === 0) {
+        console.warn("No site content found for location:", this.location);
+        // Fallback to JSON config
+        await this.loadConfig();
+        return;
+      }
+
+      // Get the first row (in case there are duplicates)
+      const siteData = data[0];
+
       // Transform database data to match expected format
       this.config = {
-        location: data.location,
+        location: siteData.location,
         domain: this.location === "st-pete" ? "dogbarstpete.com" : "dbsrq.com",
         title: `The Dog Bar - ${
-          data.location === "st-pete" ? "St. Pete" : "Sarasota"
+          siteData.location === "st-pete" ? "St. Pete" : "Sarasota"
         }`,
-        subtitle: data.hero_text,
-        address: data.address,
-        phone: data.phone,
-        email: data.email,
-        hours: data.hours,
-        stats: data.stats,
+        subtitle: siteData.hero_text,
+        address: siteData.address,
+        phone: siteData.phone,
+        email: siteData.email,
+        hours: siteData.hours,
+        stats: siteData.stats,
         features: [
-          `${data.stats.sqft} Sq Ft Play Area`,
-          `${data.stats.beers} Draft Beers`,
-          `${data.stats.rating} Fun & Safety`,
+          `${siteData.stats.sqft} Sq Ft Play Area`,
+          `${siteData.stats.beers} Draft Beers`,
+          `${siteData.stats.rating} Fun & Safety`,
         ],
         cta: {
           primary: "Register Your Dog",
