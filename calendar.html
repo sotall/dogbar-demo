@@ -6,25 +6,25 @@
     <title>Events Calendar - The Dog Bar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
+
     <!-- Wait for Supabase to load, then start app -->
     <script>
       // Wait for Supabase to be available
       function waitForSupabase() {
         if (window.supabase) {
-          console.log('✅ Supabase loaded, starting app...');
+          console.log("✅ Supabase loaded, starting app...");
           // Load the main app script
-          const script = document.createElement('script');
-          script.src = 'shared/app.js';
+          const script = document.createElement("script");
+          script.src = "shared/app.js";
           document.head.appendChild(script);
         } else {
-          console.log('⏳ Waiting for Supabase to load...');
+          console.log("⏳ Waiting for Supabase to load...");
           setTimeout(waitForSupabase, 100);
         }
       }
-      
+
       // Start checking when DOM is ready
-      document.addEventListener('DOMContentLoaded', waitForSupabase);
+      document.addEventListener("DOMContentLoaded", waitForSupabase);
     </script>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
@@ -263,9 +263,91 @@
 
     <script>
       let currentDate = new Date();
-      const events = {
-        // Real events from Dog Bar - scraped from site and upload data
-        // October 2025
+      // Events will be loaded from database
+      let events = {};
+      
+      // Load events from Supabase database
+      async function loadEventsFromDatabase() {
+        try {
+          console.log('🔍 Loading events from database for calendar...');
+          
+          const supabaseUrl = 'https://pkomfbezaollhvcpezaw.supabase.co';
+          const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0';
+          
+          const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+          
+          // Get location from URL parameter
+          const urlParams = new URLSearchParams(window.location.search);
+          const location = urlParams.get('location') || 'st-pete';
+          
+          // Fetch all events from database
+          const { data: eventsData, error } = await supabase
+            .from('events')
+            .select('*')
+            .eq('location', location)
+            .eq('status', 'published')
+            .order('date', { ascending: true });
+            
+          if (error) {
+            console.error('❌ Error loading events from database:', error);
+            // Fallback to hardcoded data
+            loadFallbackEvents();
+            return;
+          }
+          
+          if (!eventsData || eventsData.length === 0) {
+            console.warn('⚠️ No events found in database, using fallback data');
+            loadFallbackEvents();
+            return;
+          }
+          
+          // Transform database events to calendar format
+          events = {};
+          eventsData.forEach(event => {
+            const dateStr = event.date;
+            if (!events[dateStr]) {
+              events[dateStr] = [];
+            }
+            
+            events[dateStr].push({
+              title: event.title,
+              time: `${event.start_time || 'TBD'} - ${event.end_time || 'TBD'}`,
+              description: event.description || 'Join us for this exciting event!',
+              image: event.image_url || 'uploads/2020/01/birthday_1.jpg',
+              type: getEventType(event.event_type),
+              price: 'Free Entry',
+              location: event.location === 'st-pete' ? 'St. Pete' : 'Sarasota',
+              capacity: 'Unlimited',
+              requirements: 'Dogs must be leashed and vaccinated'
+            });
+          });
+          
+          console.log('✅ Events loaded from database:', events);
+          
+          // Re-render calendar with new data
+          renderCalendar();
+          renderFeaturedEvents();
+          
+        } catch (error) {
+          console.error('❌ Error in loadEventsFromDatabase:', error);
+          loadFallbackEvents();
+        }
+      }
+      
+      function getEventType(eventType) {
+        const typeMap = {
+          'food-truck': 'Food Truck',
+          'special': 'Special Event',
+          'recurring': 'Entertainment',
+          'wellness': 'Wellness'
+        };
+        return typeMap[eventType] || 'Event';
+      }
+      
+      function loadFallbackEvents() {
+        console.log('🔄 Loading fallback events...');
+        events = {
+          // Fallback events (original hardcoded data)
         "2025-10-03": [
           {
             title: "Food Truck Friday - Latin Lunchbox",
@@ -471,8 +553,29 @@
           },
         ],
       };
+      
+      // Re-render calendar with fallback data
+      renderCalendar();
+      renderFeaturedEvents();
+    }
+    
+    // Initialize calendar when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait for Supabase to be available, then load events
+      function waitForSupabaseAndLoad() {
+        if (window.supabase) {
+          console.log('✅ Supabase available, loading events...');
+          loadEventsFromDatabase();
+        } else {
+          console.log('⏳ Waiting for Supabase to load...');
+          setTimeout(waitForSupabaseAndLoad, 100);
+        }
+      }
+      
+      waitForSupabaseAndLoad();
+    });
 
-      function getEventType(eventTitle) {
+    function getEventType(eventTitle) {
         const title = eventTitle.toLowerCase();
         if (
           title.includes("food truck") ||
@@ -792,9 +895,7 @@
           .join("");
       }
 
-      // Initialize calendar and events cards
-      renderCalendar();
-      renderUpcomingEventsCards();
+      // Calendar initialization is now handled by the DOMContentLoaded event listener above
     </script>
   </body>
 </html>

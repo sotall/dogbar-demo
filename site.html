@@ -43,25 +43,25 @@
 
     <!-- Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
+
     <!-- Wait for Supabase to load, then start app -->
     <script>
       // Wait for Supabase to be available
       function waitForSupabase() {
         if (window.supabase) {
-          console.log('✅ Supabase loaded, starting app...');
+          console.log("✅ Supabase loaded, starting app...");
           // Load the main app script
-          const script = document.createElement('script');
-          script.src = 'shared/app.js';
+          const script = document.createElement("script");
+          script.src = "shared/app.js";
           document.head.appendChild(script);
         } else {
-          console.log('⏳ Waiting for Supabase to load...');
+          console.log("⏳ Waiting for Supabase to load...");
           setTimeout(waitForSupabase, 100);
         }
       }
-      
+
       // Start checking when DOM is ready
-      document.addEventListener('DOMContentLoaded', waitForSupabase);
+      document.addEventListener("DOMContentLoaded", waitForSupabase);
     </script>
   </head>
 
