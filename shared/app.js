@@ -61,22 +61,23 @@ class DogBarApp {
   }
 
   initSupabase() {
-    const supabaseUrl = 'https://pkomfbezaollhvcpezaw.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0';
-    
+    const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
+    const supabaseKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+
     this.supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
   }
 
   async loadConfigFromDatabase() {
     try {
       const { data, error } = await this.supabase
-        .from('site_content')
-        .select('*')
-        .eq('location', this.location)
+        .from("site_content")
+        .select("*")
+        .eq("location", this.location)
         .single();
 
       if (error) {
-        console.error('Error loading config from database:', error);
+        console.error("Error loading config from database:", error);
         // Fallback to JSON config
         await this.loadConfig();
         return;
@@ -85,8 +86,10 @@ class DogBarApp {
       // Transform database data to match expected format
       this.config = {
         location: data.location,
-        domain: this.location === 'st-pete' ? 'dogbarstpete.com' : 'dbsrq.com',
-        title: `The Dog Bar - ${data.location === 'st-pete' ? 'St. Pete' : 'Sarasota'}`,
+        domain: this.location === "st-pete" ? "dogbarstpete.com" : "dbsrq.com",
+        title: `The Dog Bar - ${
+          data.location === "st-pete" ? "St. Pete" : "Sarasota"
+        }`,
         subtitle: data.hero_text,
         address: data.address,
         phone: data.phone,
@@ -96,21 +99,27 @@ class DogBarApp {
         features: [
           `${data.stats.sqft} Sq Ft Play Area`,
           `${data.stats.beers} Draft Beers`,
-          `${data.stats.rating} Fun & Safety`
+          `${data.stats.rating} Fun & Safety`,
         ],
         cta: {
           primary: "Register Your Dog",
-          secondary: "Learn More"
+          secondary: "Learn More",
         },
         social: {
-          instagram: this.location === 'st-pete' ? 'https://instagram.com/dogbarstpete' : 'https://instagram.com/dogbarsarasota',
-          facebook: this.location === 'st-pete' ? 'https://facebook.com/dogbarstpete' : 'https://facebook.com/dogbarsarasota'
-        }
+          instagram:
+            this.location === "st-pete"
+              ? "https://instagram.com/dogbarstpete"
+              : "https://instagram.com/dogbarsarasota",
+          facebook:
+            this.location === "st-pete"
+              ? "https://facebook.com/dogbarstpete"
+              : "https://facebook.com/dogbarsarasota",
+        },
       };
 
-      console.log('✅ Config loaded from database:', this.config);
+      console.log("✅ Config loaded from database:", this.config);
     } catch (error) {
-      console.error('Error loading config from database:', error);
+      console.error("Error loading config from database:", error);
       // Fallback to JSON config
       await this.loadConfig();
     }

@@ -110,7 +110,7 @@ dogbar-modern/
 - **Current:** GitHub Pages (static hosting)
 - **Future:** Vercel/Netlify (for admin portal with serverless functions)
 - **Version Control:** Git + GitHub
-- **CI/CD:** Automatic deployments on push to main
+- **CI/CD:** Automatic deployments on push to main branch
 
 ---
 
@@ -189,7 +189,7 @@ http://localhost:8000/index.html
 
 - Update events: Modify in Supabase dashboard
 - Add pages: Follow component architecture pattern
-- Test changes: Push to GitHub → auto-deploys
+- Test changes: Push to GitHub main branch → auto-deploys
 
 ---
 

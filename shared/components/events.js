@@ -7,7 +7,7 @@
         // Get Supabase client from global app
         const app = window.DogBarApp;
         if (!app || !app.getSupabase()) {
-          console.warn('Supabase not available, using fallback data');
+          console.warn("Supabase not available, using fallback data");
           return this.getFallbackEvents(limit);
         }
 
@@ -16,43 +16,43 @@
 
         // Fetch upcoming events from database
         const { data, error } = await supabase
-          .from('events')
-          .select('*')
-          .eq('location', location)
-          .eq('status', 'published')
-          .gte('date', new Date().toISOString().split('T')[0])
-          .order('date', { ascending: true })
+          .from("events")
+          .select("*")
+          .eq("location", location)
+          .eq("status", "published")
+          .gte("date", new Date().toISOString().split("T")[0])
+          .order("date", { ascending: true })
           .limit(limit);
 
         if (error) {
-          console.error('Error fetching events from database:', error);
+          console.error("Error fetching events from database:", error);
           return this.getFallbackEvents(limit);
         }
 
         // Transform database events to expected format
-        return data.map(event => ({
+        return data.map((event) => ({
           title: event.title,
-          time: `${event.start_time || 'TBD'} - ${event.end_time || 'TBD'}`,
-          description: event.description || 'Join us for this exciting event!',
-          image: event.image_url || 'uploads/2020/01/birthday_1.jpg',
+          time: `${event.start_time || "TBD"} - ${event.end_time || "TBD"}`,
+          description: event.description || "Join us for this exciting event!",
+          image: event.image_url || "uploads/2020/01/birthday_1.jpg",
           type: this.getEventType(event.event_type),
           date: new Date(event.date),
-          dateStr: event.date
+          dateStr: event.date,
         }));
       } catch (error) {
-        console.error('Error in getUpcomingEvents:', error);
+        console.error("Error in getUpcomingEvents:", error);
         return this.getFallbackEvents(limit);
       }
     },
 
     getEventType(eventType) {
       const typeMap = {
-        'food-truck': 'Food Truck',
-        'special': 'Special Event',
-        'recurring': 'Entertainment',
-        'wellness': 'Wellness'
+        "food-truck": "Food Truck",
+        special: "Special Event",
+        recurring: "Entertainment",
+        wellness: "Wellness",
       };
-      return typeMap[eventType] || 'Event';
+      return typeMap[eventType] || "Event";
     },
 
     // Fallback events data (original hardcoded data)
