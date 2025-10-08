@@ -292,7 +292,7 @@
             .eq("location", location)
             .eq("status", "published")
             .order("date", { ascending: true });
-            
+
           console.log(`📊 Database query result:`, { eventsData, error });
 
           if (error) {
@@ -566,21 +566,21 @@
         renderUpcomingEventsCards();
       }
 
-      // Initialize calendar when page loads
-      document.addEventListener("DOMContentLoaded", function () {
-        // Wait for Supabase to be available, then load events
-        function waitForSupabaseAndLoad() {
-          if (window.supabase) {
-            console.log("✅ Supabase available, loading events...");
-            loadEventsFromDatabase();
-          } else {
-            console.log("⏳ Waiting for Supabase to load...");
-            setTimeout(waitForSupabaseAndLoad, 100);
-          }
+      // Initialize calendar immediately when script loads
+      console.log("📅 Calendar script loaded, initializing...");
+      
+      // Wait for Supabase to be available, then load events
+      function waitForSupabaseAndLoad() {
+        if (window.supabase) {
+          console.log("✅ Supabase available, loading calendar events...");
+          loadEventsFromDatabase();
+        } else {
+          console.log("⏳ Waiting for Supabase to load for calendar...");
+          setTimeout(waitForSupabaseAndLoad, 100);
         }
+      }
 
-        waitForSupabaseAndLoad();
-      });
+      waitForSupabaseAndLoad();
 
       function getEventType(eventTitle) {
         const title = eventTitle.toLowerCase();
