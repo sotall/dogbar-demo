@@ -309,20 +309,25 @@ class DogBarApp {
 // Global component registry
 window.DogBarComponents = {};
 
-// Initialize app when DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("🚀 DOM loaded, initializing Dog Bar App...");
-  
-  // Wait for Supabase to be available before initializing
-  function waitForSupabaseAndInit() {
-    if (window.supabase) {
-      console.log("✅ Supabase available, initializing app...");
-      window.DogBarApp = new DogBarApp();
-    } else {
-      console.log("⏳ Waiting for Supabase to be available...");
-      setTimeout(waitForSupabaseAndInit, 100);
-    }
+// Initialize app immediately when script loads
+console.log("🚀 App script loaded, initializing Dog Bar App...");
+
+// Wait for both DOM and Supabase to be available
+function waitForBothAndInit() {
+  if (document.readyState === 'loading') {
+    console.log("⏳ Waiting for DOM to be ready...");
+    setTimeout(waitForBothAndInit, 100);
+    return;
   }
   
-  waitForSupabaseAndInit();
-});
+  if (!window.supabase) {
+    console.log("⏳ Waiting for Supabase to be available...");
+    setTimeout(waitForBothAndInit, 100);
+    return;
+  }
+  
+  console.log("✅ Both DOM and Supabase ready, initializing app...");
+  window.DogBarApp = new DogBarApp();
+}
+
+waitForBothAndInit();
