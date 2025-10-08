@@ -21,26 +21,53 @@
       body {
         font-family: "Inter", sans-serif;
       }
-      
+
       /* Ensure table text wraps properly */
       .events-table td {
         word-wrap: break-word;
         word-break: break-word;
-        max-width: 0;
+      }
+      
+      /* Event column - give it more space */
+      .events-table .event-column {
+        width: 50%;
+        min-width: 300px;
+      }
+      
+      /* Other columns - use minimum space */
+      .events-table .date-column {
+        width: 15%;
+        min-width: 120px;
+      }
+      
+      .events-table .location-column {
+        width: 10%;
+        min-width: 80px;
+      }
+      
+      .events-table .type-column {
+        width: 10%;
+        min-width: 80px;
+      }
+      
+      .events-table .status-column {
+        width: 10%;
+        min-width: 80px;
       }
       
       /* Make sure action buttons are always visible */
       .events-table .actions-column {
-        min-width: 120px;
+        width: 5%;
+        min-width: 100px;
         white-space: nowrap;
       }
-      
+
       /* Responsive table */
       @media (max-width: 768px) {
         .events-table {
           font-size: 0.875rem;
         }
-        
+
         .events-table th,
         .events-table td {
           padding: 0.5rem;
@@ -161,27 +188,27 @@
               <thead class="bg-gray-50">
                 <tr>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="event-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Event
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="date-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Date & Time
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="location-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Location
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="type-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Type
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="status-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Status
                   </th>
@@ -584,7 +611,7 @@
           .map(
             (event) => `
                 <tr>
-                    <td class="px-6 py-4">
+                    <td class="event-column px-6 py-4">
                         <div class="flex items-start">
                             <div class="flex-shrink-0 h-10 w-10">
                                 <img class="h-10 w-10 rounded-lg object-cover" src="${
@@ -596,19 +623,19 @@
                                 <div class="text-sm font-medium text-gray-900 break-words">${
                                   event.title
                                 }</div>
-                                <div class="text-sm text-gray-500 break-words max-w-xs">${
+                                <div class="text-sm text-gray-500 break-words">${
                                   event.description || "No description"
                                 }</div>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="date-column px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div>${new Date(event.date).toLocaleDateString()}</div>
                         <div class="text-gray-500">${
                           event.start_time || "TBD"
                         } - ${event.end_time || "TBD"}</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="location-column px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         ${
                           event.location === "st-pete"
                             ? "St. Pete"
@@ -617,7 +644,7 @@
                             : "Both"
                         }
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="type-column px-6 py-4 whitespace-nowrap">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           event.event_type === "food-truck"
                             ? "bg-orange-100 text-orange-800"
@@ -638,7 +665,7 @@
                             }
                         </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="status-column px-6 py-4 whitespace-nowrap">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           event.status === "published"
                             ? "bg-green-100 text-green-800"
@@ -652,7 +679,7 @@
                             }
                         </span>
                     </td>
-                    <td class="px-6 py-4 text-sm font-medium">
+                    <td class="actions-column px-6 py-4 text-sm font-medium">
                         <div class="flex flex-col sm:flex-row gap-2">
                             <button onclick="editEvent('${
                               event.id
