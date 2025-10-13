@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dog Bar Admin - Dashboard</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/media/logo.png?v=2" />
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <!-- Shared Navigation -->
+    <script src="shared/permissions.js"></script>
+    <script src="shared/navigation.js"></script>
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      .admin-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .admin-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .stats-card {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      }
+
+      .stats-card.blue {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      }
+
+      .stats-card.purple {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      }
+
+      .stats-card.orange {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold text-gray-900">Admin Dashboard</h2>
+        <p class="text-gray-600">Manage your Dog Bar website and content</p>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="stats-card rounded-xl p-6 text-white">
+          <div class="flex items-center">
+            <div class="flex-1">
+              <p class="text-sm font-medium opacity-90">Total Events</p>
+              <p class="text-3xl font-bold" id="totalEvents">-</p>
+            </div>
+            <div class="text-4xl opacity-80">📅</div>
+          </div>
+        </div>
+
+        <div class="stats-card blue rounded-xl p-6 text-white">
+          <div class="flex items-center">
+            <div class="flex-1">
+              <p class="text-sm font-medium opacity-90">Published Events</p>
+              <p class="text-3xl font-bold" id="publishedEvents">-</p>
+            </div>
+            <div class="text-4xl opacity-80">✅</div>
+          </div>
+        </div>
+
+        <div class="stats-card purple rounded-xl p-6 text-white">
+          <div class="flex items-center">
+            <div class="flex-1">
+              <p class="text-sm font-medium opacity-90">Featured Events</p>
+              <p class="text-3xl font-bold" id="featuredEvents">-</p>
+            </div>
+            <div class="text-4xl opacity-80">⭐</div>
+          </div>
+        </div>
+
+        <div class="stats-card orange rounded-xl p-6 text-white">
+          <div class="flex items-center">
+            <div class="flex-1">
+              <p class="text-sm font-medium opacity-90">Media Files</p>
+              <p class="text-3xl font-bold" id="mediaFiles">-</p>
+            </div>
+            <div class="text-4xl opacity-80">🖼️</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Sections -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Events Management -->
+        <div
+          class="admin-card bg-white rounded-xl shadow-lg p-6"
+          onclick="navigateTo('events')"
+        >
+          <div class="flex items-center mb-4">
+            <div
+              class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mr-4"
+            >
+              <span class="text-2xl">📅</span>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">
+              Events Management
+            </h3>
+          </div>
+          <p class="text-gray-600 mb-4">
+            Manage events, food trucks, and special occasions. Create, edit, and
+            organize your calendar.
+          </p>
+          <div class="flex items-center text-emerald-600 font-medium">
+            <span>Manage Events</span>
+            <svg
+              class="w-4 h-4 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Media Library -->
+        <div
+          class="admin-card bg-white rounded-xl shadow-lg p-6"
+          onclick="navigateTo('media')"
+        >
+          <div class="flex items-center mb-4">
+            <div
+              class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4"
+            >
+              <span class="text-2xl">🖼️</span>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">Media Library</h3>
+          </div>
+          <p class="text-gray-600 mb-4">
+            Upload, organize, and manage images and media files. Drag and drop
+            to assign images to events.
+          </p>
+          <div class="flex items-center text-blue-600 font-medium">
+            <span>Manage Media</span>
+            <svg
+              class="w-4 h-4 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Site Configuration -->
+        <div
+          class="admin-card bg-white rounded-xl shadow-lg p-6"
+          onclick="navigateTo('config')"
+        >
+          <div class="flex items-center mb-4">
+            <div
+              class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4"
+            >
+              <span class="text-2xl">⚙️</span>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">
+              Site Configuration
+            </h3>
+          </div>
+          <p class="text-gray-600 mb-4">
+            Configure home page settings, site content, and global preferences.
+            Customize your website appearance.
+          </p>
+          <div class="flex items-center text-purple-600 font-medium">
+            <span>Configure Site</span>
+            <svg
+              class="w-4 h-4 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+          Recent Activity
+        </h3>
+        <div id="recentActivity" class="space-y-3">
+          <div class="flex items-center text-sm text-gray-600">
+            <div class="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
+            <span>Loading recent activity...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Supabase configuration
+      const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
+      const supabaseKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      // Initialize dashboard
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Check authentication
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        document.getElementById("userEmail").textContent = user.email;
+
+        // Load dashboard data
+        await loadDashboardData();
+      });
+
+      // Load dashboard statistics
+      async function loadDashboardData() {
+        try {
+          // Load events data
+          const { data: events, error: eventsError } = await supabase
+            .from("events")
+            .select("*");
+
+          if (eventsError) throw eventsError;
+
+          // Calculate stats
+          const totalEvents = events.length;
+          const publishedEvents = events.filter(
+            (e) => e.status === "published"
+          ).length;
+          const featuredEvents = events.filter((e) => e.is_featured).length;
+
+          // Update stats
+          document.getElementById("totalEvents").textContent = totalEvents;
+          document.getElementById("publishedEvents").textContent =
+            publishedEvents;
+          document.getElementById("featuredEvents").textContent =
+            featuredEvents;
+
+          // Load recent activity
+          await loadRecentActivity(events);
+        } catch (error) {
+          console.error("Error loading dashboard data:", error);
+        }
+      }
+
+      // Load recent activity
+      async function loadRecentActivity(events) {
+        const activityContainer = document.getElementById("recentActivity");
+
+        // Sort events by creation date (most recent first)
+        const recentEvents = events
+          .sort(
+            (a, b) =>
+              new Date(b.created_at || b.date) -
+              new Date(a.created_at || a.date)
+          )
+          .slice(0, 5);
+
+        if (recentEvents.length === 0) {
+          activityContainer.innerHTML =
+            '<div class="text-gray-500 text-center py-4">No recent activity</div>';
+          return;
+        }
+
+        activityContainer.innerHTML = recentEvents
+          .map((event) => {
+            const eventDate = new Date(event.date).toLocaleDateString();
+            const isNew =
+              new Date(event.created_at || event.date) >
+              new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+            return `
+            <div class="flex items-center text-sm">
+              <div class="w-2 h-2 ${
+                isNew ? "bg-emerald-500" : "bg-gray-400"
+              } rounded-full mr-3"></div>
+              <div class="flex-1">
+                <span class="font-medium">${event.title}</span>
+                <span class="text-gray-500 ml-2">- ${eventDate}</span>
+              </div>
+              <span class="px-2 py-1 text-xs rounded-full ${
+                event.status === "published"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-yellow-100 text-yellow-800"
+              }">
+                ${event.status}
+              </span>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      // Navigation function
+      function navigateTo(page) {
+        switch (page) {
+          case "events":
+            window.location.href = "events.html";
+            break;
+          case "media":
+            window.location.href = "media.html";
+            break;
+          case "config":
+            window.location.href = "config.html";
+            break;
+        }
+      }
+
+      // Logout functionality
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async function () {
+          await supabase.auth.signOut();
+          window.location.href = "login.html";
+        });
+      }
+    </script>
+  </body>
+</html>

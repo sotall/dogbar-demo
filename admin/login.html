@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - Dog Bar</title>
+    <link rel="icon" type="image/png" href="../assets/media/logo.png?v=2" />
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  </head>
+  <body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <img
+          class="mx-auto h-12 w-auto"
+          src="../assets/media/logo.png?v=2"
+          alt="Dog Bar Logo"
+        />
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Admin Login
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+          Sign in to access the admin portal
+        </p>
+      </div>
+
+      <!-- Session Expired Message -->
+      <div
+        id="sessionExpiredMessage"
+        class="hidden mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-4"
+      >
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg
+              class="h-5 w-5 text-yellow-400"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-yellow-700">
+              Your session expired. Please log in again to continue.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <form class="mt-8 space-y-6" id="loginForm">
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label for="email" class="sr-only">Email address</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm"
+              placeholder="Email address"
+            />
+          </div>
+          <div>
+            <label for="password" class="sr-only">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm"
+              placeholder="Password"
+            />
+          </div>
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+          >
+            Sign in
+          </button>
+        </div>
+
+        <div
+          id="errorMessage"
+          class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
+        >
+          Invalid email or password. Please try again.
+        </div>
+      </form>
+    </div>
+
+    <script>
+      // Rate limiting (simple client-side version)
+      const MAX_ATTEMPTS = 5;
+      const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes
+
+      function checkRateLimit(email) {
+        const key = `login_attempts_${email}`;
+        const lockoutKey = `login_lockout_${email}`;
+
+        // Check if locked out
+        const lockoutUntil = localStorage.getItem(lockoutKey);
+        if (lockoutUntil && Date.now() < parseInt(lockoutUntil)) {
+          const remaining = Math.ceil(
+            (parseInt(lockoutUntil) - Date.now()) / 60000
+          );
+          throw new Error(
+            `Too many failed attempts. Try again in ${remaining} minutes.`
+          );
+        }
+
+        // Get attempt count
+        const attempts = parseInt(localStorage.getItem(key) || "0");
+        if (attempts >= MAX_ATTEMPTS) {
+          localStorage.setItem(
+            lockoutKey,
+            (Date.now() + LOCKOUT_TIME).toString()
+          );
+          throw new Error(
+            "Too many failed attempts. Account locked for 15 minutes."
+          );
+        }
+
+        return attempts;
+      }
+
+      function recordFailedAttempt(email) {
+        const key = `login_attempts_${email}`;
+        const attempts = parseInt(localStorage.getItem(key) || "0") + 1;
+        localStorage.setItem(key, attempts.toString());
+      }
+
+      function clearFailedAttempts(email) {
+        const key = `login_attempts_${email}`;
+        localStorage.removeItem(key);
+      }
+
+      // Supabase configuration
+      // TODO: Move to environment variables for production
+      const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
+      const supabaseKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      // Handle form submission
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const errorDiv = document.getElementById("errorMessage");
+
+          try {
+            // Check rate limiting first
+            checkRateLimit(email);
+
+            // Sign in with Supabase Auth
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email: email,
+              password: password,
+            });
+
+            if (error) {
+              recordFailedAttempt(email);
+              throw error;
+            }
+
+            // Clear failed attempts on successful login
+            clearFailedAttempts(email);
+
+            // Check if user exists in our admin_users table
+            const { data: userData, error: userError } = await supabase
+              .from("admin_users")
+              .select("role, status")
+              .eq("email", email)
+              .single();
+
+            if (userError || !userData) {
+              throw new Error(
+                "Unauthorized: You do not have admin access to this system"
+              );
+            }
+
+            if (userData.status !== "active") {
+              throw new Error("Account is not active");
+            }
+
+            // Store auth token
+            localStorage.setItem(
+              "supabase.auth.token",
+              data.session.access_token
+            );
+
+            // Get return URL if user was redirected from expired session
+            const returnUrl = sessionStorage.getItem("returnUrl");
+            sessionStorage.removeItem("returnUrl");
+
+            // Redirect to original page or dashboard
+            if (returnUrl && returnUrl !== "/admin/login.html") {
+              window.location.href = returnUrl;
+            } else {
+              window.location.href = "dashboard.html";
+            }
+          } catch (error) {
+            console.error("Login error:", error);
+            errorDiv.classList.remove("hidden");
+            errorDiv.textContent =
+              error.message || "Login failed. Please try again.";
+          }
+        });
+
+      // Check if user is already logged in
+      window.addEventListener("load", async function () {
+        // Check if redirected from expired session
+        const urlParams = new URLSearchParams(window.location.search);
+        const expired = urlParams.get("expired");
+
+        if (expired === "true") {
+          // Show session expired message
+          document
+            .getElementById("sessionExpiredMessage")
+            .classList.remove("hidden");
+
+          // Remove the query parameter from URL without reloading
+          const cleanUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        }
+
+        const token = localStorage.getItem("supabase.auth.token");
+        if (token) {
+          try {
+            const {
+              data: { user },
+              error,
+            } = await supabase.auth.getUser();
+            if (user && !error) {
+              // User is already logged in, redirect to dashboard or return URL
+              const returnUrl = sessionStorage.getItem("returnUrl");
+              if (returnUrl && returnUrl !== "/admin/login.html") {
+                window.location.href = returnUrl;
+              } else {
+                window.location.href = "dashboard.html";
+              }
+            }
+          } catch (error) {
+            // Token is invalid, stay on login page
+            localStorage.removeItem("supabase.auth.token");
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

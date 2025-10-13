@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Dog Bar - Florida's Premier Dog Park & Bar</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/media/logo.png?v=2" />
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="assets/css/tailwind.output.css" />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <!-- Wait for Supabase to load, then start app -->
+    <script>
+      // Wait for Supabase to be available
+      function waitForSupabase() {
+        if (window.supabase) {
+          console.log("✅ Supabase loaded, starting app...");
+          // Load the main app script as a module
+          const script = document.createElement("script");
+          script.type = "module";
+          script.src = "assets/js/app.js";
+          document.head.appendChild(script);
+        } else {
+          console.log("⏳ Waiting for Supabase to load...");
+          setTimeout(waitForSupabase, 100);
+        }
+      }
+
+      // Start checking when DOM is ready
+      document.addEventListener("DOMContentLoaded", waitForSupabase);
+    </script>
+  </head>
+
+  <body class="bg-gray-50">
+    <!-- Header Component -->
+    <div id="header-root"></div>
+
+    <!-- Hero Section Component -->
+    <div id="hero-root"></div>
+
+    <!-- Stats Bar Component -->
+    <div id="stats-root"></div>
+
+    <!-- Events Section Component -->
+    <div id="events-root"></div>
+
+    <!-- About Section Component -->
+    <section id="about" class="py-20 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-4xl font-bold text-gray-900 mb-6">
+            About The Dog Bar
+          </h2>
+          <p class="text-lg text-gray-600 mb-8">
+            The Dog Bar is Florida's premier dog park and bar, offering a unique
+            space where dogs can play freely while their humans enjoy craft
+            cocktails, local beers, and delicious food. Our outdoor dog park is
+            designed for safety and fun, with separate areas for large and small
+            dogs.
+          </p>
+          <div class="grid md:grid-cols-3 gap-8 mt-12">
+            <div class="text-center">
+              <div class="text-4xl mb-4">🐕</div>
+              <h3 class="font-bold text-xl mb-2">Safe & Secure</h3>
+              <p class="text-gray-600">
+                Fully fenced dog park with separate areas for different sized
+                pups
+              </p>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl mb-4">🍺</div>
+              <h3 class="font-bold text-xl mb-2">Great Drinks</h3>
+              <p class="text-gray-600">
+                Craft cocktails, local beers, and wine selection
+              </p>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl mb-4">🎉</div>
+              <h3 class="font-bold text-xl mb-2">Private Events</h3>
+              <p class="text-gray-600">
+                Birthday parties, corporate events, and celebrations
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Parties Section Component -->
+    <section id="parties" class="py-20 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-4xl font-bold text-gray-900 mb-6">
+            Party Packages 🎂
+          </h2>
+          <p class="text-lg text-gray-600 mb-12">
+            Celebrate your pup's special day or host a unique event at The Dog
+            Bar! We offer customizable party packages with food, drinks, and
+            dedicated space.
+          </p>
+          <a
+            href="https://dogbarstpete.portal.gingrapp.com/#/public/new_customer"
+            class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-full hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105 shadow-lg"
+          >
+            Book Your Party
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Instagram Feed Section (Sarasota Only) -->
+    <section id="instagram-feed" class="py-20 bg-white hidden">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">
+            Follow Us on Instagram 📸
+          </h2>
+          <p class="text-lg text-gray-600 mb-6">
+            See what's happening at The Dog Bar!
+          </p>
+          <a
+            href="https://www.instagram.com/dogbarstpete/"
+            target="_blank"
+            class="inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-full hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105 shadow-lg"
+          >
+            @dogbarstpete
+          </a>
+        </div>
+
+        <!-- Instagram Feed Grid -->
+        <div id="instagram-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <!-- Sample Instagram posts - Replace with actual Instagram API integration -->
+          <div
+            class="aspect-square bg-gray-200 rounded-lg overflow-hidden hover:opacity-80 transition-opacity cursor-pointer"
+          >
+            <img
+              src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzY2NjY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkRvZyBCYXIgUGhvdG88L3RleHQ+PC9zdmc+"
+              alt="Dog Bar Photo"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div
+            class="aspect-square bg-gray-200 rounded-lg overflow-hidden hover:opacity-80 transition-opacity cursor-pointer"
+          >
+            <img
+              src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg=="
+              alt="Instagram post"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div
+            class="aspect-square bg-gray-200 rounded-lg overflow-hidden hover:opacity-80 transition-opacity cursor-pointer"
+          >
+            <img
+              src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg=="
+              alt="Instagram post"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div
+            class="aspect-square bg-gray-200 rounded-lg overflow-hidden hover:opacity-80 transition-opacity cursor-pointer"
+          >
+            <img
+              src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzY2NjY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkZvb2QgTWVudTwvdGV4dD48L3N2Zz4="
+              alt="Food Menu"
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
+        <p class="text-center mt-8 text-gray-500 text-sm">
+          To integrate live Instagram feed, use an Instagram feed widget like
+          <a
+            href="https://embedsocial.com/"
+            target="_blank"
+            class="text-emerald-600 hover:underline"
+            >EmbedSocial</a
+          >
+          or
+          <a
+            href="https://www.juicer.io/"
+            target="_blank"
+            class="text-emerald-600 hover:underline"
+            >Juicer</a
+          >
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer Component -->
+    <div id="footer-root"></div>
+
+    <script type="module">
+      // Test Supabase connection
+      window.addEventListener("load", async function () {
+        console.log("🔍 Testing Supabase connection...");
+
+        try {
+          // Get credentials from environment variables (injected by Vite)
+          const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+          const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+          const supabase = window.supabase.createClient(
+            supabaseUrl,
+            supabaseKey
+          );
+
+          // Test database connection
+          const { data, error } = await supabase
+            .from("site_content")
+            .select("*")
+            .limit(1);
+
+          if (error) {
+            console.error("❌ Supabase connection failed:", error);
+          } else {
+            console.log("✅ Supabase connection successful!", data);
+          }
+
+          // Test events
+          const { data: events, error: eventsError } = await supabase
+            .from("events")
+            .select("*")
+            .limit(3);
+
+          if (eventsError) {
+            console.error("❌ Events query failed:", eventsError);
+          } else {
+            console.log("✅ Events loaded from database:", events);
+          }
+        } catch (error) {
+          console.error("❌ Supabase test failed:", error);
+        }
+      });
+    </script>
+  </body>
+</html>

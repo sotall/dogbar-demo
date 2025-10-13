@@ -1,0 +1,53 @@
+# Node modules
+node_modules/
+
+# Security audit files (temporary)
+SECURITY-AUDIT-TEMP.md
+security-audit-*.md
+*.audit.md
+scripts/security-audit.js
+scripts/frontend-security-scan.js
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Vercel
+.vercel
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+dist/
+build/
+assets/css/tailwind.output.css
+
+# AI agent files
+locks/
+*.lock
+*.plan.md
+
+# Obsolete directories (just in case they're recreated)
+config/
+scripts/
+public/
+
+# Lock files (optional - uncomment if using yarn)
+# yarn.lock
+

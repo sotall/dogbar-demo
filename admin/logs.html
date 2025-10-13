@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audit Logs - Dog Bar Admin</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/media/logo.png?v=2" />
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <!-- Shared Utilities -->
+    <script src="shared/logger.js"></script>
+
+    <!-- Shared Scripts -->
+    <script src="shared/permissions.js"></script>
+    <script src="shared/navigation.js"></script>
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900">Audit Logs</h2>
+          <p class="text-gray-600">
+            Review critical actions performed across the admin portal.
+          </p>
+        </div>
+        <button
+          id="refreshButton"
+          class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
+        >
+          Refresh Logs
+        </button>
+      </div>
+
+      <!-- Filters -->
+      <div class="bg-white shadow rounded-xl p-6 mb-6">
+        <form id="filtersForm" class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          <div>
+            <label
+              for="actionFilter"
+              class="block text-sm font-medium text-gray-700"
+              >Action</label
+            >
+            <select
+              id="actionFilter"
+              class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              <option value="">All Actions</option>
+            </select>
+          </div>
+          <div>
+            <label
+              for="emailFilter"
+              class="block text-sm font-medium text-gray-700"
+              >Actor Email</label
+            >
+            <input
+              type="text"
+              id="emailFilter"
+              placeholder="e.g. admin@dogbar.com"
+              class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+          <div>
+            <label
+              for="dateFrom"
+              class="block text-sm font-medium text-gray-700"
+              >From</label
+            >
+            <input
+              type="date"
+              id="dateFrom"
+              class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+          <div>
+            <label for="dateTo" class="block text-sm font-medium text-gray-700"
+              >To</label
+            >
+            <input
+              type="date"
+              id="dateTo"
+              class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+          <div class="lg:col-span-4 flex items-center gap-3">
+            <button
+              type="submit"
+              class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
+            >
+              Apply Filters
+            </button>
+            <button
+              type="button"
+              id="clearFilters"
+              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition"
+            >
+              Clear Filters
+            </button>
+            <span id="resultCount" class="text-sm text-gray-500"></span>
+          </div>
+        </form>
+      </div>
+
+      <!-- Logs Table -->
+      <div class="bg-white shadow rounded-xl overflow-hidden">
+        <div
+          class="px-6 py-4 border-b border-gray-200 flex justify-between items-center"
+        >
+          <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
+          <span id="lastUpdated" class="text-sm text-gray-500"></span>
+        </div>
+
+        <!-- Pagination Controls (Top) -->
+        <div class="bg-white border-b border-gray-200 px-6 py-4">
+          <div
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          >
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <label class="text-sm text-gray-700">Items per page:</label>
+                <select
+                  id="pageSizeSelect"
+                  class="px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="10">10</option>
+                  <option value="25" selected>25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-sm text-gray-700">Jump to:</label>
+                <input
+                  type="number"
+                  id="pageJumpInput"
+                  min="1"
+                  class="w-16 px-2 py-1 border border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-emerald-500"
+                />
+                <button
+                  id="pageJumpBtn"
+                  class="px-3 py-1 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm"
+                >
+                  Go
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span id="pageInfo" class="text-sm text-gray-700"
+                >Showing 0-0 of 0</span
+              >
+              <div class="flex gap-2">
+                <button
+                  id="prevPageTop"
+                  class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <button
+                  id="nextPageTop"
+                  class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="loadingState" class="p-6 text-center text-gray-600">
+          <div
+            class="mx-auto mb-3 inline-block h-6 w-6 animate-spin rounded-full border-b-2 border-emerald-600"
+          ></div>
+          Loading audit logs...
+        </div>
+
+        <div id="emptyState" class="hidden p-6 text-center text-gray-600">
+          <p class="font-medium">
+            No audit activity found for the selected filters.
+          </p>
+          <p class="text-sm text-gray-500">
+            Adjust filters or try refreshing the logs.
+          </p>
+        </div>
+
+        <div id="logsContainer" class="hidden overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Timestamp
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Action
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Actor
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Details
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              id="logsTableBody"
+              class="bg-white divide-y divide-gray-200"
+            ></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
+      const supabaseKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      const state = {
+        page: 1,
+        pageSize: 25,
+        total: 0,
+        filters: {
+          action: "",
+          email: "",
+          from: "",
+          to: "",
+        },
+      };
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        await ensureAuth();
+        await populateActionFilter();
+        await loadLogs();
+
+        document
+          .getElementById("filtersForm")
+          .addEventListener("submit", handleFilterSubmit);
+        document
+          .getElementById("clearFilters")
+          .addEventListener("click", handleClearFilters);
+        document
+          .getElementById("refreshButton")
+          .addEventListener("click", () => loadLogs(true));
+        document
+          .getElementById("prevPageTop")
+          .addEventListener("click", () => changePage(state.page - 1));
+        document
+          .getElementById("nextPageTop")
+          .addEventListener("click", () => changePage(state.page + 1));
+
+        // Page size selector (top only)
+        const pageSize = document.getElementById("pageSizeSelect");
+        if (pageSize) {
+          pageSize.addEventListener("change", (e) => {
+            state.pageSize = parseInt(e.target.value);
+            state.page = 1;
+            loadLogs();
+          });
+        }
+
+        const pageJumpBtn = document.getElementById("pageJumpBtn");
+        if (pageJumpBtn) {
+          pageJumpBtn.addEventListener("click", () => {
+            const input = document.getElementById("pageJumpInput");
+            const pageNum = parseInt(input.value);
+            const totalPages = Math.ceil(state.total / state.pageSize);
+            if (pageNum >= 1 && pageNum <= totalPages) {
+              changePage(pageNum);
+            }
+          });
+        }
+      });
+
+      async function ensureAuth() {
+        const initialized = await window.PermissionManager.initialize();
+        if (!initialized) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        if (!window.PermissionManager.hasPermission("view_logs")) {
+          alert("You do not have permission to view logs.");
+          window.location.href = "dashboard.html";
+          return;
+        }
+      }
+
+      async function populateActionFilter() {
+        try {
+          const { data, error } = await supabase
+            .from("audit_logs")
+            .select("action")
+            .order("action", { ascending: true });
+
+          if (error) throw error;
+
+          const uniqueActions = Array.from(
+            new Set(data.map((row) => row.action))
+          );
+          const select = document.getElementById("actionFilter");
+          uniqueActions.forEach((action) => {
+            const option = document.createElement("option");
+            option.value = action;
+            option.textContent = action;
+            select.appendChild(option);
+          });
+        } catch (error) {
+          console.warn("Unable to populate action filter:", error);
+        }
+      }
+
+      async function loadLogs(forceRefresh = false) {
+        toggleLoading(true);
+
+        const start = (state.page - 1) * state.pageSize;
+        const end = start + state.pageSize - 1;
+
+        let query = supabase
+          .from("audit_logs")
+          .select("*", { count: "exact" })
+          .order("occurred_at", { ascending: false })
+          .range(start, end);
+
+        if (state.filters.action) {
+          query = query.eq("action", state.filters.action);
+        }
+        if (state.filters.email) {
+          query = query.ilike("actor_email", `%${state.filters.email}%`);
+        }
+        if (state.filters.from) {
+          query = query.gte("occurred_at", `${state.filters.from}T00:00:00`);
+        }
+        if (state.filters.to) {
+          query = query.lte("occurred_at", `${state.filters.to}T23:59:59`);
+        }
+
+        const { data, error, count } = await query;
+
+        toggleLoading(false);
+
+        if (error) {
+          console.error("Error loading audit logs:", error);
+          showEmptyState(true);
+          return;
+        }
+
+        state.total = count || 0;
+        updatePagination();
+        renderLogs(data || []);
+        updateMeta();
+
+        if (forceRefresh) {
+          showToast("Logs refreshed");
+        }
+      }
+
+      function renderLogs(logs) {
+        const body = document.getElementById("logsTableBody");
+        body.innerHTML = "";
+
+        if (!logs.length) {
+          showEmptyState(true);
+          return;
+        }
+
+        showEmptyState(false);
+
+        logs.forEach((log) => {
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <div class="font-medium">${formatDate(log.occurred_at)}</div>
+              <div class="text-xs text-gray-500">${timeAgo(
+                log.occurred_at
+              )} ago</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-emerald-700 font-semibold">${
+              log.action
+            }</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <div>${log.actor_email || "Unknown"}</div>
+              <div class="text-xs text-gray-500">${log.actor_name || ""}</div>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-900">
+              <pre class="bg-gray-50 border border-gray-200 rounded-lg p-3 overflow-auto max-h-32 text-xs text-gray-700">${formatDetails(
+                log.details
+              )}</pre>
+            </td>
+          `;
+
+          body.appendChild(row);
+        });
+
+        document.getElementById("logsContainer").classList.remove("hidden");
+      }
+
+      function formatDate(value) {
+        if (!value) return "-";
+        const date = new Date(value);
+        return date.toLocaleString();
+      }
+
+      function timeAgo(value) {
+        const date = new Date(value);
+        const diffMs = Date.now() - date.getTime();
+        const diffMinutes = Math.floor(diffMs / 60000);
+        if (diffMinutes < 1) return "just now";
+        if (diffMinutes < 60) return `${diffMinutes}m`;
+        const diffHours = Math.floor(diffMinutes / 60);
+        if (diffHours < 24) return `${diffHours}h`;
+        const diffDays = Math.floor(diffHours / 24);
+        if (diffDays < 7) return `${diffDays}d`;
+        const diffWeeks = Math.floor(diffDays / 7);
+        return `${diffWeeks}w`;
+      }
+
+      function formatDetails(details) {
+        try {
+          if (!details || typeof details !== "object") {
+            return details ? JSON.stringify(details, null, 2) : "{}";
+          }
+          return JSON.stringify(details, null, 2);
+        } catch (error) {
+          return "{}";
+        }
+      }
+
+      function toggleLoading(isLoading) {
+        document
+          .getElementById("loadingState")
+          .classList.toggle("hidden", !isLoading);
+        if (isLoading) {
+          document.getElementById("logsContainer").classList.add("hidden");
+          document.getElementById("emptyState").classList.add("hidden");
+        }
+      }
+
+      function showEmptyState(isEmpty) {
+        document
+          .getElementById("emptyState")
+          .classList.toggle("hidden", !isEmpty);
+        document
+          .getElementById("logsContainer")
+          .classList.toggle("hidden", isEmpty);
+      }
+
+      function handleFilterSubmit(event) {
+        event.preventDefault();
+        state.filters.action = document.getElementById("actionFilter").value;
+        state.filters.email = document
+          .getElementById("emailFilter")
+          .value.trim();
+        state.filters.from = document.getElementById("dateFrom").value;
+        state.filters.to = document.getElementById("dateTo").value;
+        state.page = 1;
+        loadLogs();
+      }
+
+      function handleClearFilters() {
+        document.getElementById("filtersForm").reset();
+        state.filters = { action: "", email: "", from: "", to: "" };
+        state.page = 1;
+        loadLogs();
+      }
+
+      function changePage(nextPage) {
+        if (nextPage < 1) return;
+        const totalPages = Math.max(1, Math.ceil(state.total / state.pageSize));
+        if (nextPage > totalPages) return;
+        state.page = nextPage;
+        loadLogs();
+      }
+
+      function updatePagination() {
+        const totalPages = Math.max(1, Math.ceil(state.total / state.pageSize));
+        const startIndex =
+          state.total === 0 ? 0 : (state.page - 1) * state.pageSize + 1;
+        const endIndex = Math.min(state.page * state.pageSize, state.total);
+
+        // Update top pagination only
+        const pageInfo = document.getElementById("pageInfo");
+        if (pageInfo) {
+          pageInfo.textContent = `Showing ${startIndex}-${endIndex} of ${state.total}`;
+        }
+
+        const pageJumpInput = document.getElementById("pageJumpInput");
+        if (pageJumpInput) {
+          pageJumpInput.value = state.page;
+          pageJumpInput.max = totalPages;
+        }
+
+        const pageSizeSelect = document.getElementById("pageSizeSelect");
+        if (pageSizeSelect) {
+          pageSizeSelect.value = state.pageSize;
+        }
+
+        // Update buttons
+        document.getElementById("prevPageTop").disabled = state.page <= 1;
+        document.getElementById("nextPageTop").disabled =
+          state.page >= totalPages;
+
+        document.getElementById(
+          "resultCount"
+        ).textContent = `${state.total} total events`;
+      }
+
+      function updateMeta() {
+        document.getElementById(
+          "lastUpdated"
+        ).textContent = `Last updated ${new Date().toLocaleTimeString()}`;
+      }
+
+      function showToast(message) {
+        const toast = document.createElement("div");
+        toast.textContent = message;
+        toast.className =
+          "fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg animate-fadeIn";
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+      }
+    </script>
+  </body>
+</html>

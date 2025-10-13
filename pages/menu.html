@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu - The Dog Bar</title>
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <!-- Wait for Supabase to load, then start app -->
+    <script>
+      function waitForSupabase() {
+        if (window.supabase) {
+          const script = document.createElement("script");
+          script.type = "module";
+          script.src = "../assets/js/app.js";
+          document.head.appendChild(script);
+        } else {
+          setTimeout(waitForSupabase, 100);
+        }
+      }
+      document.addEventListener("DOMContentLoaded", waitForSupabase);
+    </script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        scroll-behavior: smooth;
+      }
+
+      .section-anchor {
+        scroll-margin-top: 100px;
+      }
+
+      .sticky-nav {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid #e5e7eb;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Header Component -->
+    <div id="header-root"></div>
+
+    <!-- Hero Section -->
+    <section
+      class="bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 py-16"
+    >
+      <div class="container mx-auto px-4 pt-20 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Menu 🍽️</h1>
+        <p class="text-xl text-white/90 max-w-2xl mx-auto">
+          Delicious food from our food trucks and craft beverages for everyone
+        </p>
+      </div>
+    </section>
+
+    <!-- Navigation Links -->
+    <div class="sticky-nav py-4">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-center space-x-8">
+          <a
+            href="#food"
+            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+          >
+            🍔 Food
+          </a>
+          <a
+            href="#drinks"
+            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+          >
+            🍺 Drinks
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Content -->
+    <div class="container mx-auto px-4 py-16">
+      <div class="max-w-6xl mx-auto space-y-20">
+        <!-- Food Section -->
+        <section id="food" class="section-anchor">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+              🍔 Food Trucks
+            </h2>
+            <p class="text-lg text-gray-600 mb-4">
+              Delicious food from our rotating selection of food trucks
+            </p>
+            <p class="text-emerald-600 font-semibold">
+              📅 Food Trucks every Friday 5-9 PM • Check our calendar for this
+              week's truck!
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Latin Lunchbox -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <div
+                class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500"
+              >
+                <span class="text-lg">🍽️ Latin Lunchbox</span>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Latin Lunchbox
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  Authentic Latin cuisine including empanadas, arepas, and more
+                </p>
+                <a
+                  href="#"
+                  class="inline-block px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed"
+                  onclick="return false;"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Poke 'Em -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <div
+                class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500"
+              >
+                <span class="text-lg">🐟 Poke 'Em</span>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Poke 'Em</h3>
+                <p class="text-gray-600 mb-4">
+                  Fresh Hawaiian poke bowls with premium ingredients
+                </p>
+                <a
+                  href="#"
+                  class="inline-block px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed"
+                  onclick="return false;"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Go Stuff Urself -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <div
+                class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500"
+              >
+                <span class="text-lg">🍗 Go Stuff Urself</span>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Go Stuff Urself
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  Amazing wings, loaded fries, and comfort food favorites
+                </p>
+                <a
+                  href="#"
+                  class="inline-block px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed"
+                  onclick="return false;"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Saucin Wings -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <div
+                class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500"
+              >
+                <span class="text-lg">🍗 Saucin Wings</span>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Saucin Wings
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  Award-winning wings with signature sauces
+                </p>
+                <a
+                  href="#"
+                  class="inline-block px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed"
+                  onclick="return false;"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- Boss Ross -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <div
+                class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500"
+              >
+                <span class="text-lg">🍔 Boss Ross</span>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Boss Ross</h3>
+                <p class="text-gray-600 mb-4">
+                  Gourmet burgers and creative sandwich combinations
+                </p>
+                <a
+                  href="#"
+                  class="inline-block px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed"
+                  onclick="return false;"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+
+            <!-- El Indio -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+            >
+              <div
+                class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500"
+              >
+                <span class="text-lg">🌮 El Indio</span>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">El Indio</h3>
+                <p class="text-gray-600 mb-4">
+                  Authentic Mexican street food and tacos
+                </p>
+                <a
+                  href="#"
+                  class="inline-block px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed"
+                  onclick="return false;"
+                >
+                  View Full Menu
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="border-t-2 border-gray-200"></div>
+
+        <!-- Drinks Section -->
+        <section id="drinks" class="section-anchor">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+              🍺 Drinks Menu
+            </h2>
+            <p class="text-lg text-gray-600">
+              Craft cocktails, local beers, and refreshing beverages for humans
+              (and water bowls for pups!)
+            </p>
+          </div>
+
+          <!-- Signature Cocktails -->
+          <div class="mb-16">
+            <div class="text-center mb-12">
+              <h3 class="text-3xl font-bold text-gray-900 mb-4">
+                🍹 Signature Cocktails
+              </h3>
+              <p class="text-lg text-gray-600">
+                Handcrafted cocktails inspired by our furry friends
+              </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+              <div
+                class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-bold text-gray-900">The Paw-jito</h4>
+                  <span class="text-lg font-semibold text-emerald-600"
+                    >$12</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-2">
+                  Fresh mint, lime, white rum, club soda, and a splash of
+                  pineapple
+                </p>
+                <span class="text-sm text-gray-500 italic"
+                  >Refreshing & tropical</span
+                >
+              </div>
+
+              <div
+                class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-bold text-gray-900">Bark & Stormy</h4>
+                  <span class="text-lg font-semibold text-emerald-600"
+                    >$11</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-2">
+                  Dark rum, ginger beer, fresh lime juice
+                </p>
+                <span class="text-sm text-gray-500 italic"
+                  >Classic with a twist</span
+                >
+              </div>
+
+              <div
+                class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-bold text-gray-900">
+                    Golden Retriever
+                  </h4>
+                  <span class="text-lg font-semibold text-emerald-600"
+                    >$13</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-2">
+                  Tequila, elderflower liqueur, honey, fresh lemon, topped with
+                  champagne
+                </p>
+                <span class="text-sm text-gray-500 italic"
+                  >Bubbly & sophisticated</span
+                >
+              </div>
+
+              <div
+                class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-bold text-gray-900">Fur-nch 75</h4>
+                  <span class="text-lg font-semibold text-emerald-600"
+                    >$14</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-2">
+                  Gin, lemon juice, simple syrup, champagne
+                </p>
+                <span class="text-sm text-gray-500 italic"
+                  >Elegant & effervescent</span
+                >
+              </div>
+
+              <div
+                class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-bold text-gray-900">Beagle Breeze</h4>
+                  <span class="text-lg font-semibold text-emerald-600"
+                    >$11</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-2">
+                  Vodka, cranberry, grapefruit, lime, and a hint of rosemary
+                </p>
+                <span class="text-sm text-gray-500 italic">Light & fruity</span>
+              </div>
+
+              <div
+                class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-bold text-gray-900">
+                    Puppy Love Punch
+                  </h4>
+                  <span class="text-lg font-semibold text-emerald-600"
+                    >$12</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-2">
+                  Bourbon, peach schnapps, fresh lemon, ginger ale
+                </p>
+                <span class="text-sm text-gray-500 italic"
+                  >Sweet & Southern</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Craft Beers -->
+          <div class="mb-16">
+            <div class="text-center mb-12">
+              <h3 class="text-3xl font-bold text-gray-900 mb-4">
+                🍺 Craft Beers on Tap
+              </h3>
+              <p class="text-lg text-gray-600">
+                Local Florida brews & national favorites
+              </p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+              <div class="bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="text-lg font-bold text-gray-900">
+                    Cigar City Jai Alai IPA
+                  </h4>
+                  <span class="text-md font-semibold text-blue-600">$7</span>
+                </div>
+                <p class="text-sm text-gray-600">Tampa, FL • 7.5% ABV</p>
+              </div>
+
+              <div class="bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="text-lg font-bold text-gray-900">
+                    3 Daughters Beach Blonde
+                  </h4>
+                  <span class="text-md font-semibold text-blue-600">$6</span>
+                </div>
+                <p class="text-sm text-gray-600">St. Pete, FL • 5.2% ABV</p>
+              </div>
+
+              <div class="bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="text-lg font-bold text-gray-900">
+                    Green Bench Skyway Wheat
+                  </h4>
+                  <span class="text-md font-semibold text-blue-600">$6</span>
+                </div>
+                <p class="text-sm text-gray-600">St. Pete, FL • 5.0% ABV</p>
+              </div>
+
+              <div class="bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="text-lg font-bold text-gray-900">
+                    Funky Buddha Hop Gun
+                  </h4>
+                  <span class="text-md font-semibold text-blue-600">$7</span>
+                </div>
+                <p class="text-sm text-gray-600">Oakland Park, FL • 7.4% ABV</p>
+              </div>
+
+              <div class="bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="text-lg font-bold text-gray-900">
+                    Yuengling Lager
+                  </h4>
+                  <span class="text-md font-semibold text-blue-600">$5</span>
+                </div>
+                <p class="text-sm text-gray-600">Tampa, FL • 4.5% ABV</p>
+              </div>
+
+              <div class="bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="text-lg font-bold text-gray-900">
+                    Angry Chair Berliner
+                  </h4>
+                  <span class="text-md font-semibold text-blue-600">$7</span>
+                </div>
+                <p class="text-sm text-gray-600">Tampa, FL • 4.2% ABV</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wine Selection -->
+          <div class="mb-16">
+            <div class="text-center mb-12">
+              <h3 class="text-3xl font-bold text-gray-900 mb-4">
+                🍷 Wine Selection
+              </h3>
+              <p class="text-lg text-gray-600">
+                Red, white, rosé, and bubbles by the glass or bottle
+              </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+              <div>
+                <h4 class="text-2xl font-bold text-gray-800 mb-4">Red Wine</h4>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h5 class="font-semibold text-gray-900">
+                        Cabernet Sauvignon
+                      </h5>
+                      <p class="text-sm text-gray-600">California, 2019</p>
+                    </div>
+                    <span class="text-emerald-600 font-semibold">$9/glass</span>
+                  </div>
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h5 class="font-semibold text-gray-900">Pinot Noir</h5>
+                      <p class="text-sm text-gray-600">Oregon, 2020</p>
+                    </div>
+                    <span class="text-emerald-600 font-semibold">$8/glass</span>
+                  </div>
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h5 class="font-semibold text-gray-900">Malbec</h5>
+                      <p class="text-sm text-gray-600">Argentina, 2019</p>
+                    </div>
+                    <span class="text-emerald-600 font-semibold">$7/glass</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="text-2xl font-bold text-gray-800 mb-4">
+                  White Wine
+                </h4>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h5 class="font-semibold text-gray-900">Chardonnay</h5>
+                      <p class="text-sm text-gray-600">California, 2020</p>
+                    </div>
+                    <span class="text-emerald-600 font-semibold">$8/glass</span>
+                  </div>
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h5 class="font-semibold text-gray-900">
+                        Sauvignon Blanc
+                      </h5>
+                      <p class="text-sm text-gray-600">New Zealand, 2021</p>
+                    </div>
+                    <span class="text-emerald-600 font-semibold">$7/glass</span>
+                  </div>
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h5 class="font-semibold text-gray-900">Prosecco</h5>
+                      <p class="text-sm text-gray-600">Italy, NV</p>
+                    </div>
+                    <span class="text-emerald-600 font-semibold">$9/glass</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Non-Alcoholic Beverages -->
+          <div class="mb-16">
+            <div class="text-center mb-12">
+              <h3 class="text-3xl font-bold text-gray-900 mb-4">
+                🥤 Non-Alcoholic Beverages
+              </h3>
+              <p class="text-lg text-gray-600">
+                Refreshing options for designated drivers and our younger guests
+              </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+              <div class="bg-white rounded-xl p-6 shadow-md">
+                <h4 class="text-xl font-bold text-gray-900 mb-4">
+                  Fresh Juices & Smoothies
+                </h4>
+                <div class="space-y-3">
+                  <div class="flex justify-between">
+                    <span class="text-gray-700">Fresh Orange Juice</span>
+                    <span class="text-emerald-600 font-semibold">$4</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-700"
+                      >Strawberry Banana Smoothie</span
+                    >
+                    <span class="text-emerald-600 font-semibold">$6</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-700">Green Detox Smoothie</span>
+                    <span class="text-emerald-600 font-semibold">$7</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-xl p-6 shadow-md">
+                <h4 class="text-xl font-bold text-gray-900 mb-4">
+                  Specialty Drinks
+                </h4>
+                <div class="space-y-3">
+                  <div class="flex justify-between">
+                    <span class="text-gray-700">Virgin Mojito</span>
+                    <span class="text-emerald-600 font-semibold">$5</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-700"
+                      >Sparkling Water (Flavored)</span
+                    >
+                    <span class="text-emerald-600 font-semibold">$3</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-700">Fresh Lemonade</span>
+                    <span class="text-emerald-600 font-semibold">$4</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dog-Friendly Drinks -->
+          <div>
+            <div class="text-center mb-12">
+              <h3 class="text-3xl font-bold text-gray-900 mb-4">
+                🐕 Dog-Friendly Drinks
+              </h3>
+              <p class="text-lg text-gray-600">
+                Special treats for our four-legged friends
+              </p>
+            </div>
+            <div
+              class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-8"
+            >
+              <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 class="text-xl font-bold text-gray-900 mb-4">
+                    Pup-tails
+                  </h4>
+                  <div class="space-y-3">
+                    <div class="flex justify-between">
+                      <span class="text-gray-700"
+                        >Puppy Latte (Goat's Milk)</span
+                      >
+                      <span class="text-emerald-600 font-semibold">$3</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-700"
+                        >Bark-quiri (Chicken Broth)</span
+                      >
+                      <span class="text-emerald-600 font-semibold">$2</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-700"
+                        >Doggy Daiquiri (Frozen Treat)</span
+                      >
+                      <span class="text-emerald-600 font-semibold">$4</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h4 class="text-xl font-bold text-gray-900 mb-4">
+                    Fresh Water
+                  </h4>
+                  <div class="space-y-3">
+                    <div class="flex justify-between">
+                      <span class="text-gray-700">Filtered Water Bowl</span>
+                      <span class="text-emerald-600 font-semibold">Free</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-700"
+                        >Ice Cubes (for hot days)</span
+                      >
+                      <span class="text-emerald-600 font-semibold">Free</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Footer Component -->
+    <div id="footer-root"></div>
+  </body>
+</html>

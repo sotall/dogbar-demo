@@ -7,13 +7,94 @@ class PermissionManager {
     this.supabase = null;
   }
 
+  // Check if session is valid and not expired
+  async checkSession() {
+    try {
+      if (!this.supabase) {
+        return false;
+      }
+
+      const {
+        data: { session },
+        error,
+      } = await this.supabase.auth.getSession();
+
+      if (!session || error) {
+        console.log("❌ No valid session found");
+        this.clearSession();
+        return false;
+      }
+
+      // Check if token is expired
+      const expiresAt = session.expires_at * 1000;
+      if (Date.now() >= expiresAt) {
+        console.log("❌ Session expired");
+        this.clearSession();
+        return false;
+      }
+
+      console.log("✅ Session valid");
+      return true;
+    } catch (error) {
+      console.error("❌ Session check error:", error);
+      this.clearSession();
+      return false;
+    }
+  }
+
+  // Clear session data
+  clearSession() {
+    // Clear Supabase tokens
+    Object.keys(localStorage).forEach((key) => {
+      if (
+        key.startsWith("supabase.auth.token") ||
+        key.startsWith("sb-") ||
+        key.startsWith("admin_") ||
+        key.startsWith("login_")
+      ) {
+        localStorage.removeItem(key);
+      }
+    });
+
+    // Save return URL before clearing
+    const currentPath = window.location.pathname;
+    if (!currentPath.includes("login.html")) {
+      sessionStorage.setItem("returnUrl", currentPath);
+    }
+
+    sessionStorage.removeItem("admin_session");
+    sessionStorage.removeItem("admin_user");
+
+    this.resetRoleCache();
+    this.currentUser = null;
+  }
+
   // Initialize permissions for current user
   async initialize() {
     try {
       this.supabase = window.supabase.createClient(
         "https://pkomfbezaollhvcpezaw.supabase.co",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0",
+        {
+          auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true,
+          },
+        }
       );
+
+      // Check session validity first
+      const hasValidSession = await this.checkSession();
+      if (!hasValidSession) {
+        const returnUrl = sessionStorage.getItem("returnUrl");
+        if (returnUrl) {
+          window.location.href = "login.html?expired=true";
+        } else {
+          window.location.href = "login.html";
+        }
+        return false;
+      }
 
       const {
         data: { user },
@@ -111,6 +192,27 @@ class PermissionManager {
   // Check if user is admin or super admin
   isAdmin() {
     return ["admin", "super_admin"].includes(this.userRole);
+  }
+
+  // Check if user has a specific permission
+  hasPermission(permission) {
+    if (!this.roleChecked) {
+      console.warn("⚠️ Permissions not yet loaded");
+      return false;
+    }
+
+    // Define permission matrix
+    const permissions = {
+      manage_events: ["admin", "super_admin", "editor"],
+      manage_users: ["super_admin"],
+      manage_media: ["admin", "super_admin", "editor"],
+      manage_settings: ["admin", "super_admin"],
+      view_logs: ["super_admin"],
+      manage_food_trucks: ["admin", "super_admin", "editor"],
+    };
+
+    const allowedRoles = permissions[permission] || [];
+    return allowedRoles.includes(this.userRole);
   }
 
   // Reset role cache (call when user logs out or changes)

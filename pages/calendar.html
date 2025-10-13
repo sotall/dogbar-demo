@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Events Calendar - The Dog Bar</title>
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <!-- Wait for Supabase to load, then start app -->
+    <script>
+      // Wait for Supabase to be available
+      function waitForSupabase() {
+        if (window.supabase) {
+          console.log("✅ Supabase loaded, starting app...");
+          // Load the main app script
+          const script = document.createElement("script");
+          script.type = "module";
+          script.src = "../assets/js/app.js";
+          document.head.appendChild(script);
+        } else {
+          console.log("⏳ Waiting for Supabase to load...");
+          setTimeout(waitForSupabase, 100);
+        }
+      }
+
+      // Start checking when DOM is ready
+      document.addEventListener("DOMContentLoaded", waitForSupabase);
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+    <style>
+      .calendar-day {
+        min-height: 70px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        box-sizing: border-box;
+        border: 2px solid transparent; /* Reserve space to avoid layout shift */
+        border-radius: 8px;
+        background: transparent;
+        padding: 4px;
+      }
+
+      .calendar-day:hover {
+        background-color: rgba(16, 185, 129, 0.03);
+        border-radius: 8px;
+      }
+
+      .has-event {
+        background-color: transparent;
+      }
+
+      .event-label {
+        font-size: 12px;
+        padding: 1px 4px;
+        margin: 1px 0;
+        border-radius: 3px;
+        color: white;
+        font-weight: 500;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1.2;
+      }
+
+      /* Grey out days without events */
+      .calendar-day:not(.has-event) .day-number {
+        color: #9ca3af;
+        font-weight: 400;
+      }
+
+      .event-food-truck {
+        background-color: #3b82f6;
+      }
+      .event-trivia {
+        background-color: #10b981;
+      }
+      .event-bingo {
+        background-color: #8b5cf6;
+      }
+      .event-yoga {
+        background-color: #f59e0b;
+      }
+      .event-special {
+        background-color: #ef4444;
+      }
+      .event-bath {
+        background-color: #06b6d4;
+      }
+
+      /* Unified color keys for labels to match cards */
+      .event-color-blue {
+        background-color: #3b82f6;
+      }
+      .event-color-green {
+        background-color: #10b981;
+      }
+      .event-color-purple {
+        background-color: #8b5cf6;
+      }
+      .event-color-orange {
+        background-color: #f59e0b;
+      }
+      .event-color-red {
+        background-color: #ef4444;
+      }
+      .event-color-cyan {
+        background-color: #06b6d4;
+      }
+
+      .featured-event-card {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .featured-event-card.purple {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      }
+
+      /* Event cards below calendar */
+      .selected-day-events {
+        margin-top: 2rem;
+        max-width: 4xl;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .event-card {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .event-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      }
+
+      .event-card.blue {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      }
+
+      .event-card.purple {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      }
+
+      .event-card.green {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      }
+
+      .event-card.orange {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      }
+
+      .event-card.red {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      }
+
+      .event-card.cyan {
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      }
+
+      .event-card-expanded {
+        background: white;
+        color: #1f2937;
+        border: 2px solid #e5e7eb;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .event-card-expanded .event-details {
+        padding: 1.5rem;
+      }
+
+      .event-card-expanded .event-description {
+        color: #6b7280;
+        margin-top: 0.5rem;
+        line-height: 1.6;
+      }
+
+      .calendar-header {
+        background: transparent;
+        color: #9ca3af;
+        font-weight: 600;
+        font-size: 11px;
+        text-align: center;
+        padding: 8px 0;
+        border: none;
+        letter-spacing: 0.5px;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+      }
+
+      .calendar-days {
+        border: none;
+        background: transparent;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+      }
+
+      .calendar-day.selected {
+        background-color: rgba(55, 65, 81, 0.08);
+        border-color: #374151; /* Only change color, dimensions remain */
+        box-shadow: 0 0 0 1px rgba(55, 65, 81, 0.2);
+      }
+
+      .calendar-day.today {
+        background-color: rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
+      }
+
+      .calendar-day.today .day-number {
+        color: #3b82f6;
+        font-weight: 700;
+      }
+
+      .day-number {
+        font-size: 14px;
+        font-weight: 500;
+        color: #1f2937;
+        margin-bottom: 3px;
+        text-align: center;
+      }
+
+      .events-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+
+      /* Mobile: auto-expand event cards */
+      @media (max-width: 768px) {
+        .event-details {
+          display: block !important;
+          margin-top: 1rem;
+        }
+
+        .event-card {
+          margin-bottom: 1.5rem;
+        }
+
+        #selected-events-list {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-white">
+    <!-- Header Component -->
+    <div id="header-root"></div>
+
+    <!-- Hero Section with Blue Background -->
+    <section
+      class="bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 py-16"
+    >
+      <div class="container mx-auto px-4 pt-20 text-center">
+        <div class="text-center">
+          <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+            Events Calendar 📅
+          </h1>
+          <p class="text-xl text-white/90 max-w-2xl mx-auto">
+            Click on a date to see events and details
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Calendar Section -->
+    <section class="py-12 md:py-20 bg-white">
+      <div class="container mx-auto px-4">
+        <!-- Calendar Controls -->
+        <div class="max-w-6xl mx-auto mb-8">
+          <div class="flex justify-start items-center gap-6 mb-8">
+            <h2
+              id="current-month"
+              class="text-3xl md:text-4xl font-extrabold"
+              style="letter-spacing: 2px; color: #9ca3af; margin-left: 40px"
+            ></h2>
+            <div class="flex items-center gap-3">
+              <button
+                onclick="changeMonth(-1)"
+                class="text-gray-800 hover:text-gray-900 transition-colors font-black"
+                style="font-size: 40px; line-height: 1"
+                aria-label="Previous month"
+              >
+                ←
+              </button>
+              <button
+                onclick="changeMonth(1)"
+                class="text-gray-800 hover:text-gray-900 transition-colors font-black"
+                style="font-size: 40px; line-height: 1"
+                aria-label="Next month"
+              >
+                →
+              </button>
+            </div>
+          </div>
+
+          <!-- Day Headers -->
+          <div class="calendar-header mb-4">
+            <div class="text-center text-sm font-semibold">
+              <div>SUN</div>
+              <div class="text-xs text-gray-500 font-normal">1</div>
+            </div>
+            <div class="text-center text-sm font-semibold">
+              <div>MON</div>
+              <div class="text-xs text-gray-500 font-normal">2</div>
+            </div>
+            <div class="text-center text-sm font-semibold">
+              <div>TUE</div>
+              <div class="text-xs text-gray-500 font-normal">3</div>
+            </div>
+            <div class="text-center text-sm font-semibold">
+              <div>WED</div>
+              <div class="text-xs text-gray-500 font-normal">4</div>
+            </div>
+            <div class="text-center text-sm font-semibold">
+              <div>THU</div>
+              <div class="text-xs text-gray-500 font-normal">5</div>
+            </div>
+            <div class="text-center text-sm font-semibold">
+              <div>FRI</div>
+              <div class="text-xs text-gray-500 font-normal">6</div>
+            </div>
+            <div class="text-center text-sm font-semibold">
+              <div>SAT</div>
+              <div class="text-xs text-gray-500 font-normal">7</div>
+            </div>
+          </div>
+
+          <!-- Calendar Days -->
+          <div id="calendar-grid" class="calendar-days">
+            <!-- Days populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Selected Day Events -->
+        <div id="selected-day-events" class="selected-day-events hidden">
+          <h3
+            class="text-2xl font-bold text-gray-900 mb-6 text-center"
+            id="selected-date-title"
+          >
+            <!-- Selected date will be shown here -->
+          </h3>
+          <div id="selected-events-list" class="space-y-4">
+            <!-- Events for selected day will be shown here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Events Section -->
+    <section class="py-20 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Featured Events</h2>
+          <p class="text-lg text-gray-600">
+            Don't miss out on these exciting events at The Dog Bar!
+          </p>
+        </div>
+
+        <div
+          id="featuredEventsContainer"
+          class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 mb-12"
+        >
+          <!-- Featured events will be loaded here dynamically -->
+        </div>
+
+        <!-- Upcoming Events Grid -->
+        <div class="max-w-6xl mx-auto">
+          <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">
+            All Events
+          </h3>
+          <div
+            id="upcoming-events-cards"
+            class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <!-- Event cards populated by JavaScript -->
+          </div>
+        </div>
+
+        <div class="text-center mt-12">
+          <a
+            href="../site.html?location=st-pete"
+            class="inline-block px-8 py-4 bg-emerald-600 text-white font-bold rounded-full hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl"
+          >
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Component -->
+    <div id="footer-root"></div>
+
+    <script>
+      let currentDate = new Date();
+      // Events will be loaded from database
+      let events = {};
+
+      // Load events from Supabase database
+      async function loadEventsFromDatabase() {
+        try {
+          console.log("🔍 Loading events from database for calendar...");
+
+          const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
+          const supabaseKey =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+
+          const supabase = window.supabase.createClient(
+            supabaseUrl,
+            supabaseKey
+          );
+
+          // Get location from URL parameter
+          const urlParams = new URLSearchParams(window.location.search);
+          const location = urlParams.get("location") || "st-pete";
+
+          // Fetch all events from database
+          console.log(`🔍 Fetching events for location: ${location}`);
+          const { data: eventsData, error } = await supabase
+            .from("events")
+            .select("*")
+            .eq("location", location)
+            .eq("status", "published")
+            .order("date", { ascending: true });
+
+          console.log(`📊 Database query result:`, { eventsData, error });
+
+          if (error) {
+            console.error("❌ Error loading events from database:", error);
+            events = {}; // Empty events object
+            renderCalendar();
+            renderUpcomingEventsCards();
+            return;
+          }
+
+          if (!eventsData || eventsData.length === 0) {
+            console.warn(
+              "⚠️ No events found in database for location:",
+              location
+            );
+            events = {}; // Empty events object
+            renderCalendar();
+            renderUpcomingEventsCards();
+            return;
+          }
+
+          // Transform database events to calendar format
+          events = {};
+          eventsData.forEach((event) => {
+            const dateStr = event.date;
+            if (!events[dateStr]) {
+              events[dateStr] = [];
+            }
+
+            events[dateStr].push({
+              title: event.title,
+              time: `${event.start_time || "TBD"} - ${event.end_time || "TBD"}`,
+              description:
+                event.description || "Join us for this exciting event!",
+              image:
+                event.image_url ||
+                "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+              type: getEventType(event.event_type),
+              date: new Date(event.date), // Convert string to Date object
+              price: "Free Entry",
+              location: event.location === "st-pete" ? "St. Pete" : "Sarasota",
+              capacity: "Unlimited",
+              requirements: "Dogs must be leashed and vaccinated",
+            });
+          });
+
+          console.log("✅ Events loaded from database:", events);
+
+          // Re-render calendar with new data
+          renderCalendar();
+          renderUpcomingEventsCards();
+        } catch (error) {
+          console.error("❌ Error in loadEventsFromDatabase:", error);
+          events = {}; // Empty events object
+          renderCalendar();
+          renderUpcomingEventsCards();
+        }
+      }
+
+      // Load and render featured events
+      async function loadFeaturedEvents() {
+        try {
+          console.log("⭐ Loading featured events from database...");
+
+          const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
+          const supabaseKey =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+
+          const supabase = window.supabase.createClient(
+            supabaseUrl,
+            supabaseKey
+          );
+
+          // Get location from URL parameter
+          const urlParams = new URLSearchParams(window.location.search);
+          const location = urlParams.get("location") || "st-pete";
+
+          // Fetch featured events from database
+          const { data, error } = await supabase
+            .from("events")
+            .select("*")
+            .eq("location", location)
+            .eq("status", "published")
+            .eq("is_featured", true)
+            .gte("date", new Date().toISOString().split("T")[0])
+            .order("date", { ascending: true })
+            .limit(2);
+
+          if (error) {
+            console.error("❌ Error fetching featured events:", error);
+            return;
+          }
+
+          console.log("✅ Featured events loaded:", data);
+          renderFeaturedEvents(data);
+        } catch (error) {
+          console.error("❌ Error in loadFeaturedEvents:", error);
+        }
+      }
+
+      // Render featured events cards
+      function renderFeaturedEvents(featuredEvents) {
+        const container = document.getElementById("featuredEventsContainer");
+
+        if (!featuredEvents || featuredEvents.length === 0) {
+          container.innerHTML =
+            '<div class="col-span-2 text-center text-gray-500 py-8">No featured events at this time.</div>';
+          return;
+        }
+
+        container.innerHTML = featuredEvents
+          .map((event, index) => {
+            const eventDate = new Date(event.date);
+            const dayName = eventDate
+              .toLocaleDateString("en-US", { weekday: "short" })
+              .toUpperCase();
+            const dayNumber = eventDate.getDate().toString().padStart(2, "0");
+            const monthName = eventDate
+              .toLocaleDateString("en-US", { month: "short" })
+              .toUpperCase();
+
+            const cardClass =
+              index === 0
+                ? "featured-event-card"
+                : "featured-event-card purple";
+
+            return `
+            <div class="${cardClass}">
+              <div class="flex">
+                <div class="w-32 h-32 bg-white/20 flex items-center justify-center">
+                  <img
+                    src="${
+                      event.image_url ||
+                      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg=="
+                    }"
+                    alt="${event.title}"
+                    class="w-24 h-24 object-cover rounded-lg"
+                  />
+                </div>
+                <div class="flex-1 p-6 flex flex-col justify-center">
+                  <div class="text-sm font-bold mb-1">${dayName}</div>
+                  <div class="text-2xl font-bold mb-1">${dayNumber}</div>
+                  <div class="text-sm font-bold mb-2">${monthName}</div>
+                  <div class="text-xl font-bold">${event.title.toUpperCase()}</div>
+                  <div class="text-sm opacity-90">${
+                    event.start_time || "TBD"
+                  } - ${event.end_time || "TBD"}</div>
+                </div>
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      function getEventType(eventType) {
+        const typeMap = {
+          "food-truck": "Food Truck",
+          special: "Special Event",
+          recurring: "Entertainment",
+          wellness: "Wellness",
+        };
+        return typeMap[eventType] || "Event";
+      }
+
+      // Initialize calendar immediately when script loads
+      console.log("📅 Calendar script loaded, initializing...");
+
+      // Wait for Supabase to be available, then load events
+      function waitForSupabaseAndLoad() {
+        if (window.supabase) {
+          console.log("✅ Supabase available, loading calendar events...");
+          loadEventsFromDatabase();
+          loadFeaturedEvents();
+        } else {
+          console.log("⏳ Waiting for Supabase to load for calendar...");
+          setTimeout(waitForSupabaseAndLoad, 100);
+        }
+      }
+
+      waitForSupabaseAndLoad();
+
+      function getEventType(eventTitle) {
+        const title = eventTitle.toLowerCase();
+        if (
+          title.includes("food truck") ||
+          title.includes("bus") ||
+          title.includes("truck") ||
+          title.includes("kielbasa") ||
+          title.includes("johnny") ||
+          title.includes("got lobstah") ||
+          title.includes("latin lunchbox") ||
+          title.includes("go stuff") ||
+          title.includes("boss ross") ||
+          title.includes("el indio") ||
+          title.includes("fat racoon") ||
+          title.includes("drift kitchen") ||
+          title.includes("nino") ||
+          title.includes("salsa") ||
+          title.includes("mae tao")
+        ) {
+          return "food-truck";
+        }
+        if (title.includes("trivia")) return "trivia";
+        if (title.includes("bingo")) return "bingo";
+        if (title.includes("yoga")) return "yoga";
+        if (title.includes("bath")) return "bath";
+        if (
+          title.includes("halloween") ||
+          title.includes("special") ||
+          title.includes("cruise")
+        )
+          return "special";
+        return "food-truck"; // default
+      }
+
+      // Always cycle colors so no two labels on the same day share a color
+      function getEventColorClass(eventType, index) {
+        // Map to a stable color key for both label and card use
+        const colorKeys = ["blue", "green", "purple", "orange", "red", "cyan"];
+        return colorKeys[index % colorKeys.length];
+      }
+
+      function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        // Update month header
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        document.getElementById("current-month").textContent = `${monthNames[
+          month
+        ].toUpperCase()}, ${year}`;
+
+        // Get first day of month and number of days
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Create calendar grid
+        const grid = document.getElementById("calendar-grid");
+        grid.innerHTML = "";
+
+        // Empty cells for days before month starts
+        for (let i = 0; i < firstDay; i++) {
+          const cell = document.createElement("div");
+          cell.className = "calendar-day";
+          grid.appendChild(cell);
+        }
+
+        // Days of month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const cell = document.createElement("div");
+          const dateStr = `${year}-${String(month + 1).padStart(
+            2,
+            "0"
+          )}-${String(day).padStart(2, "0")}`;
+          const dayEvents = events[dateStr] || [];
+          const today = new Date();
+          const isToday =
+            year === today.getFullYear() &&
+            month === today.getMonth() &&
+            day === today.getDate();
+
+          cell.className = `calendar-day ${
+            dayEvents.length > 0 ? "has-event" : ""
+          } ${isToday ? "today" : ""}`;
+          cell.setAttribute("data-date", dateStr);
+
+          let cellContent = `<div class="day-number">${day}</div>`;
+
+          // Add event labels with different colors for same-day events
+          if (dayEvents.length > 0) {
+            cellContent += '<div class="events-container">';
+            dayEvents.forEach((event, index) => {
+              const eventType = getEventType(event.title);
+              const shortTitle =
+                event.title.length > 12
+                  ? event.title.substring(0, 12) + "..."
+                  : event.title;
+
+              // Use different colors for multiple events on same day
+              const colorKey = getEventColorClass(eventType, index);
+              const labelClass = `event-label event-color-${colorKey}`;
+              // Persist the color key to reuse below in cards
+              if (!event.__colorKey) event.__colorKey = colorKey;
+              cellContent += `<div class="${labelClass}">${shortTitle}</div>`;
+            });
+            cellContent += "</div>";
+          }
+
+          cell.innerHTML = cellContent;
+          cell.onclick = () => showEvents(dateStr, day, cell);
+
+          grid.appendChild(cell);
+        }
+
+        // Auto-select today if viewing current month
+        const today = new Date();
+        if (year === today.getFullYear() && month === today.getMonth()) {
+          const todayStr = `${year}-${String(month + 1).padStart(
+            2,
+            "0"
+          )}-${String(today.getDate()).padStart(2, "0")}`;
+          const todayCell = document.querySelector(
+            `#calendar-grid .calendar-day[data-date="${todayStr}"]`
+          );
+          if (todayCell) {
+            showEvents(todayStr, today.getDate(), todayCell);
+          }
+        }
+      }
+
+      function showEvents(dateStr, day, clickedCell) {
+        const eventsForDay = events[dateStr];
+        const selectedDayDiv = document.getElementById("selected-day-events");
+        const dateHeader = document.getElementById("selected-date-title");
+        const eventsList = document.getElementById("selected-events-list");
+
+        // Clear previous selection
+        document
+          .querySelectorAll("#calendar-grid .calendar-day.selected")
+          .forEach((el) => el.classList.remove("selected"));
+
+        // Apply selection to clicked cell or locate by date
+        if (!clickedCell) {
+          clickedCell = document.querySelector(
+            `#calendar-grid .calendar-day[data-date="${dateStr}"]`
+          );
+        }
+        if (clickedCell) {
+          clickedCell.classList.add("selected");
+        }
+
+        if (eventsForDay && eventsForDay.length > 0) {
+          const eventDate = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            day
+          );
+          const dayName = eventDate.toLocaleDateString("en-US", {
+            weekday: "long",
+          });
+          const monthName = eventDate.toLocaleDateString("en-US", {
+            month: "long",
+          });
+
+          dateHeader.textContent = `${dayName}, ${monthName} ${day}`;
+
+          eventsList.innerHTML = eventsForDay
+            .map((event, index) => {
+              // Use the event's actual date
+              const eventDate = event.date;
+              const dayName = eventDate
+                .toLocaleDateString("en-US", { weekday: "short" })
+                .toUpperCase();
+              const dayNumber = eventDate.getDate().toString().padStart(2, "0");
+              const monthName = eventDate
+                .toLocaleDateString("en-US", { month: "short" })
+                .toUpperCase();
+
+              // Use the same color as the small label above (persisted on render)
+              const colorKey =
+                event.__colorKey ||
+                ["blue", "green", "purple", "orange", "red", "cyan"][index % 6];
+              const cardClass = `event-card ${colorKey}`;
+
+              return `
+                <div class="${cardClass} bg-white rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="toggleEventCard(this)" data-event-index="${index}">
+                  <div class="flex">
+                    <div class="w-24 h-24 md:w-32 md:h-32 bg-gray-100 flex items-center justify-center rounded-l-xl">
+                      <img
+                        src="${
+                          event.image ||
+                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg=="
+                        }"
+                        alt="${event.title}"
+                        class="w-20 h-20 md:w-28 md:h-28 object-cover rounded-lg"
+                      />
+                    </div>
+                    <div class="flex-1 p-4 md:p-6 flex flex-col justify-center">
+                      <div class="text-xs md:text-sm font-bold text-gray-600 mb-1">${dayName}</div>
+                      <div class="text-xl md:text-2xl font-bold text-gray-900 mb-1">${dayNumber}</div>
+                      <div class="text-xs md:text-sm font-bold text-gray-600 mb-2">${monthName}</div>
+                      <div class="text-lg md:text-2xl font-bold text-gray-900 mb-1">${
+                        event.title
+                      }</div>
+                      <div class="text-sm text-gray-600 mb-2">${
+                        event.time
+                      }</div>
+                      <div class="text-sm text-gray-500 line-clamp-2">${
+                        event.description
+                          ? event.description.substring(0, 100) +
+                            (event.description.length > 100 ? "..." : "")
+                          : ""
+                      }</div>
+                    </div>
+                  </div>
+                  <div class="event-details hidden">
+                    <div class="event-description p-4 md:p-6 pt-0 border-t border-gray-100">
+                      <p class="text-gray-700 leading-relaxed">${
+                        event.description
+                      }</p>
+                    </div>
+                  </div>
+                </div>
+              `;
+            })
+            .join("");
+
+          selectedDayDiv.classList.remove("hidden");
+          // Don't scroll - keep user where they are
+        } else {
+          dateHeader.textContent = `No events on ${currentDate.toLocaleString(
+            "default",
+            { month: "long" }
+          )} ${day}`;
+          eventsList.innerHTML =
+            '<p class="text-gray-600 text-center py-8">No events scheduled for this day</p>';
+          selectedDayDiv.classList.remove("hidden");
+          // Don't scroll - keep user where they are
+        }
+      }
+
+      // Toggle event card expansion
+      function toggleEventCard(cardElement) {
+        const detailsDiv = cardElement.querySelector(".event-details");
+        const isExpanded = cardElement.classList.contains(
+          "event-card-expanded"
+        );
+
+        if (isExpanded) {
+          cardElement.classList.remove("event-card-expanded");
+          detailsDiv.classList.add("hidden");
+        } else {
+          cardElement.classList.add("event-card-expanded");
+          detailsDiv.classList.remove("hidden");
+        }
+      }
+
+      function changeMonth(direction) {
+        currentDate.setMonth(currentDate.getMonth() + direction);
+        renderCalendar();
+        document.getElementById("selected-day-events").classList.add("hidden");
+      }
+
+      // Function to render upcoming events cards
+      function renderUpcomingEventsCards() {
+        const cardsContainer = document.getElementById("upcoming-events-cards");
+        const today = new Date();
+        const upcomingEvents = [];
+
+        // Get events for the next 30 days
+        for (let i = 0; i < 30; i++) {
+          const checkDate = new Date(today);
+          checkDate.setDate(today.getDate() + i);
+          const dateStr = checkDate.toISOString().split("T")[0];
+
+          if (events[dateStr]) {
+            events[dateStr].forEach((event) => {
+              upcomingEvents.push({
+                ...event,
+                date: checkDate,
+                dateStr: dateStr,
+              });
+            });
+          }
+        }
+
+        // Sort by date and take first 6
+        upcomingEvents.sort((a, b) => a.date - b.date);
+        const displayEvents = upcomingEvents.slice(0, 6);
+
+        cardsContainer.innerHTML = displayEvents
+          .map(
+            (event) => `
+          <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+            <div class="relative">
+              <img
+                src="${event.image}"
+                alt="${event.title}"
+                class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div class="absolute top-4 right-4">
+                <span class="px-3 py-1 text-xs font-semibold rounded-full ${
+                  event.type === "Special Event"
+                    ? "bg-red-100 text-red-800"
+                    : event.type === "Wellness"
+                    ? "bg-purple-100 text-purple-800"
+                    : event.type === "Food Truck"
+                    ? "bg-orange-100 text-orange-800"
+                    : "bg-emerald-100 text-emerald-800"
+                }">
+                  ${event.type}
+                </span>
+              </div>
+              <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1">
+                <span class="text-sm font-semibold text-gray-900">
+                  ${event.date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">
+                ${event.title}
+              </h3>
+              <p class="text-emerald-600 font-semibold mb-3 flex items-center">
+                <span class="mr-2">🕐</span>
+                ${event.time}
+              </p>
+              <p class="text-gray-600 leading-relaxed mb-4 text-sm">
+                ${
+                  event.description.length > 120
+                    ? event.description.substring(0, 120) + "..."
+                    : event.description
+                }
+              </p>
+              
+              <div class="space-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center">
+                  <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
+                  <span class="font-medium">${event.price}</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                  <span>📍 ${event.location}</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                  <span>👥 ${event.capacity}</span>
+                </div>
+              </div>
+              
+              <div class="pt-4 border-t border-gray-100">
+                <button 
+                  onclick="showEvents('${
+                    event.dateStr
+                  }', ${event.date.getDate()})"
+                  class="w-full px-4 py-2 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors text-sm"
+                >
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      // Calendar initialization is now handled by the DOMContentLoaded event listener above
+    </script>
+  </body>
+</html>

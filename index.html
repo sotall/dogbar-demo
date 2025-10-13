@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Dog Bar - Choose Your Location</title>
+    
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="assets/css/tailwind.output.css" />
+    
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Header Component -->
+    <div id="header-root"></div>
+    
+    <!-- Main Content -->
+    <main class="bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 min-h-screen flex items-center justify-center p-4 pt-24">
+      <div class="max-w-4xl w-full">
+      <div class="text-center mb-12">
+        <img
+          src="assets/media/logo.png?v=2"
+          alt="Dog Bar Logo"
+          class="h-32 w-auto mx-auto mb-6 drop-shadow-2xl"
+        />
+        <h1
+          class="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg"
+        >
+          The Dog Bar
+        </h1>
+        <p class="text-2xl text-white/90 mb-2">
+          Florida's Premier Dog Park & Bar
+        </p>
+        <p class="text-xl text-white/80">Choose Your Location</p>
+      </div>
+
+      <div id="locations-grid" class="grid md:grid-cols-2 gap-6">
+        <!-- Location cards will be loaded from database -->
+        <div class="text-center text-white text-lg">Loading locations...</div>
+      </div>
+
+      <div class="text-center mt-12 text-white/80">
+        <p class="text-sm">
+          Open Daily | 21+ Establishment | Dogs Must Be Fixed & Up-to-Date on
+          Vaccines
+        </p>
+      </div>
+    </main>
+
+    <!-- Footer Component -->
+    <div id="footer-root"></div>
+
+    <script type="module">
+      // Load locations from database
+      async function loadLocations() {
+        try {
+          // Get credentials from environment variables (injected by Vite)
+          const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+          const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+          const supabase = window.supabase.createClient(
+            supabaseUrl,
+            supabaseKey
+          );
+
+          const { data, error } = await supabase
+            .from("site_content")
+            .select("location, address, phone")
+            .in("location", ["st-pete", "sarasota"]);
+
+          if (error) throw error;
+
+          const grid = document.getElementById("locations-grid");
+          grid.innerHTML = "";
+
+          // St. Pete card
+          const stPeteData = data.find((d) => d.location === "st-pete") || {};
+          grid.innerHTML += `
+            <a href="site.html?location=st-pete" class="bg-white rounded-3xl p-8 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group">
+              <div class="text-center">
+                <div class="text-6xl mb-4">🏖️</div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">St. Petersburg</h2>
+                <p class="text-gray-600 mb-4">${
+                  stPeteData.address || "Address not available"
+                }</p>
+                <p class="text-emerald-600 font-semibold">${
+                  stPeteData.phone || "Phone not available"
+                }</p>
+                <div class="mt-6 inline-block px-6 py-3 bg-emerald-600 text-white font-bold rounded-full group-hover:bg-emerald-700 transition-colors">
+                  Visit St. Pete →
+                </div>
+              </div>
+            </a>
+          `;
+
+          // Sarasota card
+          const sarasotaData =
+            data.find((d) => d.location === "sarasota") || {};
+          grid.innerHTML += `
+            <a href="site.html?location=sarasota" class="bg-white rounded-3xl p-8 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group">
+              <div class="text-center">
+                <div class="text-6xl mb-4">🌴</div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-2 group-hover:text-teal-600 transition-colors">Sarasota</h2>
+                <p class="text-gray-600 mb-4">${
+                  sarasotaData.address || "Address not available"
+                }</p>
+                <p class="text-teal-600 font-semibold">${
+                  sarasotaData.phone || "Phone not available"
+                }</p>
+                <div class="mt-6 inline-block px-6 py-3 bg-teal-600 text-white font-bold rounded-full group-hover:bg-teal-700 transition-colors">
+                  Visit Sarasota →
+                </div>
+              </div>
+            </a>
+          `;
+        } catch (error) {
+          console.error("Error loading locations:", error);
+          document.getElementById("locations-grid").innerHTML = `
+            <div class="col-span-2 text-center text-white text-lg">
+              Error loading locations. Please try again later.
+            </div>
+          `;
+        }
+      }
+
+      // Load when page is ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", loadLocations);
+      } else {
+        loadLocations();
+      }
+    </script>
+
+    <!-- Load app.js to initialize header and footer components -->
+    <script type="module" src="assets/js/app.js"></script>
+  </body>
+</html>

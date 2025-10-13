@@ -8,7 +8,8 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="../assets/media/logo.png?v=2" />
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="shared/logger.js"></script>
     <script src="shared/permissions.js"></script>
@@ -88,6 +89,46 @@
                 </div>
               </div>
             </div>
+
+            <!-- Pagination Controls (Top) -->
+            <div class="bg-white border-b border-gray-200 px-6 py-4">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center gap-4">
+                  <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-700">Items per page:</label>
+                    <select id="adminPageSize" class="px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                      <option value="10" selected>10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-700">Jump to:</label>
+                    <input
+                      type="number"
+                      id="adminPageJumpInput"
+                      min="1"
+                      class="w-16 px-2 py-1 border border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-emerald-500"
+                    />
+                    <button
+                      id="adminPageJumpBtn"
+                      class="px-3 py-1 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm"
+                    >
+                      Go
+                    </button>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span id="adminPageInfo" class="text-sm text-gray-700">Showing 1-10 of 100</span>
+                  <div class="flex gap-2">
+                    <button id="adminPrevPage" class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                    <button id="adminNextPage" class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="overflow-x-auto">
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -136,27 +177,6 @@
                   <!-- Admin users will be loaded here -->
                 </tbody>
               </table>
-              
-              <!-- Pagination Controls -->
-              <div class="flex items-center justify-between px-6 py-4 bg-white border-t border-gray-200">
-                <div class="flex items-center space-x-2">
-                  <span class="text-sm text-gray-700">Show</span>
-                  <select id="adminPageSize" class="border-gray-300 rounded-md text-sm focus:ring-emerald-500 focus:border-emerald-500">
-                    <option value="10" selected>10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                  </select>
-                  <span class="text-sm text-gray-700">per page</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                  <span id="adminPageInfo" class="text-sm text-gray-700">Showing 1-10 of 100</span>
-                  <div class="flex space-x-2">
-                    <button id="adminPrevPage" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
-                    <button id="adminNextPage" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -198,6 +218,46 @@
                 </div>
               </div>
             </div>
+
+            <!-- Pagination Controls (Top) -->
+            <div class="bg-white border-b border-gray-200 px-6 py-4">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center gap-4">
+                  <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-700">Items per page:</label>
+                    <select id="customerPageSize" class="px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                      <option value="10" selected>10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-700">Jump to:</label>
+                    <input
+                      type="number"
+                      id="customerPageJumpInput"
+                      min="1"
+                      class="w-16 px-2 py-1 border border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-emerald-500"
+                    />
+                    <button
+                      id="customerPageJumpBtn"
+                      class="px-3 py-1 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm"
+                    >
+                      Go
+                    </button>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span id="customerPageInfo" class="text-sm text-gray-700">Showing 1-10 of 100</span>
+                  <div class="flex gap-2">
+                    <button id="customerPrevPage" class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                    <button id="customerNextPage" class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="overflow-x-auto">
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -252,27 +312,6 @@
                   <!-- Customer memberships will be loaded here -->
                 </tbody>
               </table>
-              
-              <!-- Pagination Controls -->
-              <div class="flex items-center justify-between px-6 py-4 bg-white border-t border-gray-200">
-                <div class="flex items-center space-x-2">
-                  <span class="text-sm text-gray-700">Show</span>
-                  <select id="customerPageSize" class="border-gray-300 rounded-md text-sm focus:ring-emerald-500 focus:border-emerald-500">
-                    <option value="10" selected>10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                  </select>
-                  <span class="text-sm text-gray-700">per page</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                  <span id="customerPageInfo" class="text-sm text-gray-700">Showing 1-10 of 100</span>
-                  <div class="flex space-x-2">
-                    <button id="customerPrevPage" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
-                    <button id="customerNextPage" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -887,6 +926,20 @@
           });
         }
         
+        // Admin page jump
+        const adminPageJumpBtn = document.getElementById('adminPageJumpBtn');
+        if (adminPageJumpBtn) {
+          adminPageJumpBtn.addEventListener('click', () => {
+            const input = document.getElementById('adminPageJumpInput');
+            const pageNum = parseInt(input.value);
+            const totalPages = Math.ceil(adminTotalCount / adminPageSize);
+            if (pageNum >= 1 && pageNum <= totalPages) {
+              adminPage = pageNum - 1;
+              loadAdminUsers();
+            }
+          });
+        }
+        
         // Customer pagination
         const customerPageSizeSelect = document.getElementById("customerPageSize");
         const customerPrevBtn = document.getElementById("customerPrevPage");
@@ -911,6 +964,20 @@
           customerNextBtn.addEventListener("click", () => {
             if ((customerPage + 1) * customerPageSize < customerTotalCount) {
               customerPage++;
+              loadCustomerMemberships();
+            }
+          });
+        }
+        
+        // Customer page jump
+        const customerPageJumpBtn = document.getElementById('customerPageJumpBtn');
+        if (customerPageJumpBtn) {
+          customerPageJumpBtn.addEventListener('click', () => {
+            const input = document.getElementById('customerPageJumpInput');
+            const pageNum = parseInt(input.value);
+            const totalPages = Math.ceil(customerTotalCount / customerPageSize);
+            if (pageNum >= 1 && pageNum <= totalPages) {
+              customerPage = pageNum - 1;
               loadCustomerMemberships();
             }
           });
@@ -1167,13 +1234,17 @@
       
       // Update admin pagination UI
       function updateAdminPagination() {
+        const totalPages = Math.ceil(adminTotalCount / adminPageSize);
         const from = adminPage * adminPageSize + 1;
         const to = Math.min((adminPage + 1) * adminPageSize, adminTotalCount);
         document.getElementById('adminPageInfo').textContent = 
           `Showing ${from}-${to} of ${adminTotalCount}`;
         
         document.getElementById('adminPrevPage').disabled = adminPage === 0;
-        document.getElementById('adminNextPage').disabled = to >= adminTotalCount;
+        document.getElementById('adminNextPage').disabled = adminPage >= totalPages - 1;
+        
+        const jumpInput = document.getElementById('adminPageJumpInput');
+        if (jumpInput) jumpInput.value = adminPage + 1;
       }
 
       // Load customer memberships
@@ -1273,13 +1344,17 @@
       
       // Update customer pagination UI
       function updateCustomerPagination() {
+        const totalPages = Math.ceil(customerTotalCount / customerPageSize);
         const from = customerPage * customerPageSize + 1;
         const to = Math.min((customerPage + 1) * customerPageSize, customerTotalCount);
         document.getElementById('customerPageInfo').textContent = 
           `Showing ${from}-${to} of ${customerTotalCount}`;
         
         document.getElementById('customerPrevPage').disabled = customerPage === 0;
-        document.getElementById('customerNextPage').disabled = to >= customerTotalCount;
+        document.getElementById('customerNextPage').disabled = customerPage >= totalPages - 1;
+        
+        const jumpInput = document.getElementById('customerPageJumpInput');
+        if (jumpInput) jumpInput.value = customerPage + 1;
       }
       
       // Sort admin table

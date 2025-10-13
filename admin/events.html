@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dog Bar Admin - Events</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/media/logo.png?v=2" />
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
+
+    <script src="shared/permissions.js"></script>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <!-- Shared Utilities -->
+    <script src="shared/logger.js"></script>
+
+    <!-- Shared Navigation -->
+    <script src="shared/navigation.js"></script>
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Ensure table text wraps properly */
+      .events-table td {
+        word-wrap: break-word;
+        word-break: break-word;
+      }
+
+      /* Event column - give it more space */
+      .events-table .event-column {
+        width: 50%;
+        min-width: 300px;
+      }
+
+      /* Other columns - use minimum space */
+      .events-table .date-column {
+        width: 15%;
+        min-width: 120px;
+      }
+
+      .events-table .location-column {
+        width: 10%;
+        min-width: 80px;
+      }
+
+      .events-table .type-column {
+        width: 10%;
+        min-width: 80px;
+      }
+
+      .events-table .status-column {
+        width: 10%;
+        min-width: 80px;
+      }
+
+      /* Make sure action buttons are always visible */
+      .events-table .actions-column {
+        width: 5%;
+        min-width: 100px;
+        white-space: nowrap;
+      }
+
+      /* Responsive table */
+      @media (max-width: 768px) {
+        .events-table {
+          font-size: 0.875rem;
+        }
+
+        .events-table th,
+        .events-table td {
+          padding: 0.5rem;
+        }
+      }
+
+      /* Image Gallery Styles */
+      .image-gallery {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding: 16px 0;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 #f1f5f9;
+      }
+
+      .image-gallery::-webkit-scrollbar {
+        height: 8px;
+      }
+
+      .image-gallery::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+      }
+
+      .image-gallery::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+
+      .image-gallery::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      .gallery-image {
+        flex-shrink: 0;
+        width: 120px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+        cursor: grab;
+        border: 2px solid transparent;
+        transition: all 0.2s;
+      }
+
+      .gallery-image:hover {
+        border-color: #10b981;
+        transform: scale(1.05);
+      }
+
+      .gallery-image.dragging {
+        opacity: 0.5;
+        transform: rotate(5deg);
+      }
+
+      /* Event row image slots */
+      .event-image-slots {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .image-slot {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        border: 2px dashed #d1d5db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f9fafb;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .image-slot:hover {
+        border-color: #10b981;
+        background: #f0fdf4;
+      }
+
+      .image-slot.has-image {
+        border-style: solid;
+        border-color: #10b981;
+        background: white;
+      }
+
+      .image-slot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+
+      .image-slot .slot-label {
+        font-size: 10px;
+        color: #6b7280;
+        text-align: center;
+        line-height: 1.2;
+      }
+
+      /* Modal image management */
+      .modal-image-slots {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .modal-image-slot {
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        background: #f9fafb;
+        transition: all 0.2s;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-image-slot:hover {
+        border-color: #10b981;
+        background: #f0fdf4;
+      }
+
+      .modal-image-slot.has-image {
+        border-style: solid;
+        border-color: #10b981;
+        background: white;
+      }
+
+      .modal-image-slot img {
+        max-width: 100%;
+        max-height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      .modal-image-slot .slot-title {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+      }
+
+      .modal-image-slot .slot-description {
+        font-size: 14px;
+        color: #6b7280;
+        margin-bottom: 10px;
+      }
+
+      .modal-image-slot .drag-hint {
+        font-size: 12px;
+        color: #9ca3af;
+        font-style: italic;
+      }
+
+      /* Drag and drop states */
+      .drop-zone {
+        border-color: #10b981 !important;
+        background: #f0fdf4 !important;
+      }
+
+      .drag-over {
+        border-color: #059669 !important;
+        background: #dcfce7 !important;
+        transform: scale(1.02);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <!-- Page Header -->
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900">Events Management</h2>
+          <p class="text-gray-600">
+            Manage events, food trucks, and special occasions
+          </p>
+        </div>
+        <button
+          id="addEventBtn"
+          class="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors flex items-center"
+        >
+          <svg
+            class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            ></path>
+          </svg>
+          Add Event
+        </button>
+      </div>
+
+      <!-- Image Gallery -->
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Image Library</h3>
+        <div class="bg-white rounded-lg shadow-sm p-4">
+          <div class="image-gallery" id="imageGallery">
+            <!-- Images will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Search and Filters -->
+      <div class="mb-6 bg-white shadow rounded-lg p-4">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+          <div class="flex-1">
+            <input
+              type="text"
+              id="eventSearch"
+              placeholder="Search events by title or description..."
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-sm text-gray-600">Location:</label>
+            <select
+              id="locationFilter"
+              class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              <option value="all">All Locations</option>
+              <option value="st-pete">St. Pete</option>
+              <option value="sarasota">Sarasota</option>
+              <option value="both">Both</option>
+            </select>
+            <label class="text-sm text-gray-600">Status:</label>
+            <select
+              id="statusFilter"
+              class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              <option value="all">All Status</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="mb-6">
+        <div class="border-b border-gray-200">
+          <nav class="-mb-px flex space-x-8">
+            <button
+              class="filter-tab active py-2 px-1 border-b-2 border-emerald-500 text-emerald-600 font-medium"
+              data-filter="all"
+            >
+              All Events
+            </button>
+            <button
+              class="filter-tab py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              data-filter="food-truck"
+            >
+              Food Trucks
+            </button>
+            <button
+              class="filter-tab py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              data-filter="special"
+            >
+              Special Events
+            </button>
+            <button
+              class="filter-tab py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              data-filter="recurring"
+            >
+              Recurring
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Events Table -->
+      <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">Events List</h3>
+        </div>
+
+        <!-- Pagination Controls (Top) -->
+        <div
+          id="eventsPaginationTop"
+          class="bg-white border-b border-gray-200 px-6 py-4"
+        >
+          <div
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          >
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <label class="text-sm text-gray-700">Items per page:</label>
+                <select
+                  id="eventPageSizeTop"
+                  class="px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="10" selected>10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-sm text-gray-700">Jump to:</label>
+                <input
+                  type="number"
+                  id="eventPageJumpInputTop"
+                  min="1"
+                  class="w-16 px-2 py-1 border border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-emerald-500"
+                />
+                <button
+                  id="eventPageJumpBtnTop"
+                  class="px-3 py-1 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm"
+                >
+                  Go
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span id="eventPageInfoTop" class="text-sm text-gray-700"
+                >Showing 0-0 of 0</span
+              >
+              <div class="flex gap-2">
+                <button
+                  id="eventPrevPageTop"
+                  class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <button
+                  id="eventNextPageTop"
+                  class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="p-8 text-center">
+          <div
+            class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"
+          ></div>
+          <p class="text-gray-600 mt-2">Loading events...</p>
+        </div>
+
+        <!-- Events Table -->
+        <div id="eventsTable" class="hidden">
+          <div class="overflow-x-auto">
+            <table class="events-table min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    class="event-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Event
+                  </th>
+                  <th
+                    class="date-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Date & Time
+                  </th>
+                  <th
+                    class="location-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Location
+                  </th>
+                  <th
+                    class="type-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Type
+                  </th>
+                  <th
+                    class="status-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="featured-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Featured
+                  </th>
+                  <th
+                    class="actions-column px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody
+                id="eventsTableBody"
+                class="bg-white divide-y divide-gray-200"
+              >
+                <!-- Events will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden p-8 text-center">
+          <svg
+            class="mx-auto h-12 w-12 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            ></path>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">
+            No events found
+          </h3>
+          <p class="mt-1 text-sm text-gray-500">
+            Get started by creating a new event.
+          </p>
+          <div class="mt-6">
+            <button
+              id="addEventBtnEmpty"
+              class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+              Add Event
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Event Modal -->
+    <div
+      id="eventModal"
+      class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+    >
+      <div
+        class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white"
+      >
+        <div class="mt-3">
+          <!-- Modal Header -->
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-gray-900" id="modalTitle">
+              Add New Event
+            </h3>
+            <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Modal Form -->
+          <form id="eventForm" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label
+                  for="eventTitle"
+                  class="block text-sm font-medium text-gray-700"
+                  >Event Title</label
+                >
+                <input
+                  type="text"
+                  id="eventTitle"
+                  name="title"
+                  required
+                  class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="eventType"
+                  class="block text-sm font-medium text-gray-700"
+                  >Event Type</label
+                >
+                <select
+                  id="eventType"
+                  name="event_type"
+                  required
+                  class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="food-truck">Food Truck</option>
+                  <option value="special">Special Event</option>
+                  <option value="recurring">Recurring Event</option>
+                  <option value="wellness">Wellness</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label
+                for="eventDescription"
+                class="block text-sm font-medium text-gray-700"
+                >Description</label
+              >
+              <textarea
+                id="eventDescription"
+                name="description"
+                rows="3"
+                class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+              ></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label
+                  for="eventDate"
+                  class="block text-sm font-medium text-gray-700"
+                  >Date</label
+                >
+                <input
+                  type="date"
+                  id="eventDate"
+                  name="date"
+                  required
+                  class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="eventStartTime"
+                  class="block text-sm font-medium text-gray-700"
+                  >Start Time</label
+                >
+                <input
+                  type="time"
+                  id="eventStartTime"
+                  name="start_time"
+                  class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="eventEndTime"
+                  class="block text-sm font-medium text-gray-700"
+                  >End Time</label
+                >
+                <input
+                  type="time"
+                  id="eventEndTime"
+                  name="end_time"
+                  class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label
+                  for="eventLocation"
+                  class="block text-sm font-medium text-gray-700"
+                  >Location</label
+                >
+                <select
+                  id="eventLocation"
+                  name="location"
+                  required
+                  class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="st-pete">St. Pete</option>
+                  <option value="sarasota">Sarasota</option>
+                  <option value="both">Both Locations</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  for="eventStatus"
+                  class="block text-sm font-medium text-gray-700"
+                  >Status</label
+                >
+                <select
+                  id="eventStatus"
+                  name="status"
+                  required
+                  class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  id="eventFeatured"
+                  name="is_featured"
+                  class="rounded border-gray-300 text-emerald-600 shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50"
+                />
+                <span class="ml-2 text-sm font-medium text-gray-700">
+                  Featured Event (shows in top section)
+                </span>
+              </label>
+            </div>
+
+            <!-- Image Management Section -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-4">
+                Event Images
+              </label>
+
+              <!-- Dual Image Slots -->
+              <div class="modal-image-slots">
+                <!-- Card Image Slot -->
+                <div
+                  class="modal-image-slot"
+                  id="cardImageSlot"
+                  data-slot-type="card"
+                >
+                  <div class="slot-title">Card Image</div>
+                  <div class="slot-description">
+                    Main image displayed on event cards
+                  </div>
+                  <div id="cardImagePreview"></div>
+                  <div class="drag-hint">
+                    Drag image from gallery or click to upload
+                  </div>
+                  <input type="hidden" id="cardImageUrl" name="image_url" />
+                </div>
+
+                <!-- Content Image Slot -->
+                <div
+                  class="modal-image-slot"
+                  id="contentImageSlot"
+                  data-slot-type="content"
+                >
+                  <div class="slot-title">Content Image</div>
+                  <div class="slot-description">
+                    Image placed within event description
+                  </div>
+                  <div id="contentImagePreview"></div>
+                  <div class="drag-hint">
+                    Drag image from gallery or click to upload
+                  </div>
+                  <input
+                    type="hidden"
+                    id="contentImageUrl"
+                    name="content_image_url"
+                  />
+                </div>
+              </div>
+
+              <!-- Upload Buttons -->
+              <div class="flex gap-4 mt-4">
+                <button
+                  type="button"
+                  id="uploadCardImage"
+                  class="flex-1 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  Upload Card Image
+                </button>
+                <button
+                  type="button"
+                  id="uploadContentImage"
+                  class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Upload Content Image
+                </button>
+              </div>
+
+              <!-- Hidden file inputs -->
+              <input
+                type="file"
+                id="cardImageFile"
+                accept="image/*"
+                class="hidden"
+              />
+              <input
+                type="file"
+                id="contentImageFile"
+                accept="image/*"
+                class="hidden"
+              />
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                id="cancelEvent"
+                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                Cancel
+              </button>
+              <button
+                id="saveEventBtn"
+                type="submit"
+                class="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                Save Event
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      // Supabase configuration from environment variables
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      // Initialize Supabase client
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      let allEvents = [];
+      let currentFilter = "all";
+      let editingEventId = null;
+      let uploadedImageUrl = null;
+
+      // Pagination state
+      let currentPage = 0;
+      let pageSize = 10;
+      let totalEvents = 0;
+      let searchQuery = "";
+      let locationFilterValue = "all";
+      let statusFilterValue = "all";
+
+      // Normalize relative URLs to absolute from site root
+      function normalizeImageUrl(url) {
+        if (!url) return "";
+        if (url.startsWith("http") || url.startsWith("data:")) return url;
+        if (url.startsWith("/")) return url;
+        // Ensure it resolves from root (avoids /admin/uploads/...)
+        return "/" + url.replace(/^\.?\//, "");
+      }
+
+      // Check authentication and permissions
+      window.addEventListener("load", async function () {
+        // Check authentication first
+        await checkAuth();
+      });
+
+      // Check authentication
+      async function checkAuth() {
+        const token = localStorage.getItem("supabase.auth.token");
+        if (!token) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        try {
+          const {
+            data: { user },
+            error,
+          } = await supabase.auth.getUser();
+          if (error || !user) {
+            window.location.href = "login.html";
+            return;
+          }
+
+          // Wait for PermissionManager to be initialized
+          let attempts = 0;
+          const maxAttempts = 20; // Increased timeout
+
+          while (
+            !window.PermissionManager ||
+            !window.PermissionManager.userRole
+          ) {
+            if (attempts >= maxAttempts) {
+              console.warn(
+                "⚠️ PermissionManager not ready, continuing anyway..."
+              );
+              // Don't show alert, just continue - navigation will handle it
+              return;
+            }
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            attempts++;
+          }
+
+          // Check if user has permission to manage events
+          if (!window.PermissionManager.hasPermission("manage_events")) {
+            alert("You do not have permission to manage events.");
+            window.location.href = "dashboard.html";
+            return;
+          }
+
+          // Set user email
+          const userEmailEl = document.getElementById("userEmail");
+          if (userEmailEl) {
+            userEmailEl.textContent = user.email;
+          }
+
+          // Load events
+          await loadEvents();
+
+          // Initialize image management
+          initializeImageManagement();
+          loadImageGallery();
+        } catch (error) {
+          console.error("Auth check failed:", error);
+          window.location.href = "login.html";
+        }
+      }
+
+      // Load events from database
+      async function loadEvents() {
+        try {
+          const { data: events, error } = await supabase
+            .from("events")
+            .select("*")
+            .order("date", { ascending: false });
+
+          if (error) throw error;
+
+          allEvents = events;
+          filterEvents();
+          hideLoadingState();
+        } catch (error) {
+          console.error("Error loading events:", error);
+          hideLoadingState();
+        }
+      }
+
+      // Filter events based on selected tab, search, and filters
+      function filterEvents() {
+        let filteredEvents = allEvents;
+
+        // Apply type filter (tabs)
+        if (currentFilter !== "all") {
+          filteredEvents = filteredEvents.filter(
+            (event) => event.event_type === currentFilter
+          );
+        }
+
+        // Apply search filter
+        if (searchQuery) {
+          filteredEvents = filteredEvents.filter((event) => {
+            const titleMatch = event.title?.toLowerCase().includes(searchQuery);
+            const descMatch = event.description
+              ?.toLowerCase()
+              .includes(searchQuery);
+            return titleMatch || descMatch;
+          });
+        }
+
+        // Apply location filter
+        if (locationFilterValue !== "all") {
+          filteredEvents = filteredEvents.filter(
+            (event) => event.location === locationFilterValue
+          );
+        }
+
+        // Apply status filter
+        if (statusFilterValue !== "all") {
+          filteredEvents = filteredEvents.filter(
+            (event) => event.status === statusFilterValue
+          );
+        }
+
+        totalEvents = filteredEvents.length;
+        const totalPages = Math.max(1, Math.ceil(totalEvents / pageSize));
+
+        // Validate current page
+        if (currentPage >= totalPages) {
+          currentPage = Math.max(0, totalPages - 1);
+        }
+
+        // Slice for current page
+        const startIndex = currentPage * pageSize;
+        const endIndex = startIndex + pageSize;
+        const paginatedEvents = filteredEvents.slice(startIndex, endIndex);
+
+        displayEvents(paginatedEvents);
+        renderPagination();
+      }
+
+      // Render pagination controls
+      function renderPagination() {
+        const totalPages = Math.max(1, Math.ceil(totalEvents / pageSize));
+        const startIndex = totalEvents === 0 ? 0 : currentPage * pageSize + 1;
+        const endIndex = Math.min((currentPage + 1) * pageSize, totalEvents);
+
+        // Update top pagination only
+        const pageInfo = document.getElementById("eventPageInfoTop");
+        if (pageInfo) {
+          pageInfo.textContent = `Showing ${startIndex}-${endIndex} of ${totalEvents}`;
+        }
+
+        const prevBtn = document.getElementById("eventPrevPageTop");
+        const nextBtn = document.getElementById("eventNextPageTop");
+
+        if (prevBtn) prevBtn.disabled = currentPage === 0;
+        if (nextBtn) nextBtn.disabled = currentPage >= totalPages - 1;
+
+        const jumpInput = document.getElementById("eventPageJumpInputTop");
+        if (jumpInput) {
+          jumpInput.value = currentPage + 1;
+          jumpInput.max = totalPages;
+        }
+      }
+
+      // Display events in table
+      function displayEvents(events) {
+        const tbody = document.getElementById("eventsTableBody");
+        const eventsTable = document.getElementById("eventsTable");
+        const emptyState = document.getElementById("emptyState");
+
+        if (events.length === 0) {
+          eventsTable.classList.add("hidden");
+          emptyState.classList.remove("hidden");
+          return;
+        }
+
+        emptyState.classList.add("hidden");
+        eventsTable.classList.remove("hidden");
+
+        tbody.innerHTML = events
+          .map(
+            (event) => `
+                <tr>
+                    <td class="event-column px-6 py-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded-lg object-cover" src="${
+                                  normalizeImageUrl(event.image_url) ||
+                                  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg=="
+                                }" alt="${event.title}">
+                            </div>
+                            <div class="ml-4 min-w-0 flex-1">
+                                <div class="text-sm font-medium text-gray-900 break-words">${
+                                  event.title
+                                }</div>
+                                <div class="text-sm text-gray-500 break-words">${
+                                  event.description || "No description"
+                                }</div>
+                                <!-- Image Slots -->
+                                <div class="event-image-slots mt-2">
+                                    <div class="image-slot ${
+                                      event.image_url ? "has-image" : ""
+                                    }" data-event-id="${
+              event.id
+            }" data-slot-type="card">
+                                        ${
+                                          event.image_url
+                                            ? `<img src="${normalizeImageUrl(
+                                                event.image_url
+                                              )}" alt="Card image" />`
+                                            : '<div class="slot-label">Card</div>'
+                                        }
+                                    </div>
+                                    <div class="image-slot ${
+                                      event.content_image_url ? "has-image" : ""
+                                    }" data-event-id="${
+              event.id
+            }" data-slot-type="content">
+                                        ${
+                                          event.content_image_url
+                                            ? `<img src="${normalizeImageUrl(
+                                                event.content_image_url
+                                              )}" alt="Content image" />`
+                                            : '<div class="slot-label">Content</div>'
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="date-column px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div>${new Date(event.date).toLocaleDateString()}</div>
+                        <div class="text-gray-500">${
+                          event.start_time || "TBD"
+                        } - ${event.end_time || "TBD"}</div>
+                    </td>
+                    <td class="location-column px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${
+                          event.location === "st-pete"
+                            ? "St. Pete"
+                            : event.location === "sarasota"
+                            ? "Sarasota"
+                            : "Both"
+                        }
+                    </td>
+                    <td class="type-column px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          event.event_type === "food-truck"
+                            ? "bg-orange-100 text-orange-800"
+                            : event.event_type === "special"
+                            ? "bg-red-100 text-red-800"
+                            : event.event_type === "recurring"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-purple-100 text-purple-800"
+                        }">
+                            ${
+                              event.event_type === "food-truck"
+                                ? "Food Truck"
+                                : event.event_type === "special"
+                                ? "Special"
+                                : event.event_type === "recurring"
+                                ? "Recurring"
+                                : "Wellness"
+                            }
+                        </span>
+                    </td>
+                    <td class="status-column px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          event.status === "published"
+                            ? "bg-green-100 text-green-800"
+                            : event.status === "draft"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }">
+                            ${
+                              event.status.charAt(0).toUpperCase() +
+                              event.status.slice(1)
+                            }
+                        </span>
+                    </td>
+                    <td class="featured-column px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          event.is_featured
+                            ? "bg-purple-100 text-purple-800"
+                            : "bg-gray-100 text-gray-800"
+                        }">
+                            ${event.is_featured ? "Yes" : "No"}
+                        </span>
+                    </td>
+                    <td class="actions-column px-6 py-4 text-sm font-medium">
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button onclick="editEvent('${
+                              event.id
+                            }')" class="text-emerald-600 hover:text-emerald-900 whitespace-nowrap">Edit</button>
+                            <button onclick="deleteEvent('${
+                              event.id
+                            }')" class="text-red-600 hover:text-red-900 whitespace-nowrap">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `
+          )
+          .join("");
+
+        // Setup drag and drop for table image slots
+        setupTableDragDrop();
+      }
+
+      function setupTableDragDrop() {
+        // Add drag and drop to all image slots in the table
+        document
+          .querySelectorAll(".event-image-slots .image-slot")
+          .forEach((slot) => {
+            slot.addEventListener("dragover", (e) => {
+              e.preventDefault();
+              slot.classList.add("drag-over");
+            });
+
+            slot.addEventListener("dragleave", (e) => {
+              e.preventDefault();
+              slot.classList.remove("drag-over");
+            });
+
+            slot.addEventListener("drop", (e) => {
+              e.preventDefault();
+              slot.classList.remove("drag-over");
+
+              if (draggedImage) {
+                const eventId = slot.dataset.eventId;
+                const slotType = slot.dataset.slotType;
+                updateEventImage(eventId, slotType, draggedImage.url);
+                draggedImage = null;
+              }
+            });
+          });
+      }
+
+      async function updateEventImage(eventId, slotType, imageUrl) {
+        try {
+          const updateData = {};
+          if (slotType === "card") {
+            updateData.image_url = imageUrl;
+          } else if (slotType === "content") {
+            updateData.content_image_url = imageUrl;
+          }
+
+          const { error } = await supabase
+            .from("events")
+            .update(updateData)
+            .eq("id", eventId);
+
+          if (error) throw error;
+
+          // Refresh the events table
+          await loadEvents();
+        } catch (error) {
+          console.error("Error updating event image:", error);
+          alert("Failed to update event image. Please try again.");
+        }
+      }
+
+      // Hide loading state
+      function hideLoadingState() {
+        document.getElementById("loadingState").classList.add("hidden");
+      }
+
+      // Filter tab handlers
+      document.querySelectorAll(".filter-tab").forEach((tab) => {
+        tab.addEventListener("click", function () {
+          // Update active tab
+          document.querySelectorAll(".filter-tab").forEach((t) => {
+            t.classList.remove(
+              "active",
+              "border-emerald-500",
+              "text-emerald-600"
+            );
+            t.classList.add("border-transparent", "text-gray-500");
+          });
+
+          this.classList.add(
+            "active",
+            "border-emerald-500",
+            "text-emerald-600"
+          );
+          this.classList.remove("border-transparent", "text-gray-500");
+
+          // Update filter and refresh
+          currentFilter = this.dataset.filter;
+          currentPage = 0;
+          filterEvents();
+        });
+      });
+
+      // Pagination event handlers (top only)
+      const eventPageSize = document.getElementById("eventPageSizeTop");
+      if (eventPageSize) {
+        eventPageSize.addEventListener("change", (e) => {
+          pageSize = parseInt(e.target.value);
+          currentPage = 0;
+          filterEvents();
+        });
+      }
+
+      const eventPrevPage = document.getElementById("eventPrevPageTop");
+      if (eventPrevPage) {
+        eventPrevPage.addEventListener("click", () => {
+          if (currentPage > 0) {
+            currentPage--;
+            filterEvents();
+          }
+        });
+      }
+
+      const eventNextPage = document.getElementById("eventNextPageTop");
+      if (eventNextPage) {
+        eventNextPage.addEventListener("click", () => {
+          const totalPages = Math.ceil(totalEvents / pageSize);
+          if (currentPage < totalPages - 1) {
+            currentPage++;
+            filterEvents();
+          }
+        });
+      }
+
+      const eventPageJumpBtn = document.getElementById("eventPageJumpBtnTop");
+      if (eventPageJumpBtn) {
+        eventPageJumpBtn.addEventListener("click", () => {
+          const input = document.getElementById("eventPageJumpInputTop");
+          const pageNum = parseInt(input.value);
+          const totalPages = Math.ceil(totalEvents / pageSize);
+          if (pageNum >= 1 && pageNum <= totalPages) {
+            currentPage = pageNum - 1;
+            filterEvents();
+          }
+        });
+      }
+
+      // Search with debounce
+      let searchTimeout;
+      const eventSearch = document.getElementById("eventSearch");
+      if (eventSearch) {
+        eventSearch.addEventListener("input", (e) => {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            searchQuery = e.target.value.toLowerCase();
+            currentPage = 0;
+            filterEvents();
+          }, 300);
+        });
+      }
+
+      // Location filter
+      const locationFilter = document.getElementById("locationFilter");
+      if (locationFilter) {
+        locationFilter.addEventListener("change", (e) => {
+          locationFilterValue = e.target.value;
+          currentPage = 0;
+          filterEvents();
+        });
+      }
+
+      // Status filter
+      const statusFilter = document.getElementById("statusFilter");
+      if (statusFilter) {
+        statusFilter.addEventListener("change", (e) => {
+          statusFilterValue = e.target.value;
+          currentPage = 0;
+          filterEvents();
+        });
+      }
+
+      // Add event button handlers
+      const addEventBtn = document.getElementById("addEventBtn");
+      const addEventBtnEmpty = document.getElementById("addEventBtnEmpty");
+
+      if (addEventBtn) {
+        addEventBtn.addEventListener("click", () => openEventModal());
+      }
+      if (addEventBtnEmpty) {
+        addEventBtnEmpty.addEventListener("click", () => openEventModal());
+      }
+
+      // Modal handlers
+      function openEventModal(eventId = null) {
+        editingEventId = eventId;
+        const modal = document.getElementById("eventModal");
+        const form = document.getElementById("eventForm");
+        const title = document.getElementById("modalTitle");
+
+        if (eventId) {
+          title.textContent = "Edit Event";
+          const event = allEvents.find((e) => e.id === eventId);
+          if (event) {
+            form.title.value = event.title;
+            form.description.value = event.description || "";
+            form.date.value = event.date;
+            form.start_time.value = event.start_time || "";
+            form.end_time.value = event.end_time || "";
+            form.location.value = event.location;
+            form.status.value = event.status;
+            form.event_type.value = event.event_type;
+            form.is_featured.checked = event.is_featured || false;
+
+            // Populate image slots
+            if (event.image_url) {
+              assignImageToSlot({ url: event.image_url }, "card");
+            } else {
+              clearImageSlot("card");
+            }
+
+            if (event.content_image_url) {
+              assignImageToSlot({ url: event.content_image_url }, "content");
+            } else {
+              clearImageSlot("content");
+            }
+          }
+        } else {
+          title.textContent = "Add New Event";
+          form.reset();
+          clearImageSlot("card");
+          clearImageSlot("content");
+        }
+
+        modal.classList.remove("hidden");
+      }
+
+      // Close modal
+      document
+        .getElementById("closeModal")
+        .addEventListener("click", closeEventModal);
+      document
+        .getElementById("cancelEvent")
+        .addEventListener("click", closeEventModal);
+
+      function closeEventModal() {
+        document.getElementById("eventModal").classList.add("hidden");
+        editingEventId = null;
+      }
+
+      // Form submission
+      const eventFormEl = document.getElementById("eventForm");
+      const saveEventBtn = document.getElementById("saveEventBtn");
+
+      function enableSave(enabled) {
+        if (!saveEventBtn) return;
+        saveEventBtn.disabled = !enabled;
+        saveEventBtn.classList.toggle("opacity-50", !enabled);
+        saveEventBtn.classList.toggle("cursor-not-allowed", !enabled);
+      }
+
+      eventFormEl &&
+        eventFormEl.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          enableSave(false);
+          const formData = new FormData(this);
+          const eventData = Object.fromEntries(formData.entries());
+
+          // Convert checkbox to boolean
+          eventData.is_featured = formData.has("is_featured");
+
+          try {
+            console.log("Saving event...", { editingEventId, eventData });
+            if (editingEventId) {
+              // Update existing event
+              const { error } = await supabase
+                .from("events")
+                .update(eventData)
+                .eq("id", editingEventId);
+
+              if (error) throw error;
+
+              window.auditLogger?.log("event.updated", {
+                event_id: editingEventId,
+                title: eventData.title,
+              });
+            } else {
+              // Create new event
+              const { data: inserted, error } = await supabase
+                .from("events")
+                .insert([eventData])
+                .select();
+
+              if (error) throw error;
+              console.log("Inserted:", inserted);
+
+              if (inserted && inserted[0]?.id) {
+                window.auditLogger?.log("event.created", {
+                  event_id: inserted[0].id,
+                  title: inserted[0].title,
+                });
+              }
+            }
+
+            // Reload events and close modal
+            await loadEvents();
+            closeEventModal();
+          } catch (error) {
+            console.error("Error saving event:", error);
+            alert("Error saving event. Please try again.");
+          } finally {
+            enableSave(true);
+          }
+        });
+
+      // Edit event function (called from table)
+      window.editEvent = function (eventId) {
+        openEventModal(eventId);
+      };
+
+      // Delete event function (called from table)
+      window.deleteEvent = async function (eventId) {
+        if (!confirm("Are you sure you want to delete this event?")) return;
+
+        try {
+          const { error } = await supabase
+            .from("events")
+            .delete()
+            .eq("id", eventId);
+
+          if (error) throw error;
+
+          window.auditLogger?.log("event.deleted", {
+            event_id: eventId,
+          });
+
+          await loadEvents();
+        } catch (error) {
+          console.error("Error deleting event:", error);
+          alert("Error deleting event. Please try again.");
+        }
+      };
+
+      // Image Management Functions
+      let imageGallery = [];
+      let draggedImage = null;
+
+      function initializeImageManagement() {
+        // Upload button handlers
+        document
+          .getElementById("uploadCardImage")
+          .addEventListener("click", () => {
+            document.getElementById("cardImageFile").click();
+          });
+
+        document
+          .getElementById("uploadContentImage")
+          .addEventListener("click", () => {
+            document.getElementById("contentImageFile").click();
+          });
+
+        // File input handlers
+        document
+          .getElementById("cardImageFile")
+          .addEventListener("change", (e) => {
+            if (e.target.files[0]) {
+              handleImageUpload(e.target.files[0], "card");
+            }
+          });
+
+        document
+          .getElementById("contentImageFile")
+          .addEventListener("change", (e) => {
+            if (e.target.files[0]) {
+              handleImageUpload(e.target.files[0], "content");
+            }
+          });
+
+        // Drag and drop handlers for modal slots
+        setupModalDragDrop();
+      }
+
+      function setupModalDragDrop() {
+        const cardSlot = document.getElementById("cardImageSlot");
+        const contentSlot = document.getElementById("contentImageSlot");
+
+        [cardSlot, contentSlot].forEach((slot) => {
+          slot.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            slot.classList.add("drag-over");
+          });
+
+          slot.addEventListener("dragleave", (e) => {
+            e.preventDefault();
+            slot.classList.remove("drag-over");
+          });
+
+          slot.addEventListener("drop", (e) => {
+            e.preventDefault();
+            slot.classList.remove("drag-over");
+
+            if (draggedImage) {
+              const slotType = slot.dataset.slotType;
+              assignImageToSlot(draggedImage, slotType);
+              draggedImage = null;
+            }
+          });
+        });
+      }
+
+      function loadImageGallery() {
+        // Load sample images for the gallery
+        // Sample images for the gallery - using placeholder images
+        const sampleImages = [
+          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+        ];
+
+        const gallery = document.getElementById("imageGallery");
+        gallery.innerHTML = "";
+
+        sampleImages.forEach((imageUrl, index) => {
+          const img = document.createElement("img");
+          img.src = imageUrl;
+          img.className = "gallery-image";
+          img.draggable = true;
+          img.dataset.imageUrl = imageUrl;
+          img.dataset.imageIndex = index;
+
+          img.addEventListener("dragstart", (e) => {
+            draggedImage = {
+              url: imageUrl,
+              index: index,
+            };
+            img.classList.add("dragging");
+          });
+
+          img.addEventListener("dragend", () => {
+            img.classList.remove("dragging");
+          });
+
+          gallery.appendChild(img);
+        });
+      }
+
+      async function handleImageUpload(file, slotType) {
+        // Validate file
+        if (!file.type.startsWith("image/")) {
+          alert("Please select an image file.");
+          return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          alert("File size must be less than 10MB.");
+          return;
+        }
+
+        try {
+          // Compress image if needed
+          const compressedFile = await compressImage(file);
+
+          // Generate unique filename
+          const timestamp = Date.now();
+          const fileExt = file.name.split(".").pop();
+          const fileName = `event-${slotType}-${timestamp}.${fileExt}`;
+
+          // Upload to Supabase Storage
+          const { data, error } = await supabase.storage
+            .from("event-images")
+            .upload(fileName, compressedFile, {
+              cacheControl: "3600",
+              upsert: false,
+            });
+
+          if (error) throw error;
+
+          // Get public URL
+          const { data: urlData } = supabase.storage
+            .from("event-images")
+            .getPublicUrl(fileName);
+
+          const imageUrl = urlData.publicUrl;
+          assignImageToSlot({ url: imageUrl }, slotType);
+        } catch (error) {
+          console.error("Upload error:", error);
+          alert("Upload failed. Please try again.");
+        }
+      }
+
+      function assignImageToSlot(imageData, slotType) {
+        const slot = document.getElementById(`${slotType}ImageSlot`);
+        const preview = document.getElementById(`${slotType}ImagePreview`);
+        const urlInput = document.getElementById(`${slotType}ImageUrl`);
+
+        // Update preview
+        preview.innerHTML = `<img src="${imageData.url}" alt="${slotType} image" class="w-full h-full object-cover rounded-lg" />`;
+
+        // Update hidden input
+        urlInput.value = imageData.url;
+
+        // Update slot appearance
+        slot.classList.add("has-image");
+        slot.querySelector(".drag-hint").textContent = "Click to change image";
+      }
+
+      function clearImageSlot(slotType) {
+        const slot = document.getElementById(`${slotType}ImageSlot`);
+        const preview = document.getElementById(`${slotType}ImagePreview`);
+        const urlInput = document.getElementById(`${slotType}ImageUrl`);
+
+        // Clear preview
+        preview.innerHTML = "";
+
+        // Clear hidden input
+        urlInput.value = "";
+
+        // Update slot appearance
+        slot.classList.remove("has-image");
+        slot.querySelector(".drag-hint").textContent =
+          "Drag image from gallery or click to upload";
+      }
+
+      function compressImage(file) {
+        return new Promise((resolve) => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const img = new Image();
+
+          img.onload = () => {
+            // Calculate new dimensions (max 1200px width)
+            const maxWidth = 1200;
+            const maxHeight = 800;
+            let { width, height } = img;
+
+            if (width > maxWidth) {
+              height = (height * maxWidth) / width;
+              width = maxWidth;
+            }
+
+            if (height > maxHeight) {
+              width = (width * maxHeight) / height;
+              height = maxHeight;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            // Draw and compress
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob(resolve, "image/jpeg", 0.8);
+          };
+
+          img.src = URL.createObjectURL(file);
+        });
+      }
+
+      function updateImagePreview(url) {
+        const preview = document.getElementById("currentImagePreview");
+        const currentImage = document.getElementById("currentImage");
+
+        if (url) {
+          currentImage.src = url;
+          preview.classList.remove("hidden");
+        } else {
+          preview.classList.add("hidden");
+        }
+      }
+
+      function showUploadProgress() {
+        document.getElementById("uploadProgress").classList.remove("hidden");
+        document.getElementById("uploadArea").classList.add("hidden");
+      }
+
+      function hideUploadProgress() {
+        document.getElementById("uploadProgress").classList.add("hidden");
+        document.getElementById("uploadArea").classList.remove("hidden");
+      }
+
+      // Logout handler
+      const logoutBtnEl = document.getElementById("logoutBtn");
+      if (logoutBtnEl) {
+        logoutBtnEl.addEventListener("click", async function () {
+          await supabase.auth.signOut();
+          localStorage.removeItem("admin_user");
+          localStorage.removeItem("admin_session");
+          // Reset PermissionManager cache
+          if (window.PermissionManager) {
+            window.PermissionManager.resetRoleCache();
+          }
+          window.location.href = "index.html";
+        });
+      }
+    </script>
+  </body>
+</html>

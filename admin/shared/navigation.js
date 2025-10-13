@@ -191,9 +191,10 @@ class AdminNavigation {
   // Wait for PermissionManager to be ready
   async waitForPermissionManager() {
     let attempts = 0;
-    const maxAttempts = 20; // Increased from 10
+    const maxAttempts = 50; // Increased timeout for slower connections
 
-    while (!window.PermissionManager || !window.PermissionManager.userRole) {
+    // First, wait for PermissionManager to exist and have currentUser set
+    while (!window.PermissionManager || !window.PermissionManager.currentUser) {
       if (attempts >= maxAttempts) {
         console.warn(
           "⚠️ PermissionManager not ready after waiting, continuing anyway..."
@@ -204,40 +205,30 @@ class AdminNavigation {
       attempts++;
     }
 
-    // Apply UI changes once PermissionManager is ready
-    if (window.PermissionManager) {
-      window.PermissionManager.applyPermissionBasedUI();
-      this.updateUserEmail();
-    }
+    console.log("✅ PermissionManager is ready!");
+
+    // Update the user email
+    this.updateUserEmail();
   }
 
   // Update user email from permission manager
   updateUserEmail() {
     console.log("🔍 Updating user email...");
     console.log("🔍 PermissionManager exists:", !!window.PermissionManager);
-    if (window.PermissionManager) {
-      console.log(
-        "🔍 PermissionManager role:",
-        window.PermissionManager.getRole()
-      );
-      const user = window.PermissionManager.getCurrentUser();
-      console.log("🔍 Current user:", user);
-      if (user && user.email) {
-        this.setUserEmail(user.email);
-        console.log("✅ Email updated to:", user.email);
-      } else {
-        console.log("⚠️ No user email available yet, will retry...");
-        // Retry after a short delay
-        setTimeout(() => {
-          if (window.PermissionManager) {
-            const retryUser = window.PermissionManager.getCurrentUser();
-            if (retryUser && retryUser.email) {
-              this.setUserEmail(retryUser.email);
-              console.log("✅ Email updated on retry:", retryUser.email);
-            }
-          }
-        }, 200);
-      }
+
+    if (!window.PermissionManager) {
+      console.warn("⚠️ PermissionManager not available");
+      return;
+    }
+
+    const user = window.PermissionManager.getCurrentUser();
+    console.log("🔍 Current user:", user);
+
+    if (user && user.email) {
+      this.setUserEmail(user.email);
+      console.log("✅ Email updated to:", user.email);
+    } else {
+      console.warn("⚠️ No user email available");
     }
   }
 }

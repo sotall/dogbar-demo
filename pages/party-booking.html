@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Party Booking - The Dog Bar</title>
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <!-- Wait for Supabase to load, then start app -->
+    <script>
+      function waitForSupabase() {
+        if (window.supabase) {
+          const script = document.createElement("script");
+          script.type = "module";
+          script.src = "../assets/js/app.js";
+          document.head.appendChild(script);
+        } else {
+          setTimeout(waitForSupabase, 100);
+        }
+      }
+      document.addEventListener("DOMContentLoaded", waitForSupabase);
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+    <style>
+      .party-package {
+        transition: all 0.3s ease;
+      }
+      .party-package:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+      .gradient-bg {
+        background: linear-gradient(
+          135deg,
+          #3b82f6 0%,
+          #06b6d4 50%,
+          #2563eb 100%
+        );
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Header Component -->
+    <div id="header-root"></div>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg py-16">
+      <div class="container mx-auto px-4 pt-20 text-center">
+        <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
+          Party Booking 🎉
+        </h1>
+        <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
+          Celebrate your pup's special day or host your group at The Dog Bar! We
+          offer private party packages for birthdays, corporate events, and
+          special occasions.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="#packages"
+            class="px-8 py-4 bg-white text-emerald-600 font-bold rounded-full hover:bg-gray-100 transition-colors shadow-lg"
+          >
+            View Packages
+          </a>
+          <a
+            href="#contact"
+            class="px-8 py-4 border-2 border-white text-white font-bold rounded-full hover:bg-white/10 transition-colors"
+          >
+            Contact Us
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Party Packages Section -->
+    <section id="packages" class="py-20">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Party Packages</h2>
+          <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            Choose the perfect package for your celebration. All packages
+            include access to our play area and basic amenities.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <!-- Basic Package -->
+          <div
+            class="party-package bg-white rounded-2xl shadow-lg p-8 border-2 border-gray-100"
+          >
+            <div class="text-center mb-6">
+              <div
+                class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <span class="text-2xl">🐕</span>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-2">Basic Party</h3>
+              <div class="text-4xl font-bold text-emerald-600 mb-2">$150</div>
+              <div class="text-gray-600">Up to 15 people</div>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                2 hours private access
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Play area access
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Basic decorations
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Party coordinator
+              </li>
+            </ul>
+            <button
+              class="w-full px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+              Book Now
+            </button>
+          </div>
+
+          <!-- Premium Package -->
+          <div
+            class="party-package bg-white rounded-2xl shadow-lg p-8 border-2 border-emerald-500 relative"
+          >
+            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span
+                class="bg-emerald-500 text-white px-4 py-2 rounded-full text-sm font-bold"
+              >
+                Most Popular
+              </span>
+            </div>
+            <div class="text-center mb-6">
+              <div
+                class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <span class="text-2xl">🎂</span>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                Premium Party
+              </h3>
+              <div class="text-4xl font-bold text-emerald-600 mb-2">$300</div>
+              <div class="text-gray-600">Up to 25 people</div>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                3 hours private access
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Play area access
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Premium decorations
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Party coordinator
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Custom cake (dog-friendly)
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Photo booth setup
+              </li>
+            </ul>
+            <button
+              class="w-full px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+              Book Now
+            </button>
+          </div>
+
+          <!-- VIP Package -->
+          <div
+            class="party-package bg-white rounded-2xl shadow-lg p-8 border-2 border-gray-100"
+          >
+            <div class="text-center mb-6">
+              <div
+                class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <span class="text-2xl">👑</span>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-2">VIP Party</h3>
+              <div class="text-4xl font-bold text-emerald-600 mb-2">$500</div>
+              <div class="text-gray-600">Up to 40 people</div>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                4 hours private access
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Full venue access
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Custom decorations
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Dedicated party coordinator
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Custom cake + treats
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                Professional photography
+              </li>
+              <li class="flex items-center text-gray-700">
+                <span class="text-emerald-500 mr-3">✓</span>
+                DJ/music setup
+              </li>
+            </ul>
+            <button
+              class="w-full px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+              Book Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add-ons Section -->
+    <section class="py-20 bg-gray-100">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Party Add-ons</h2>
+          <p class="text-lg text-gray-600">
+            Enhance your party with these additional services
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div class="bg-white rounded-xl p-6 shadow-md">
+            <div class="text-center">
+              <div class="text-3xl mb-3">🍕</div>
+              <h3 class="font-bold text-gray-900 mb-2">Food Truck</h3>
+              <p class="text-gray-600 text-sm mb-4">
+                Arrange for a food truck to visit during your party
+              </p>
+              <div class="text-2xl font-bold text-emerald-600">$200+</div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 shadow-md">
+            <div class="text-center">
+              <div class="text-3xl mb-3">🎨</div>
+              <h3 class="font-bold text-gray-900 mb-2">Face Painting</h3>
+              <p class="text-gray-600 text-sm mb-4">
+                Professional face painter for kids and adults
+              </p>
+              <div class="text-2xl font-bold text-emerald-600">$150</div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 shadow-md">
+            <div class="text-center">
+              <div class="text-3xl mb-3">🎈</div>
+              <h3 class="font-bold text-gray-900 mb-2">Balloon Artist</h3>
+              <p class="text-gray-600 text-sm mb-4">
+                Custom balloon animals and decorations
+              </p>
+              <div class="text-2xl font-bold text-emerald-600">$100</div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 shadow-md">
+            <div class="text-center">
+              <div class="text-3xl mb-3">📸</div>
+              <h3 class="font-bold text-gray-900 mb-2">Photographer</h3>
+              <p class="text-gray-600 text-sm mb-4">
+                Professional photographer to capture memories
+              </p>
+              <div class="text-2xl font-bold text-emerald-600">$300</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+              Book Your Party
+            </h2>
+            <p class="text-lg text-gray-600">
+              Ready to celebrate? Contact us to book your party or get more
+              information.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-12">
+            <!-- Contact Info -->
+            <div class="space-y-8">
+              <div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">
+                  Get in Touch
+                </h3>
+                <div class="space-y-4">
+                  <div class="flex items-center">
+                    <span class="text-emerald-600 mr-4">📞</span>
+                    <div>
+                      <div
+                        class="font-semibold text-gray-900"
+                        id="contact-phone"
+                      >
+                        Loading...
+                      </div>
+                      <div class="text-gray-600">Call us to book</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center">
+                    <span class="text-emerald-600 mr-4">✉️</span>
+                    <div>
+                      <div
+                        class="font-semibold text-gray-900"
+                        id="contact-email"
+                      >
+                        Loading...
+                      </div>
+                      <div class="text-gray-600">Email us anytime</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center">
+                    <span class="text-emerald-600 mr-4">📍</span>
+                    <div>
+                      <div
+                        class="font-semibold text-gray-900"
+                        id="contact-address"
+                      >
+                        Loading...
+                      </div>
+                      <div class="text-gray-600">Visit our location</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="text-xl font-bold text-gray-900 mb-4">
+                  Party Requirements
+                </h4>
+                <ul class="space-y-2 text-gray-700">
+                  <li>• All dogs must be up-to-date on vaccinations</li>
+                  <li>• Party must be booked at least 1 week in advance</li>
+                  <li>• Maximum capacity varies by package</li>
+                  <li>• Outside food and drinks welcome</li>
+                  <li>• Decorations must be pet-safe</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+              <h3 class="text-2xl font-bold text-gray-900 mb-6">
+                Send us a message
+              </h3>
+              <form class="space-y-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Name</label
+                  >
+                  <input
+                    type="text"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Email</label
+                  >
+                  <input
+                    type="email"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Phone</label
+                  >
+                  <input
+                    type="tel"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Party Date</label
+                  >
+                  <input
+                    type="date"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Package Interest</label
+                  >
+                  <select
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  >
+                    <option>Basic Party ($150)</option>
+                    <option>Premium Party ($300)</option>
+                    <option>VIP Party ($500)</option>
+                    <option>Custom Package</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Message</label
+                  >
+                  <textarea
+                    rows="4"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="Tell us about your party needs..."
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  class="w-full px-6 py-4 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  Send Message
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Component -->
+    <div id="footer-root"></div>
+
+    <script>
+      // Load location-specific contact info
+      document.addEventListener("DOMContentLoaded", async function () {
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const location = urlParams.get("location") || "st-pete";
+
+          const response = await fetch(`config/${location}.json`);
+          const config = await response.json();
+
+          // Update contact information
+          document.getElementById("contact-phone").textContent =
+            config.phone || "Loading...";
+          document.getElementById("contact-email").textContent =
+            config.email || "Loading...";
+          document.getElementById("contact-address").textContent =
+            config.address || "Loading...";
+
+          // Update page title
+          document.title = `Party Booking - ${config.title}`;
+        } catch (error) {
+          console.error("Error loading location config:", error);
+        }
+      });
+    </script>
+  </body>
+</html>

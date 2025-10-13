@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Debug Test</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <h1>Database Debug Test</h1>
+    <div id="results"></div>
+
+    <script>
+      async function testDatabase() {
+        const resultsDiv = document.getElementById("results");
+
+        try {
+          // Initialize Supabase
+          const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
+          const supabaseKey =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+
+          const supabase = window.supabase.createClient(
+            supabaseUrl,
+            supabaseKey
+          );
+
+          resultsDiv.innerHTML += "<h2>Testing Supabase Connection...</h2>";
+
+          // Test site_content table
+          const { data: siteData, error: siteError } = await supabase
+            .from("site_content")
+            .select("*");
+
+          if (siteError) {
+            resultsDiv.innerHTML += `<p style="color: red;">❌ Site Content Error: ${siteError.message}</p>`;
+          } else {
+            resultsDiv.innerHTML += `<p style="color: green;">✅ Site Content: ${siteData.length} rows found</p>`;
+            resultsDiv.innerHTML += `<pre>${JSON.stringify(
+              siteData,
+              null,
+              2
+            )}</pre>`;
+          }
+
+          // Test events table
+          const { data: eventsData, error: eventsError } = await supabase
+            .from("events")
+            .select("*")
+            .limit(5);
+
+          if (eventsError) {
+            resultsDiv.innerHTML += `<p style="color: red;">❌ Events Error: ${eventsError.message}</p>`;
+          } else {
+            resultsDiv.innerHTML += `<p style="color: green;">✅ Events: ${eventsData.length} rows found</p>`;
+            resultsDiv.innerHTML += `<pre>${JSON.stringify(
+              eventsData,
+              null,
+              2
+            )}</pre>`;
+          }
+
+          // Test food_trucks table
+          const { data: trucksData, error: trucksError } = await supabase
+            .from("food_trucks")
+            .select("*");
+
+          if (trucksError) {
+            resultsDiv.innerHTML += `<p style="color: red;">❌ Food Trucks Error: ${trucksError.message}</p>`;
+          } else {
+            resultsDiv.innerHTML += `<p style="color: green;">✅ Food Trucks: ${trucksData.length} rows found</p>`;
+            resultsDiv.innerHTML += `<pre>${JSON.stringify(
+              trucksData,
+              null,
+              2
+            )}</pre>`;
+          }
+        } catch (error) {
+          resultsDiv.innerHTML += `<p style="color: red;">❌ General Error: ${error.message}</p>`;
+        }
+      }
+
+      // Run test when page loads
+      window.addEventListener("load", testDatabase);
+    </script>
+  </body>
+</html>

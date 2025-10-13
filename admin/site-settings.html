@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Prevent caching during development -->
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate, max-age=0"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Dog Bar Admin - Site Settings</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/media/logo.png?v=2" />
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <!-- Shared Utilities -->
+    <script src="shared/logger.js"></script>
+
+    <!-- Shared Scripts -->
+    <script src="shared/permissions.js"></script>
+    <script src="shared/navigation.js"></script>
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Modern Accordion Styles */
+      .accordion-section {
+        border: none;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .accordion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        cursor: pointer;
+        user-select: none;
+        font-weight: 600;
+        border: none;
+        width: 100%;
+        list-style: none;
+        margin: 0;
+      }
+
+      .accordion-header::-webkit-details-marker {
+        display: none;
+      }
+
+      .accordion-header::marker {
+        display: none;
+      }
+
+      .accordion-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      .accordion-icon {
+        transition: transform 0.3s ease;
+        font-size: 0.875rem;
+        font-weight: bold;
+      }
+
+      .accordion-section[open] .accordion-icon {
+        transform: rotate(180deg);
+      }
+
+      .accordion-content {
+        padding: 0;
+        background: white;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+      }
+
+      .accordion-section[open] .accordion-content {
+        max-height: 2000px;
+        padding: 1.5rem;
+      }
+
+      /* Ensure form elements work inside accordion */
+      .accordion-content input,
+      .accordion-content select,
+      .accordion-content button,
+      .accordion-content textarea {
+        pointer-events: auto;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold text-gray-900">Site Settings</h2>
+        <p class="text-gray-600">
+          Manage location-specific content, hours, and contact information
+        </p>
+      </div>
+
+      <!-- Location Selector -->
+      <div class="mb-8">
+        <label class="block text-sm font-medium text-gray-700 mb-2"
+          >Select Location to Edit:</label
+        >
+        <select
+          id="locationSelector"
+          class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+        >
+          <option value="st-pete">St. Pete</option>
+          <option value="sarasota">Sarasota</option>
+        </select>
+      </div>
+
+      <!-- Settings Form -->
+      <div class="bg-white shadow rounded-lg">
+        <div class="p-6 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900" id="locationTitle">
+            St. Pete Settings
+          </h3>
+        </div>
+
+        <form id="settingsForm" class="p-6 space-y-8">
+          <!-- Basic Information -->
+          <details class="accordion-section" data-section="basic-info" open>
+            <summary class="accordion-header">
+              <span class="accordion-title">Basic Information</span>
+              <span class="accordion-icon">▼</span>
+            </summary>
+            <div class="accordion-content">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    for="address"
+                    class="block text-sm font-medium text-gray-700"
+                    >Address</label
+                  >
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="phone"
+                    class="block text-sm font-medium text-gray-700"
+                    >Phone Number</label
+                  >
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="email"
+                    class="block text-sm font-medium text-gray-700"
+                    >Email</label
+                  >
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="heroText"
+                    class="block text-sm font-medium text-gray-700"
+                    >Hero Text</label
+                  >
+                  <input
+                    type="text"
+                    id="heroText"
+                    name="hero_text"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="St. Pete's Premier Dog Park & Bar"
+                  />
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- Operating Hours -->
+          <details class="accordion-section" data-section="operating-hours">
+            <summary class="accordion-header">
+              <span class="accordion-title">Operating Hours</span>
+              <span class="accordion-icon">▼</span>
+            </summary>
+            <div class="accordion-content">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                  <label
+                    for="monday"
+                    class="block text-sm font-medium text-gray-700"
+                    >Monday</label
+                  >
+                  <input
+                    type="text"
+                    id="monday"
+                    name="monday"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="Closed"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="tuesday"
+                    class="block text-sm font-medium text-gray-700"
+                    >Tuesday</label
+                  >
+                  <input
+                    type="text"
+                    id="tuesday"
+                    name="tuesday"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="4:00 PM - 10:00 PM"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="wednesday"
+                    class="block text-sm font-medium text-gray-700"
+                    >Wednesday</label
+                  >
+                  <input
+                    type="text"
+                    id="wednesday"
+                    name="wednesday"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="4:00 PM - 10:00 PM"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="thursday"
+                    class="block text-sm font-medium text-gray-700"
+                    >Thursday</label
+                  >
+                  <input
+                    type="text"
+                    id="thursday"
+                    name="thursday"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="4:00 PM - 10:00 PM"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="friday"
+                    class="block text-sm font-medium text-gray-700"
+                    >Friday</label
+                  >
+                  <input
+                    type="text"
+                    id="friday"
+                    name="friday"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="4:00 PM - 11:00 PM"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="saturday"
+                    class="block text-sm font-medium text-gray-700"
+                    >Saturday</label
+                  >
+                  <input
+                    type="text"
+                    id="saturday"
+                    name="saturday"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="11:00 AM - 11:00 PM"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="sunday"
+                    class="block text-sm font-medium text-gray-700"
+                    >Sunday</label
+                  >
+                  <input
+                    type="text"
+                    id="sunday"
+                    name="sunday"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="11:00 AM - 9:00 PM"
+                  />
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- Stats -->
+          <details class="accordion-section" data-section="location-stats">
+            <summary class="accordion-header">
+              <span class="accordion-title">Location Stats</span>
+              <span class="accordion-icon">▼</span>
+            </summary>
+            <div class="accordion-content">
+              <div class="flex items-center justify-between mb-4">
+                <button
+                  type="button"
+                  id="addStatBtn"
+                  class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"
+                    ></path>
+                  </svg>
+                  Add Stat
+                </button>
+              </div>
+
+              <!-- Dynamic stats list (centered) -->
+              <div id="statsList" class="space-y-3 max-w-3xl mx-auto"></div>
+              <p
+                class="text-xs text-gray-500 mt-2 text-center max-w-3xl mx-auto"
+              >
+                Each stat row renders as one column in the home page stats bar.
+                Use Main (top line) and Sub (small caption) text.
+              </p>
+            </div>
+          </details>
+
+          <!-- Social Media -->
+          <details class="accordion-section" data-section="social-media">
+            <summary class="accordion-header">
+              <span class="accordion-title">Social Media</span>
+              <span class="accordion-icon">▼</span>
+            </summary>
+            <div class="accordion-content">
+              <div class="flex items-center justify-between mb-4">
+                <button
+                  type="button"
+                  id="addSocialBtn"
+                  class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"
+                    ></path>
+                  </svg>
+                  Add Social Media
+                </button>
+              </div>
+
+              <div id="socialMediaList" class="space-y-4">
+                <!-- Social media items will be added here dynamically -->
+              </div>
+
+              <!-- Newsletter Signup (separate from social media) -->
+              <div class="mt-6 pt-4 border-t border-gray-200">
+                <label
+                  for="newsletter"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                  >Newsletter Signup URL</label
+                >
+                <input
+                  type="url"
+                  id="newsletter"
+                  name="newsletter"
+                  class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                  placeholder="https://mailchimp.com/signup"
+                />
+              </div>
+            </div>
+          </details>
+
+          <!-- Hero Section -->
+          <details class="accordion-section" data-section="hero-section">
+            <summary class="accordion-header">
+              <span class="accordion-title">Hero Section</span>
+              <span class="accordion-icon">▼</span>
+            </summary>
+            <div class="accordion-content">
+              <div class="grid grid-cols-1 gap-6">
+                <div>
+                  <label
+                    for="hero_subtitle"
+                    class="block text-sm font-medium text-gray-700"
+                    >Hero Subtitle</label
+                  >
+                  <input
+                    type="text"
+                    id="hero_subtitle"
+                    name="hero_subtitle"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="Where Dogs and People Come Together"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="hero_cta_text"
+                    class="block text-sm font-medium text-gray-700"
+                    >Call-to-Action Button Text</label
+                  >
+                  <input
+                    type="text"
+                    id="hero_cta_text"
+                    name="hero_cta_text"
+                    class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="View Events"
+                  />
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- Feature Toggles -->
+          <details class="accordion-section" data-section="feature-toggles">
+            <summary class="accordion-header">
+              <span class="accordion-title">Feature Toggles</span>
+              <span class="accordion-icon">▼</span>
+            </summary>
+            <div class="accordion-content">
+              <p class="text-sm text-gray-600 mb-4">
+                Enable or disable features for this location
+              </p>
+              <div class="space-y-4">
+                <div class="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="show_events"
+                    name="show_events"
+                    class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                    checked
+                  />
+                  <label
+                    for="show_events"
+                    class="ml-3 block text-sm text-gray-700"
+                  >
+                    Show Events Calendar
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="show_food_trucks"
+                    name="show_food_trucks"
+                    class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                    checked
+                  />
+                  <label
+                    for="show_food_trucks"
+                    class="ml-3 block text-sm text-gray-700"
+                  >
+                    Show Food Truck Schedule
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="show_newsletter"
+                    name="show_newsletter"
+                    class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                    checked
+                  />
+                  <label
+                    for="show_newsletter"
+                    class="ml-3 block text-sm text-gray-700"
+                  >
+                    Show Newsletter Signup
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="show_stats_bar"
+                    name="show_stats_bar"
+                    class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                    checked
+                  />
+                  <label
+                    for="show_stats_bar"
+                    class="ml-3 block text-sm text-gray-700"
+                  >
+                    Show Stats Bar
+                  </label>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- Save Button -->
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+              Save Settings
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success Message -->
+      <div
+        id="successMessage"
+        class="hidden mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg"
+      >
+        Settings saved successfully!
+      </div>
+    </div>
+
+    <script>
+      // Supabase configuration
+      const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
+      const supabaseKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+
+      // Initialize Supabase client
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      let currentLocation = "st-pete";
+      let socialMediaItems = [];
+      let statItems = [];
+
+      // Social media platforms with icons and placeholders
+      const socialPlatforms = [
+        {
+          value: "instagram",
+          label: "Instagram",
+          icon: "📷",
+          placeholder: "https://instagram.com/yourusername",
+        },
+        {
+          value: "facebook",
+          label: "Facebook",
+          icon: "👥",
+          placeholder: "https://facebook.com/yourpage",
+        },
+        {
+          value: "twitter",
+          label: "Twitter",
+          icon: "🐦",
+          placeholder: "https://twitter.com/yourusername",
+        },
+        {
+          value: "tiktok",
+          label: "TikTok",
+          icon: "🎵",
+          placeholder: "https://tiktok.com/@yourusername",
+        },
+        {
+          value: "youtube",
+          label: "YouTube",
+          icon: "📺",
+          placeholder: "https://youtube.com/c/yourchannel",
+        },
+        {
+          value: "linkedin",
+          label: "LinkedIn",
+          icon: "💼",
+          placeholder: "https://linkedin.com/company/yourcompany",
+        },
+        {
+          value: "snapchat",
+          label: "Snapchat",
+          icon: "👻",
+          placeholder: "https://snapchat.com/add/yourusername",
+        },
+        {
+          value: "pinterest",
+          label: "Pinterest",
+          icon: "📌",
+          placeholder: "https://pinterest.com/yourusername",
+        },
+        {
+          value: "yelp",
+          label: "Yelp",
+          icon: "⭐",
+          placeholder: "https://yelp.com/biz/yourbusiness",
+        },
+        {
+          value: "google",
+          label: "Google My Business",
+          icon: "🏢",
+          placeholder: "https://g.page/yourbusiness",
+        },
+      ];
+
+      // Modern Accordion State Persistence
+      function saveAccordionState() {
+        const states = {};
+        document.querySelectorAll(".accordion-section").forEach((section) => {
+          const id = section.dataset.section;
+          states[id] = section.hasAttribute("open");
+        });
+        localStorage.setItem(
+          "siteSettingsAccordionState",
+          JSON.stringify(states)
+        );
+      }
+
+      function restoreAccordionState() {
+        const states = JSON.parse(
+          localStorage.getItem("siteSettingsAccordionState") || "{}"
+        );
+        document.querySelectorAll(".accordion-section").forEach((section) => {
+          const id = section.dataset.section;
+          // Basic Information should be open by default
+          const shouldBeOpen =
+            states[id] !== undefined ? states[id] : id === "basic-info";
+          if (shouldBeOpen) {
+            section.setAttribute("open", "");
+          } else {
+            section.removeAttribute("open");
+          }
+        });
+      }
+
+      // Check authentication
+      window.addEventListener("load", async function () {
+        await checkAuth();
+        setupSocialMediaHandlers();
+        setupStatsHandlers();
+        // Restore accordion states after page loads
+        restoreAccordionState();
+      });
+
+      // Save accordion state when sections are toggled
+      document.addEventListener("toggle", saveAccordionState, true);
+
+      // Check authentication
+      async function checkAuth() {
+        const token = localStorage.getItem("supabase.auth.token");
+        if (!token) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        try {
+          const {
+            data: { user },
+            error,
+          } = await supabase.auth.getUser();
+          if (error || !user) {
+            window.location.href = "login.html";
+            return;
+          }
+
+          document.getElementById("userEmail").textContent = user.email;
+
+          // Wait for PermissionManager to be initialized
+          let attempts = 0;
+          const maxAttempts = 20; // Increased timeout
+
+          while (
+            !window.PermissionManager ||
+            !window.PermissionManager.userRole
+          ) {
+            if (attempts >= maxAttempts) {
+              console.warn(
+                "⚠️ PermissionManager not ready, continuing anyway..."
+              );
+              // Don't show alert, just continue - navigation will handle it
+              break; // Changed from return to break
+            }
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            attempts++;
+          }
+
+          // Check if user has permission to manage site settings
+          if (
+            window.PermissionManager &&
+            !window.PermissionManager.hasPermission("manage_settings")
+          ) {
+            alert("You do not have permission to manage site settings.");
+            window.location.href = "dashboard.html";
+            return;
+          }
+
+          // Load initial settings after auth check
+          console.log("✅ Auth check passed, loading settings...");
+          await loadSettings();
+        } catch (error) {
+          console.error("Auth check failed:", error);
+          window.location.href = "login.html";
+        }
+      }
+
+      // Load settings for selected location
+      async function loadSettings() {
+        console.log("🔄 Loading settings for location:", currentLocation);
+        try {
+          const { data, error } = await supabase
+            .from("site_content")
+            .select("*")
+            .eq("location", currentLocation)
+            .limit(1);
+
+          console.log("📊 Site content query result:", { data, error });
+          if (error) throw error;
+
+          if (data && data.length > 0) {
+            const settings = data[0];
+
+            // Debug: Log what we're loading
+            console.log("📥 Loaded settings from DB:", settings);
+            console.log("📥 Settings structure:", {
+              hours: settings.hours,
+              stats: settings.stats,
+              social: settings.social,
+              hero_text: settings.hero_text,
+              hero_subtitle: settings.hero_subtitle,
+              hero_cta_text: settings.hero_cta_text,
+            });
+
+            // Update form fields
+            document.getElementById("address").value = settings.address || "";
+            document.getElementById("phone").value = settings.phone || "";
+            document.getElementById("email").value = settings.email || "";
+            document.getElementById("heroText").value =
+              settings.hero_text || "";
+
+            // Debug: Log form field values after population
+            console.log("📝 Form fields populated:", {
+              address: document.getElementById("address").value,
+              phone: document.getElementById("phone").value,
+              email: document.getElementById("email").value,
+              heroText: document.getElementById("heroText").value,
+              hero_subtitle: document.getElementById("hero_subtitle").value,
+              hero_cta_text: document.getElementById("hero_cta_text").value,
+            });
+
+            // Update hero section fields
+            if (settings.hero_subtitle) {
+              document.getElementById("hero_subtitle").value =
+                settings.hero_subtitle;
+            }
+            if (settings.hero_cta_text) {
+              document.getElementById("hero_cta_text").value =
+                settings.hero_cta_text;
+            }
+
+            // Update hours
+            if (settings.hours) {
+              Object.keys(settings.hours).forEach((day) => {
+                const input = document.getElementById(day);
+                if (input) {
+                  input.value = settings.hours[day] || "";
+                }
+              });
+            }
+
+            // Update stats (dynamic rows)
+            if (settings.stats && Array.isArray(settings.stats.items)) {
+              const baseId = Date.now();
+              statItems = settings.stats.items.map((item, idx) => ({
+                id: item.id || `stat-${baseId}-${idx}`,
+                main: item.main || "",
+                sub: item.sub || "",
+                locked: item.locked === true,
+              }));
+            } else {
+              // Fallback from legacy fields if present
+              const legacy = [];
+              if (settings.stats?.sqft)
+                legacy.push({
+                  main: settings.stats.sqft,
+                  sub: "Sq Ft Play Area",
+                });
+              if (settings.stats?.beers)
+                legacy.push({ main: settings.stats.beers, sub: "Draft Beers" });
+              if (settings.stats?.rating)
+                legacy.push({
+                  main: settings.stats.rating,
+                  sub: "Fun & Safety",
+                });
+              const baseId = Date.now();
+              statItems = legacy.length
+                ? legacy.map((entry, idx) => ({
+                    id: `legacy-${baseId}-${idx}`,
+                    main: entry.main,
+                    sub: entry.sub,
+                    locked: false,
+                  }))
+                : [];
+            }
+
+            // Ensure any location-specific header rows are present
+            statItems = ensureStatsHeader(statItems);
+
+            // Render stats rows
+            renderStatsList();
+
+            // Update social media
+            if (settings.social) {
+              // Load existing social media items
+              socialMediaItems = settings.social.accounts || [];
+
+              // Debug: Log social media data
+              console.log("📱 Social media data loaded:", {
+                social: settings.social,
+                accounts: settings.social.accounts,
+                socialMediaItems: socialMediaItems,
+                count: socialMediaItems.length,
+              });
+
+              renderSocialMediaList();
+
+              document.getElementById("newsletter").value =
+                settings.social.newsletter || "";
+            } else {
+              // Initialize empty social media list if no data
+              socialMediaItems = [];
+              renderSocialMediaList();
+            }
+
+            // Debug: Log final form state
+            console.log("✅ Settings loaded and form populated successfully");
+            console.log("📋 Final form state:", {
+              newsletter: document.getElementById("newsletter").value,
+              statsCount: statItems.length,
+              socialCount: socialMediaItems.length,
+            });
+
+            // Update feature toggles
+            if (settings.features) {
+              document.getElementById("show_events").checked =
+                settings.features.show_events !== false;
+              document.getElementById("show_food_trucks").checked =
+                settings.features.show_food_trucks !== false;
+              document.getElementById("show_newsletter").checked =
+                settings.features.show_newsletter !== false;
+              document.getElementById("show_stats_bar").checked =
+                settings.features.show_stats_bar !== false;
+            }
+          }
+
+          // Update location title
+          document.getElementById("locationTitle").textContent =
+            currentLocation === "st-pete"
+              ? "St. Pete Settings"
+              : "Sarasota Settings";
+        } catch (error) {
+          console.error("Error loading settings:", error);
+        }
+
+        // Restore accordion states after dynamic content loads
+        restoreAccordionState();
+      }
+
+      // Location selector change
+      document
+        .getElementById("locationSelector")
+        .addEventListener("change", async function () {
+          currentLocation = this.value;
+          await loadSettings();
+        });
+
+      // Form submission
+      document
+        .getElementById("settingsForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          try {
+            // Collect form data
+            const formData = new FormData(this);
+            const settingsData = {
+              location: currentLocation,
+              address: formData.get("address"),
+              phone: formData.get("phone"),
+              email: formData.get("email"),
+              hero_text: formData.get("hero_text"),
+              hours: {
+                monday: formData.get("monday"),
+                tuesday: formData.get("tuesday"),
+                wednesday: formData.get("wednesday"),
+                thursday: formData.get("thursday"),
+                friday: formData.get("friday"),
+                saturday: formData.get("saturday"),
+                sunday: formData.get("sunday"),
+              },
+              stats: {
+                items: ensureStatsHeader(statItems).map(
+                  ({ id, main, sub, locked }) => ({
+                    id,
+                    main,
+                    sub,
+                    locked,
+                  })
+                ),
+              },
+              social: {
+                accounts: socialMediaItems,
+                newsletter: formData.get("newsletter"),
+              },
+              hero_subtitle:
+                formData.get("hero_subtitle") ||
+                document.getElementById("hero_subtitle").value,
+              hero_cta_text:
+                formData.get("hero_cta_text") ||
+                document.getElementById("hero_cta_text").value,
+              // Temporarily comment out features until database is updated
+              // features: {
+              //   show_events: document.getElementById("show_events").checked,
+              //   show_food_trucks:
+              //     document.getElementById("show_food_trucks").checked,
+              //   show_newsletter:
+              //     document.getElementById("show_newsletter").checked,
+              //   show_stats_bar:
+              //     document.getElementById("show_stats_bar").checked,
+              // },
+              updated_at: new Date().toISOString(),
+            };
+
+            // Debug: Log what we're sending
+            console.log("💾 Sending settings data:", settingsData);
+            console.log("📱 Social media being saved:", {
+              accounts: settingsData.social.accounts,
+              count: settingsData.social.accounts.length,
+              accountsData: settingsData.social.accounts.map((acc) => ({
+                id: acc.id,
+                platform: acc.platform,
+                url: acc.url,
+              })),
+            });
+
+            // Debug: Check the socialMediaItems array directly
+            console.log("🔍 Current socialMediaItems array:", {
+              socialMediaItems: socialMediaItems,
+              count: socialMediaItems.length,
+              items: socialMediaItems.map((item) => ({
+                id: item.id,
+                platform: item.platform,
+                url: item.url,
+              })),
+            });
+            console.log(
+              "📊 Stats items being saved:",
+              settingsData.stats.items
+            );
+            console.log("📊 Stats count:", settingsData.stats.items.length);
+
+            // Check if settings exist for this location and handle duplicates
+            const { data: existingData, error: checkError } = await supabase
+              .from("site_content")
+              .select("id, updated_at")
+              .eq("location", currentLocation)
+              .order("updated_at", { ascending: false });
+
+            if (checkError) throw checkError;
+
+            let result;
+            if (existingData && existingData.length > 0) {
+              // Delete any duplicate entries first (keep only the most recent)
+              if (existingData.length > 1) {
+                console.log(
+                  `🧹 Found ${existingData.length} duplicate entries for ${currentLocation}, cleaning up...`
+                );
+
+                // Delete all but the first (most recent) entry
+                const idsToDelete = existingData.slice(1).map((row) => row.id);
+                await supabase
+                  .from("site_content")
+                  .delete()
+                  .in("id", idsToDelete);
+              }
+
+              // Update the remaining entry
+              console.log("💾 Updating settings with data:", {
+                socialAccounts: settingsData.social.accounts.length,
+                socialData: settingsData.social,
+                location: currentLocation,
+              });
+
+              // Final debug: Log exact data being sent to Supabase
+              console.log(
+                "🔍 EXACT DATA BEING SENT TO DATABASE:",
+                JSON.stringify(settingsData, null, 2)
+              );
+              console.log(
+                "🔍 Social accounts in settingsData:",
+                settingsData.social.accounts
+              );
+              console.log(
+                "🔍 Number of accounts:",
+                settingsData.social.accounts.length
+              );
+
+              result = await supabase
+                .from("site_content")
+                .update(settingsData)
+                .eq("location", currentLocation);
+
+              if (!result.error) {
+                window.auditLogger?.log("site_content.updated", {
+                  location: currentLocation,
+                  email: settingsData.email,
+                });
+              }
+            } else {
+              // Insert new settings
+              console.log("🆕 Inserting new settings:", {
+                socialAccounts: settingsData.social.accounts.length,
+                socialData: settingsData.social,
+                location: currentLocation,
+              });
+
+              result = await supabase
+                .from("site_content")
+                .insert([settingsData]);
+
+              if (!result.error) {
+                window.auditLogger?.log("site_content.created", {
+                  location: currentLocation,
+                  email: settingsData.email,
+                });
+              }
+            }
+
+            if (result.error) throw result.error;
+
+            // Debug: Verify what was actually saved
+            console.log("✅ Database operation completed:", result);
+
+            // Debug: Check authentication status
+            const {
+              data: { user },
+              error: authError,
+            } = await supabase.auth.getUser();
+            console.log("🔐 Authentication status:", {
+              user: user,
+              authError: authError,
+              userEmail: user?.email,
+              userId: user?.id,
+            });
+
+            // Debug: Test RLS function directly
+            const { data: rlsTest, error: rlsError } = await supabase.rpc(
+              "has_any_role",
+              {
+                roles: ["super_admin", "admin"],
+              }
+            );
+            console.log("🔒 RLS function test:", {
+              rlsTest: rlsTest,
+              rlsError: rlsError,
+            });
+
+            // Fetch the updated data to verify it was saved correctly
+            const { data: verifyData, error: verifyError } = await supabase
+              .from("site_content")
+              .select("social")
+              .eq("location", currentLocation)
+              .limit(1);
+
+            if (!verifyError && verifyData && verifyData.length > 0) {
+              console.log("🔍 Verification - what's actually in DB:", {
+                social: verifyData[0].social,
+                accountsCount: verifyData[0].social?.accounts?.length || 0,
+                accounts: verifyData[0].social?.accounts || [],
+              });
+            }
+
+            // Show success message
+            showSuccessMessage();
+          } catch (error) {
+            console.error("Error saving settings:", error);
+            alert("Error saving settings. Please try again.");
+          }
+        });
+
+      function showSuccessMessage() {
+        const message = document.getElementById("successMessage");
+        message.classList.remove("hidden");
+        setTimeout(() => {
+          message.classList.add("hidden");
+        }, 3000);
+      }
+
+      // Social Media Management Functions
+      // Helper to ensure mandatory stats rows per location
+      function ensureStatsHeader(items) {
+        const normalized = items.map((item) => {
+          if (!item.id) {
+            item.id = `stat-${Date.now()}-${Math.random()
+              .toString(16)
+              .slice(2, 8)}`;
+          }
+          item.locked = Boolean(item.locked);
+          return { ...item };
+        });
+
+        if (currentLocation !== "sarasota") {
+          return normalized.filter(
+            (item) => `${item.id}` !== "sarasota-header"
+          );
+        }
+
+        const headerIndex = normalized.findIndex((item) => {
+          const main = (item.main || "").trim().toLowerCase();
+          const sub = (item.sub || "").trim().toLowerCase();
+          return main === "new!" || sub.includes("sarasota location");
+        });
+
+        if (headerIndex === -1) {
+          return [
+            {
+              id: "sarasota-header",
+              main: "New!",
+              sub: "Sarasota Location",
+              locked: true,
+            },
+            ...normalized,
+          ];
+        }
+
+        const headerItem = {
+          ...normalized[headerIndex],
+          id: "sarasota-header",
+          main: normalized[headerIndex].main || "New!",
+          sub: normalized[headerIndex].sub || "Sarasota Location",
+          locked: true,
+        };
+        const others = normalized.filter((_, idx) => idx !== headerIndex);
+        return [headerItem, ...others];
+      }
+
+      // Stats Management Functions
+      function setupStatsHandlers() {
+        const addBtn = document.getElementById("addStatBtn");
+        if (addBtn) {
+          addBtn.addEventListener("click", addStatItem);
+        }
+      }
+
+      function addStatItem() {
+        const newItem = { id: `stat-${Date.now()}`, main: "", sub: "" };
+        statItems.push(newItem);
+        statItems = ensureStatsHeader(statItems);
+        renderStatsList();
+      }
+
+      function removeStatItem(id) {
+        statItems = statItems.filter(
+          (item) => `${item.id}` !== `${id}` || item.locked
+        );
+        statItems = ensureStatsHeader(statItems);
+        renderStatsList();
+      }
+
+      function updateStatItem(id, field, value) {
+        const targetId = `${id}`;
+        const item = statItems.find((s) => `${s.id}` === targetId);
+        if (item) {
+          item[field] = value;
+        }
+        statItems = ensureStatsHeader(statItems);
+      }
+
+      function renderStatsList() {
+        const container = document.getElementById("statsList");
+        if (!container) return;
+        container.innerHTML = "";
+
+        statItems = ensureStatsHeader(statItems);
+
+        if (!statItems.length) {
+          // Start with one empty row for convenience
+          statItems = [{ id: `stat-${Date.now()}`, main: "", sub: "" }];
+          statItems = ensureStatsHeader(statItems);
+        }
+
+        statItems.forEach((item) => {
+          const removeControl = item.locked
+            ? '<span class="text-gray-400 text-xs">Locked</span>'
+            : `<button type="button" class="text-red-600 hover:text-red-800 p-2" onclick="removeStatItem('${item.id}')" title="Remove">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>`;
+
+          const row = document.createElement("div");
+          row.className = "grid grid-cols-1 md:grid-cols-5 gap-3 items-center";
+          row.innerHTML = `
+            <label class="text-sm text-gray-700 md:col-span-1">Main</label>
+            <input 
+              type="text" 
+              class="md:col-span-2 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500" 
+              value="${item.main || ""}"
+              oninput="updateStatItem('${item.id}', 'main', this.value)"
+              placeholder="e.g. 6,500" />
+            <label class="text-sm text-gray-700 md:col-span-1">Sub</label>
+            <div class="md:col-span-1 flex items-center gap-2">
+              <input 
+                type="text" 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500" 
+                value="${item.sub || ""}"
+                oninput="updateStatItem('${item.id}', 'sub', this.value)"
+                placeholder="e.g. Draft Beers" />
+              ${removeControl}
+            </div>
+          `;
+          container.appendChild(row);
+        });
+      }
+      // Social Media Management Functions
+      function setupSocialMediaHandlers() {
+        document
+          .getElementById("addSocialBtn")
+          .addEventListener("click", addSocialMediaItem);
+      }
+
+      function addSocialMediaItem() {
+        const newItem = {
+          id: Date.now(), // Simple unique ID
+          platform: "",
+          url: "",
+        };
+        socialMediaItems.push(newItem);
+        renderSocialMediaList();
+      }
+
+      function removeSocialMediaItem(id) {
+        socialMediaItems = socialMediaItems.filter((item) => item.id !== id);
+        renderSocialMediaList();
+      }
+
+      function updateSocialMediaItem(id, field, value) {
+        console.log(`🔄 Updating social media item ${id}:`, { field, value });
+        const item = socialMediaItems.find((item) => item.id === id);
+        if (item) {
+          item[field] = value;
+          console.log(`✅ Updated item ${id}:`, item);
+        } else {
+          console.error(`❌ Could not find item with id ${id}`);
+        }
+      }
+
+      function renderSocialMediaList() {
+        const container = document.getElementById("socialMediaList");
+        container.innerHTML = "";
+
+        // Debug: Log what we're rendering
+        console.log("🎨 Rendering social media list:", {
+          socialMediaItems: socialMediaItems,
+          count: socialMediaItems.length,
+          container: container,
+        });
+
+        socialMediaItems.forEach((item, index) => {
+          console.log(`🎨 Rendering item ${index}:`, item);
+          const itemDiv = document.createElement("div");
+          itemDiv.className = "flex items-center gap-3 py-1";
+
+          itemDiv.innerHTML = `
+              <div class="w-48 flex-shrink-0">
+                <select 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                  onchange="updateSocialMediaItem(${
+                    item.id
+                  }, 'platform', this.value); updatePlaceholder(${
+            item.id
+          }, this.value)"
+                >
+                  <option value="">Select Platform</option>
+                  ${socialPlatforms
+                    .map(
+                      (platform) =>
+                        `<option value="${platform.value}" ${
+                          item.platform === platform.value ? "selected" : ""
+                        }>${platform.icon} ${platform.label}</option>`
+                    )
+                    .join("")}
+                </select>
+              </div>
+              <div class="flex-1 min-w-0">
+                <input 
+                  type="url" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                  placeholder="${getPlaceholderForPlatform(item.platform)}"
+                  value="${item.url || ""}"
+                  onchange="updateSocialMediaItem(${
+                    item.id
+                  }, 'url', this.value)"
+                />
+              </div>
+              <button 
+                type="button" 
+                class="text-red-600 hover:text-red-800 p-2 flex-shrink-0"
+                onclick="removeSocialMediaItem(${item.id})"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            `;
+
+          container.appendChild(itemDiv);
+        });
+
+        // Debug: Log final DOM state
+        console.log("🎨 Social media rendering complete:", {
+          containerChildren: container.children.length,
+          containerHTML: container.innerHTML.substring(0, 200) + "...",
+        });
+      }
+
+      function getPlaceholderForPlatform(platform) {
+        const platformData = socialPlatforms.find((p) => p.value === platform);
+        return platformData ? platformData.placeholder : "Enter URL";
+      }
+
+      function updatePlaceholder(id, platform) {
+        const input = document.querySelector(
+          `input[onchange*="updateSocialMediaItem(${id}, 'url'"]`
+        );
+        if (input) {
+          input.placeholder = getPlaceholderForPlatform(platform);
+        }
+      }
+
+      // Logout handler
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async function () {
+          await supabase.auth.signOut();
+          localStorage.removeItem("admin_user");
+          localStorage.removeItem("admin_session");
+          // Reset PermissionManager cache
+          if (window.PermissionManager) {
+            window.PermissionManager.resetRoleCache();
+          }
+          window.location.href = "login.html";
+        });
+      }
+    </script>
+  </body>
+</html>

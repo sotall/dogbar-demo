@@ -1,0 +1,122 @@
+/* Dog Bar - Shared Styles */
+
+body {
+  font-family: "Inter", sans-serif;
+  scroll-behavior: smooth;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes grid-move {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(20px, 20px);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+/* Custom gradients - Subtle Blue & Green Theme */
+.gradient-green {
+  background: linear-gradient(
+    135deg,
+    rgba(26, 58, 31, 0.85) 0%,
+    rgba(45, 80, 22, 0.85) 50%,
+    rgba(30, 77, 43, 0.85) 100%
+  );
+}
+
+.gradient-blue-green {
+  background: linear-gradient(
+    135deg,
+    rgba(13, 79, 110, 0.75) 0%,
+    rgba(45, 80, 22, 0.75) 50%,
+    rgba(26, 92, 62, 0.75) 100%
+  );
+}
+
+.gradient-accent {
+  background: linear-gradient(
+    135deg,
+    rgba(154, 205, 50, 0.6) 0%,
+    rgba(118, 196, 66, 0.6) 100%
+  );
+}
+
+.gradient-blue-accent {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 168, 232, 0.6) 0%,
+    rgba(0, 126, 167, 0.6) 100%
+  );
+}
+
+/* Subtle color palette */
+:root {
+  --dogbar-deep-green: rgba(26, 58, 31, 0.85);
+  --dogbar-green: rgba(45, 80, 22, 0.85);
+  --dogbar-teal: rgba(26, 92, 62, 0.85);
+  --dogbar-blue: rgba(13, 79, 110, 0.75);
+  --dogbar-bright-blue: rgba(0, 168, 232, 0.6);
+  --dogbar-accent: rgba(154, 205, 50, 0.6);
+  --dogbar-lime: rgba(118, 196, 66, 0.6);
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile-first responsive */
+@media (max-width: 768px) {
+  section.h-\[600px\] {
+    height: 500px;
+  }
+}

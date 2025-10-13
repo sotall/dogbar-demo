@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Schema Inspector - Dog Bar Admin</title>
+    <link rel="icon" type="image/png" href="../assets/media/logo.png?v=2" />
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="shared/permissions.js"></script>
+    <script src="shared/navigation.js"></script>
+  </head>
+  <body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div class="px-4 py-6 sm:px-0">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">
+          Database Schema Inspector
+        </h1>
+
+        <div class="bg-white shadow rounded-lg p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">
+            Database Information
+          </h2>
+          <div id="dbInfo" class="text-sm text-gray-600">
+            <p>Host: pkomfbezaollhvcpezaw.supabase.co</p>
+            <p>Database: PostgreSQL</p>
+            <p>
+              Status:
+              <span id="connectionStatus" class="text-yellow-600"
+                >Checking...</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6">
+          <!-- Tables Section (with counts) -->
+          <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Tables</h2>
+            <div id="tablesList" class="space-y-2">
+              <div class="text-gray-500">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Table Info -->
+        <div class="mt-6">
+          <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">
+              Table Details
+            </h2>
+            <div id="tableDetails" class="text-gray-500">
+              Click on a table name above to see detailed information
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Supabase configuration
+      const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
+      const supabaseKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      // Initialize when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        checkConnection();
+        loadTables();
+
+        // Header is now handled by shared/header.js
+      });
+
+      // Check database connection
+      async function checkConnection() {
+        try {
+          const { data, error } = await supabase
+            .from("site_content")
+            .select("id")
+            .limit(1);
+
+          if (error) throw error;
+
+          document.getElementById("connectionStatus").textContent =
+            "Connected ✅";
+          document.getElementById("connectionStatus").className =
+            "text-green-600";
+        } catch (error) {
+          document.getElementById("connectionStatus").textContent = "Error ❌";
+          document.getElementById("connectionStatus").className =
+            "text-red-600";
+          console.error("Connection error:", error);
+        }
+      }
+
+      // Load all tables
+      async function loadTables() {
+        try {
+          // Use known tables directly (no RPC needed)
+          // Updated to reflect current schema after cleanup
+          const knownTables = [
+            "site_content",
+            "events",
+            "food_trucks",
+            "admin_users",
+            "customers",
+            "dogs",
+            "medical_records",
+            "dog_images",
+          ];
+          const tablesList = document.getElementById("tablesList");
+          tablesList.innerHTML = "";
+
+          // Fetch counts in parallel
+          const countPromises = knownTables.map(async (tableName) => {
+            try {
+              const { count, error } = await supabase
+                .from(tableName)
+                .select("*", { count: "exact", head: true });
+
+              return { tableName, count: error ? null : count, error };
+            } catch (err) {
+              return { tableName, count: null, error: err };
+            }
+          });
+
+          const results = await Promise.all(countPromises);
+
+          results.forEach(({ tableName, count, error }) => {
+            const tableDiv = document.createElement("div");
+            tableDiv.className =
+              "p-3 border rounded-lg cursor-pointer hover:bg-gray-50 flex items-center justify-between";
+
+            const left = document.createElement("div");
+            left.innerHTML = `
+              <div class="font-medium text-gray-900">${tableName}</div>
+              <div class="text-sm text-gray-500">Click to view details</div>
+            `;
+
+            const right = document.createElement("div");
+            right.className = "text-sm font-medium";
+            if (!error && typeof count === "number") {
+              right.classList.add("text-blue-600");
+              right.textContent = `${count} record${count === 1 ? "" : "s"}`;
+            } else if (
+              error &&
+              (error.code === "PGRST116" ||
+                (error.message || "").includes("does not exist"))
+            ) {
+              right.classList.add("text-yellow-600");
+              right.textContent = "table missing";
+            } else {
+              right.classList.add("text-red-600");
+              right.textContent = "error";
+            }
+
+            tableDiv.appendChild(left);
+            tableDiv.appendChild(right);
+            tableDiv.onclick = () => showTableDetails(tableName);
+            tablesList.appendChild(tableDiv);
+          });
+        } catch (error) {
+          console.error("Error loading tables:", error);
+          document.getElementById("tablesList").innerHTML =
+            '<div class="text-red-600">Error loading tables</div>';
+        }
+      }
+
+      // Show detailed table information
+      async function showTableDetails(tableName) {
+        const detailsDiv = document.getElementById("tableDetails");
+        detailsDiv.innerHTML =
+          '<div class="text-gray-500">Loading table details...</div>';
+
+        try {
+          // Get sample data from the table
+          const { data, error } = await supabase
+            .from(tableName)
+            .select("*")
+            .limit(3);
+
+          if (error) throw error;
+
+          let html = `
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Table: ${tableName}</h3>
+                `;
+
+          if (data && data.length > 0) {
+            // Get column names from first record
+            const columns = Object.keys(data[0]);
+
+            html += `
+                        <div class="mb-4">
+                            <h4 class="font-medium text-gray-900 mb-2">Columns (${columns.length}):</h4>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                    `;
+
+            columns.forEach((col) => {
+              const sampleValue = data[0][col];
+              const type = typeof sampleValue;
+              const typeClass =
+                type === "object"
+                  ? "text-purple-600"
+                  : type === "number"
+                  ? "text-blue-600"
+                  : type === "boolean"
+                  ? "text-green-600"
+                  : "text-gray-600";
+
+              html += `
+                            <div class="flex justify-between">
+                                <span class="font-mono">${col}</span>
+                                <span class="${typeClass}">${type}</span>
+                            </div>
+                        `;
+            });
+
+            html += `
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-2">Sample Data (${
+                              data.length
+                            } records):</h4>
+                            <pre class="bg-gray-100 p-4 rounded text-xs overflow-x-auto">${JSON.stringify(
+                              data,
+                              null,
+                              2
+                            )}</pre>
+                        </div>
+                    `;
+          } else {
+            html +=
+              '<div class="text-gray-500">No data found in this table</div>';
+          }
+
+          detailsDiv.innerHTML = html;
+        } catch (error) {
+          detailsDiv.innerHTML = `
+                    <div class="text-red-600">
+                        <h3 class="text-lg font-semibold mb-2">Error loading table details</h3>
+                        <p class="text-sm">${error.message}</p>
+                    </div>
+                `;
+        }
+      }
+
+      // Add some utility functions
+      window.refreshSchema = function () {
+        loadTables();
+        loadSampleData();
+      };
+
+      window.exportSchema = function () {
+        const schema = {
+          tables: document.getElementById("tablesList").innerHTML,
+          sampleData: document.getElementById("sampleData").innerHTML,
+          timestamp: new Date().toISOString(),
+        };
+
+        const blob = new Blob([JSON.stringify(schema, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "database-schema.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+    </script>
+
+    <!-- Add refresh and export buttons -->
+    <div class="fixed bottom-4 right-4 space-x-2">
+      <button
+        onclick="refreshSchema()"
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+      >
+        Refresh
+      </button>
+      <button
+        onclick="exportSchema()"
+        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+      >
+        Export
+      </button>
+    </div>
+  </body>
+</html>
