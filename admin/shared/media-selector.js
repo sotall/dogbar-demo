@@ -5,38 +5,39 @@
 class MediaSelector {
   constructor(options = {}) {
     // Configuration
-    this.containerId = options.containerId || 'mediaGrid';
-    this.mode = options.mode || 'modal'; // 'modal' or 'page'
+    this.containerId = options.containerId || "mediaGrid";
+    this.mode = options.mode || "modal"; // 'modal' or 'page'
     this.selectionCallback = options.selectionCallback || null;
     this.showDefaultMedia = options.showDefaultMedia || false;
-    this.allowedTypes = options.allowedTypes || ['image', 'video'];
+    this.allowedTypes = options.allowedTypes || ["image", "video"];
     this.pageSize = options.pageSize || 20;
     this.supabaseClient = options.supabaseClient || window.supabase;
-    this.supabaseUrl = options.supabaseUrl || '';
-    
+    this.supabaseUrl = options.supabaseUrl || "";
+
     // State
     this.allFiles = [];
     this.filteredFiles = [];
     this.currentPage = 1;
-    this.searchTerm = '';
-    this.typeFilter = 'all';
-    this.sortBy = 'newest';
+    this.searchTerm = "";
+    this.typeFilter = "all";
+    this.sortBy = "newest";
     this.isLoading = false;
-    
+    this.transformSupported = null; // Will be tested on first load
+
     // Default media from repo
     this.defaultMedia = [
       {
-        name: 'St. Pete Hero Video',
-        url: '/assets/media/videos/hero/st-pete-hero.mp4',
-        type: 'video',
-        isDefault: true
+        name: "St. Pete Hero Video",
+        url: "/assets/media/videos/hero/st-pete-hero.mp4",
+        type: "video",
+        isDefault: true,
       },
       {
-        name: 'Sarasota Hero Video',
-        url: '/assets/media/videos/hero/sarasota-hero.mp4',
-        type: 'video',
-        isDefault: true
-      }
+        name: "Sarasota Hero Video",
+        url: "/assets/media/videos/hero/sarasota-hero.mp4",
+        type: "video",
+        isDefault: true,
+      },
     ];
   }
 
@@ -51,6 +52,11 @@ class MediaSelector {
     // Render loading state
     this.renderLoading();
 
+    // Test if Supabase image transforms are supported (only once)
+    if (this.transformSupported === null) {
+      await this.testTransformSupport();
+    }
+
     // Load media files
     await this.loadMedia();
 
@@ -58,50 +64,74 @@ class MediaSelector {
     this.render();
   }
 
+  // Test if Supabase image transformations are enabled
+  async testTransformSupport() {
+    try {
+      // Use a small test - check if transform params are respected
+      const testUrl = `${this.supabaseUrl}/storage/v1/object/public/media/test?width=1&height=1`;
+      const response = await fetch(testUrl, { method: 'HEAD' });
+      
+      // If we get a 400, transforms aren't supported
+      // If we get 404, that's fine (test file doesn't exist)
+      // If we get 200, transforms might be supported
+      this.transformSupported = response.status !== 400;
+      
+      if (!this.transformSupported) {
+        console.log('⚠️ Supabase image transformations not enabled - using CSS-based thumbnails');
+      } else {
+        console.log('✅ Supabase image transformations detected');
+      }
+    } catch (error) {
+      // On error, assume not supported and fallback to CSS
+      console.warn('Could not test transform support, using CSS thumbnails:', error);
+      this.transformSupported = false;
+    }
+  }
+
   // Load media from Supabase
   async loadMedia() {
     this.isLoading = true;
-    
+
     try {
       const { data, error } = await this.supabaseClient.storage
-        .from('media')
-        .list('', {
+        .from("media")
+        .list("", {
           limit: 1000,
           offset: 0,
-          sortBy: { column: 'created_at', order: 'desc' }
+          sortBy: { column: "created_at", order: "desc" },
         });
 
       if (error) throw error;
 
       // Filter to allowed file types
       const validExtensions = {
-        image: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-        video: ['mp4', 'webm', 'mov']
+        image: ["jpg", "jpeg", "png", "gif", "webp"],
+        video: ["mp4", "webm", "mov"],
       };
 
       const allowedExtensions = [];
-      if (this.allowedTypes.includes('image')) {
+      if (this.allowedTypes.includes("image")) {
         allowedExtensions.push(...validExtensions.image);
       }
-      if (this.allowedTypes.includes('video')) {
+      if (this.allowedTypes.includes("video")) {
         allowedExtensions.push(...validExtensions.video);
       }
 
       this.allFiles = data
-        .filter(file => {
-          const ext = file.name.split('.').pop().toLowerCase();
+        .filter((file) => {
+          const ext = file.name.split(".").pop().toLowerCase();
           return allowedExtensions.includes(ext);
         })
-        .map(file => {
-          const ext = file.name.split('.').pop().toLowerCase();
+        .map((file) => {
+          const ext = file.name.split(".").pop().toLowerCase();
           const isVideo = validExtensions.video.includes(ext);
           return {
             name: file.name,
             url: `${this.supabaseUrl}/storage/v1/object/public/media/${file.name}`,
-            type: isVideo ? 'video' : 'image',
+            type: isVideo ? "video" : "image",
             size: file.metadata?.size || 0,
             created_at: file.created_at,
-            isDefault: false
+            isDefault: false,
           };
         });
 
@@ -113,7 +143,7 @@ class MediaSelector {
       this.isLoading = false;
       this.applyFilters();
     } catch (error) {
-      console.error('Error loading media:', error);
+      console.error("Error loading media:", error);
       this.isLoading = false;
       this.allFiles = this.showDefaultMedia ? [...this.defaultMedia] : [];
       this.applyFilters();
@@ -127,26 +157,26 @@ class MediaSelector {
     // Search filter
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(file => 
+      filtered = filtered.filter((file) =>
         file.name.toLowerCase().includes(term)
       );
     }
 
     // Type filter
-    if (this.typeFilter !== 'all') {
-      filtered = filtered.filter(file => file.type === this.typeFilter);
+    if (this.typeFilter !== "all") {
+      filtered = filtered.filter((file) => file.type === this.typeFilter);
     }
 
     // Sorting
     filtered.sort((a, b) => {
       switch (this.sortBy) {
-        case 'newest':
+        case "newest":
           return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-        case 'oldest':
+        case "oldest":
           return new Date(a.created_at || 0) - new Date(b.created_at || 0);
-        case 'name':
+        case "name":
           return a.name.localeCompare(b.name);
-        case 'size':
+        case "size":
           return (b.size || 0) - (a.size || 0);
         default:
           return 0;
@@ -162,20 +192,26 @@ class MediaSelector {
     }
   }
 
-  // Get thumbnail URL with Supabase transform
+  // Get thumbnail URL with Supabase transform (or fallback to CSS)
   getThumbnailUrl(file) {
     if (file.isDefault) {
       // Default media - return as-is
       return file.url;
     }
 
-    if (file.type === 'video') {
+    if (file.type === "video") {
       // Videos - return full URL (could add poster frame support)
       return file.url;
     }
 
-    // Images - use Supabase transform for thumbnails
-    return `${file.url}?width=300&height=200&resize=cover`;
+    // Images - use Supabase transform if supported, otherwise let CSS handle sizing
+    if (this.transformSupported) {
+      return `${file.url}?width=300&height=200&resize=cover`;
+    } else {
+      // Fallback: return full URL, CSS will size it down
+      // This loads full images but still works
+      return file.url;
+    }
   }
 
   // Render the component
@@ -185,7 +221,7 @@ class MediaSelector {
 
     container.innerHTML = `
       <!-- Filters -->
-      <div class="sticky top-0 bg-white z-10 pb-4 mb-4 border-b border-gray-200">
+      <div class="bg-white pb-4 mb-4 border-b border-gray-200">
         <div class="flex flex-col lg:flex-row lg:items-center gap-3">
           <div class="flex-1 min-w-[200px]">
             <input
@@ -202,19 +238,33 @@ class MediaSelector {
               id="${this.containerId}-type"
               class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             >
-              <option value="all" ${this.typeFilter === 'all' ? 'selected' : ''}>All Types</option>
-              <option value="image" ${this.typeFilter === 'image' ? 'selected' : ''}>Images</option>
-              <option value="video" ${this.typeFilter === 'video' ? 'selected' : ''}>Videos</option>
+              <option value="all" ${
+                this.typeFilter === "all" ? "selected" : ""
+              }>All Types</option>
+              <option value="image" ${
+                this.typeFilter === "image" ? "selected" : ""
+              }>Images</option>
+              <option value="video" ${
+                this.typeFilter === "video" ? "selected" : ""
+              }>Videos</option>
             </select>
             <label class="text-sm text-gray-600">Sort:</label>
             <select
               id="${this.containerId}-sort"
               class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             >
-              <option value="newest" ${this.sortBy === 'newest' ? 'selected' : ''}>Newest First</option>
-              <option value="oldest" ${this.sortBy === 'oldest' ? 'selected' : ''}>Oldest First</option>
-              <option value="name" ${this.sortBy === 'name' ? 'selected' : ''}>Name A-Z</option>
-              <option value="size" ${this.sortBy === 'size' ? 'selected' : ''}>Size</option>
+              <option value="newest" ${
+                this.sortBy === "newest" ? "selected" : ""
+              }>Newest First</option>
+              <option value="oldest" ${
+                this.sortBy === "oldest" ? "selected" : ""
+              }>Oldest First</option>
+              <option value="name" ${
+                this.sortBy === "name" ? "selected" : ""
+              }>Name A-Z</option>
+              <option value="size" ${
+                this.sortBy === "size" ? "selected" : ""
+              }>Size</option>
             </select>
           </div>
         </div>
@@ -226,7 +276,7 @@ class MediaSelector {
       </div>
 
       <!-- Pagination -->
-      <div class="sticky bottom-0 bg-white z-10 pt-4 mt-4 border-t border-gray-200">
+      <div class="bg-white pt-4 mt-4 border-t border-gray-200">
         ${this.renderPagination()}
       </div>
     `;
@@ -265,7 +315,9 @@ class MediaSelector {
 
     return `
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        ${pageFiles.map((file, index) => this.renderMediaItem(file, startIndex + index)).join('')}
+        ${pageFiles
+          .map((file, index) => this.renderMediaItem(file, startIndex + index))
+          .join("")}
       </div>
     `;
   }
@@ -273,7 +325,7 @@ class MediaSelector {
   // Render a single media item
   renderMediaItem(file, index) {
     const thumbnailUrl = this.getThumbnailUrl(file);
-    const isVideo = file.type === 'video';
+    const isVideo = file.type === "video";
 
     return `
       <div 
@@ -284,7 +336,9 @@ class MediaSelector {
         data-media-name="${file.name}"
       >
         <div class="aspect-video bg-gray-100 flex items-center justify-center">
-          ${isVideo ? `
+          ${
+            isVideo
+              ? `
             <video src="${thumbnailUrl}" class="w-full h-full object-cover" muted preload="metadata"></video>
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div class="bg-black/60 rounded-full p-3">
@@ -293,21 +347,31 @@ class MediaSelector {
                 </svg>
               </div>
             </div>
-          ` : `
+          `
+              : `
             <img src="${thumbnailUrl}" alt="${file.name}" class="w-full h-full object-cover" loading="lazy" />
-          `}
+          `
+          }
         </div>
         <div class="p-3">
-          <p class="text-sm font-medium text-gray-900 truncate" title="${file.name}">${file.name}</p>
-          <p class="text-xs text-gray-500 mt-1">${file.type}${file.isDefault ? ' • Default' : ''}</p>
+          <p class="text-sm font-medium text-gray-900 truncate" title="${
+            file.name
+          }">${file.name}</p>
+          <p class="text-xs text-gray-500 mt-1">${file.type}${
+      file.isDefault ? " • Default" : ""
+    }</p>
         </div>
-        ${this.mode === 'modal' ? `
+        ${
+          this.mode === "modal"
+            ? `
           <div class="absolute inset-0 bg-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <button class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium">
               Select
             </button>
           </div>
-        ` : ''}
+        `
+            : ""
+        }
       </div>
     `;
   }
@@ -315,7 +379,7 @@ class MediaSelector {
   // Render pagination controls
   renderPagination() {
     const totalPages = Math.ceil(this.filteredFiles.length / this.pageSize);
-    
+
     if (totalPages <= 1) {
       return `
         <div class="flex items-center justify-between text-sm text-gray-600">
@@ -325,7 +389,10 @@ class MediaSelector {
     }
 
     const startItem = (this.currentPage - 1) * this.pageSize + 1;
-    const endItem = Math.min(this.currentPage * this.pageSize, this.filteredFiles.length);
+    const endItem = Math.min(
+      this.currentPage * this.pageSize,
+      this.filteredFiles.length
+    );
 
     return `
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -340,17 +407,25 @@ class MediaSelector {
             id="${this.containerId}-pageSize"
             class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
           >
-            <option value="12" ${this.pageSize === 12 ? 'selected' : ''}>12 per page</option>
-            <option value="20" ${this.pageSize === 20 ? 'selected' : ''}>20 per page</option>
-            <option value="36" ${this.pageSize === 36 ? 'selected' : ''}>36 per page</option>
-            <option value="50" ${this.pageSize === 50 ? 'selected' : ''}>50 per page</option>
+            <option value="12" ${
+              this.pageSize === 12 ? "selected" : ""
+            }>12 per page</option>
+            <option value="20" ${
+              this.pageSize === 20 ? "selected" : ""
+            }>20 per page</option>
+            <option value="36" ${
+              this.pageSize === 36 ? "selected" : ""
+            }>36 per page</option>
+            <option value="50" ${
+              this.pageSize === 50 ? "selected" : ""
+            }>50 per page</option>
           </select>
 
           <!-- Previous Button -->
           <button 
             id="${this.containerId}-prevPage"
             class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            ${this.currentPage === 1 ? 'disabled' : ''}
+            ${this.currentPage === 1 ? "disabled" : ""}
           >
             Previous
           </button>
@@ -373,7 +448,7 @@ class MediaSelector {
           <button 
             id="${this.containerId}-nextPage"
             class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            ${this.currentPage === totalPages ? 'disabled' : ''}
+            ${this.currentPage === totalPages ? "disabled" : ""}
           >
             Next
           </button>
@@ -400,7 +475,7 @@ class MediaSelector {
     // Search
     const searchInput = document.getElementById(`${this.containerId}-search`);
     if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
+      searchInput.addEventListener("input", (e) => {
         this.searchTerm = e.target.value;
         this.currentPage = 1;
         this.applyFilters();
@@ -411,7 +486,7 @@ class MediaSelector {
     // Type filter
     const typeFilter = document.getElementById(`${this.containerId}-type`);
     if (typeFilter) {
-      typeFilter.addEventListener('change', (e) => {
+      typeFilter.addEventListener("change", (e) => {
         this.typeFilter = e.target.value;
         this.currentPage = 1;
         this.applyFilters();
@@ -422,7 +497,7 @@ class MediaSelector {
     // Sort
     const sortSelect = document.getElementById(`${this.containerId}-sort`);
     if (sortSelect) {
-      sortSelect.addEventListener('change', (e) => {
+      sortSelect.addEventListener("change", (e) => {
         this.sortBy = e.target.value;
         this.applyFilters();
         this.render();
@@ -430,9 +505,11 @@ class MediaSelector {
     }
 
     // Page size
-    const pageSizeSelect = document.getElementById(`${this.containerId}-pageSize`);
+    const pageSizeSelect = document.getElementById(
+      `${this.containerId}-pageSize`
+    );
     if (pageSizeSelect) {
-      pageSizeSelect.addEventListener('change', (e) => {
+      pageSizeSelect.addEventListener("change", (e) => {
         this.pageSize = parseInt(e.target.value);
         this.currentPage = 1;
         this.render();
@@ -442,7 +519,7 @@ class MediaSelector {
     // Previous page
     const prevBtn = document.getElementById(`${this.containerId}-prevPage`);
     if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
+      prevBtn.addEventListener("click", () => {
         if (this.currentPage > 1) {
           this.currentPage--;
           this.render();
@@ -454,7 +531,7 @@ class MediaSelector {
     // Next page
     const nextBtn = document.getElementById(`${this.containerId}-nextPage`);
     if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
+      nextBtn.addEventListener("click", () => {
         const totalPages = Math.ceil(this.filteredFiles.length / this.pageSize);
         if (this.currentPage < totalPages) {
           this.currentPage++;
@@ -465,9 +542,11 @@ class MediaSelector {
     }
 
     // Page jump
-    const pageJumpInput = document.getElementById(`${this.containerId}-pageJump`);
+    const pageJumpInput = document.getElementById(
+      `${this.containerId}-pageJump`
+    );
     if (pageJumpInput) {
-      pageJumpInput.addEventListener('change', (e) => {
+      pageJumpInput.addEventListener("change", (e) => {
         const page = parseInt(e.target.value);
         const totalPages = Math.ceil(this.filteredFiles.length / this.pageSize);
         if (page >= 1 && page <= totalPages) {
@@ -481,10 +560,10 @@ class MediaSelector {
     }
 
     // Media item clicks (for selection in modal mode)
-    if (this.mode === 'modal' && this.selectionCallback) {
+    if (this.mode === "modal" && this.selectionCallback) {
       const container = document.getElementById(this.containerId);
-      container.addEventListener('click', (e) => {
-        const mediaCard = e.target.closest('[data-media-index]');
+      container.addEventListener("click", (e) => {
+        const mediaCard = e.target.closest("[data-media-index]");
         if (mediaCard) {
           const url = mediaCard.dataset.mediaUrl;
           const type = mediaCard.dataset.mediaType;
@@ -506,9 +585,13 @@ class MediaSelector {
   scrollToTop() {
     const container = document.getElementById(this.containerId);
     if (container) {
-      const scrollableParent = container.closest('.overflow-y-auto');
+      // Find the scrollable parent (modal content or page container)
+      const scrollableParent = container.closest(".overflow-y-auto, .overflow-y-scroll");
       if (scrollableParent) {
         scrollableParent.scrollTop = 0;
+      } else {
+        // Fallback: scroll the container itself
+        container.scrollTop = 0;
       }
     }
   }
@@ -521,7 +604,6 @@ class MediaSelector {
 }
 
 // Export for use in other files
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   window.MediaSelector = MediaSelector;
 }
-
