@@ -398,24 +398,25 @@ class MediaSelector {
       html += this.renderBulkToolbar();
     }
 
-    // Filters
-    html += `<div class="bg-white pb-4 mb-4 border-b border-gray-200">`;
-    html += this.renderFilters();
+    // Main container with dark background
+    html += `<div class="bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700 rounded-xl shadow-lg p-6">`;
+
+    // Filters and Pagination combined at TOP
+    html += `<div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-6">`;
+    html += this.renderFiltersAndPagination();
     html += `</div>`;
 
-    // Media header (file count + view toggle)
+    // Media header (file count + view toggle) - page mode only
     if (this.mode === "page") {
       html += this.renderMediaHeader();
     }
 
     // Grid/List
-    html += `<div id="${this.containerId}-grid" class="mb-4">`;
+    html += `<div id="${this.containerId}-grid" class="mb-0">`;
     html += this.renderGrid();
     html += `</div>`;
 
-    // Pagination
-    html += `<div class="bg-white pt-4 mt-4 border-t border-gray-200">`;
-    html += this.renderPagination();
+    // Close main container
     html += `</div>`;
 
     container.innerHTML = html;
@@ -472,40 +473,101 @@ class MediaSelector {
     `;
   }
 
-  // Render filters
-  renderFilters() {
+  // Render filters and pagination combined
+  renderFiltersAndPagination() {
+    const totalPages = Math.ceil(this.filteredFiles.length / this.pageSize);
+    const startItem = this.filteredFiles.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
+    const endItem = Math.min(this.currentPage * this.pageSize, this.filteredFiles.length);
+
     return `
-      <div class="flex flex-col lg:flex-row lg:items-center gap-3">
-        <div class="flex-1 min-w-[200px]">
-          <input
-            type="text"
-            id="${this.containerId}-search"
-            placeholder="Search by file name..."
-            value="${this.searchTerm}"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-          />
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <label class="text-sm text-gray-600">Type:</label>
+      <!-- Search Bar -->
+      <div class="mb-4">
+        <input
+          type="text"
+          id="${this.containerId}-search"
+          placeholder="Search by file name..."
+          value="${this.searchTerm}"
+          class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+        />
+      </div>
+
+      <!-- Filters and Pagination Row -->
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <!-- Left: Filters -->
+        <div class="flex flex-wrap items-center gap-3">
+          <label class="text-sm font-medium text-white">Type:</label>
           <select
             id="${this.containerId}-type"
-            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            class="px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
           >
             <option value="all" ${this.typeFilter === "all" ? "selected" : ""}>All Types</option>
             <option value="image" ${this.typeFilter === "image" ? "selected" : ""}>Images</option>
             <option value="video" ${this.typeFilter === "video" ? "selected" : ""}>Videos</option>
           </select>
-          <label class="text-sm text-gray-600">Sort:</label>
+
+          <label class="text-sm font-medium text-white">Sort:</label>
           <select
             id="${this.containerId}-sort"
-            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            class="px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
           >
             <option value="newest" ${this.sortBy === "newest" ? "selected" : ""}>Newest First</option>
             <option value="oldest" ${this.sortBy === "oldest" ? "selected" : ""}>Oldest First</option>
             <option value="name" ${this.sortBy === "name" ? "selected" : ""}>Name A-Z</option>
             <option value="size" ${this.sortBy === "size" ? "selected" : ""}>Size</option>
           </select>
+
+          <label class="text-sm font-medium text-white">Per Page:</label>
+          <select 
+            id="${this.containerId}-pageSize"
+            class="px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+          >
+            <option value="12" ${this.pageSize === 12 ? "selected" : ""}>12</option>
+            <option value="20" ${this.pageSize === 20 ? "selected" : ""}>20</option>
+            <option value="36" ${this.pageSize === 36 ? "selected" : ""}>36</option>
+            <option value="50" ${this.pageSize === 50 ? "selected" : ""}>50</option>
+          </select>
         </div>
+
+        <!-- Right: Pagination -->
+        ${totalPages > 1 ? `
+        <div class="flex items-center gap-3">
+          <span class="text-sm text-white font-medium">
+            ${startItem}-${endItem} of ${this.filteredFiles.length}
+          </span>
+
+          <button 
+            id="${this.containerId}-prevPage"
+            class="px-3 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+            ${this.currentPage === 1 ? "disabled" : ""}
+          >
+            Previous
+          </button>
+
+          <div class="flex items-center gap-2">
+            <input 
+              type="number" 
+              id="${this.containerId}-pageJump"
+              min="1" 
+              max="${totalPages}" 
+              value="${this.currentPage}"
+              class="w-16 px-2 py-2 bg-white border border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+            />
+            <span class="text-sm text-white">of ${totalPages}</span>
+          </div>
+
+          <button 
+            id="${this.containerId}-nextPage"
+            class="px-3 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+            ${this.currentPage === totalPages ? "disabled" : ""}
+          >
+            Next
+          </button>
+        </div>
+        ` : `
+        <span class="text-sm text-white font-medium">
+          ${this.filteredFiles.length} items
+        </span>
+        `}
       </div>
     `;
   }
@@ -758,71 +820,6 @@ class MediaSelector {
     `;
   }
 
-  // Render pagination controls
-  renderPagination() {
-    const totalPages = Math.ceil(this.filteredFiles.length / this.pageSize);
-
-    if (totalPages <= 1) {
-      return `
-        <div class="flex items-center justify-between text-sm text-gray-600">
-          <span>Showing ${this.filteredFiles.length} items</span>
-        </div>
-      `;
-    }
-
-    const startItem = (this.currentPage - 1) * this.pageSize + 1;
-    const endItem = Math.min(this.currentPage * this.pageSize, this.filteredFiles.length);
-
-    return `
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="text-sm text-gray-600">
-          Showing <span class="font-medium">${startItem}-${endItem}</span> of 
-          <span class="font-medium">${this.filteredFiles.length}</span> items
-        </div>
-        
-        <div class="flex items-center gap-2">
-          <select 
-            id="${this.containerId}-pageSize"
-            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
-          >
-            <option value="12" ${this.pageSize === 12 ? "selected" : ""}>12 per page</option>
-            <option value="20" ${this.pageSize === 20 ? "selected" : ""}>20 per page</option>
-            <option value="36" ${this.pageSize === 36 ? "selected" : ""}>36 per page</option>
-            <option value="50" ${this.pageSize === 50 ? "selected" : ""}>50 per page</option>
-          </select>
-
-          <button 
-            id="${this.containerId}-prevPage"
-            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            ${this.currentPage === 1 ? "disabled" : ""}
-          >
-            Previous
-          </button>
-
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-600">Page</span>
-            <input 
-              type="number" 
-              id="${this.containerId}-pageJump"
-              min="1" 
-              max="${totalPages}" 
-              value="${this.currentPage}"
-              class="w-16 px-2 py-2 border border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-            />
-            <span class="text-sm text-gray-600">of ${totalPages}</span>
-          </div>
-
-          <button 
-            id="${this.containerId}-nextPage"
-            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            ${this.currentPage === totalPages ? "disabled" : ""}
-          >
-            Next
-          </button>
-        </div>
-      </div>
-    `;
-  }
 
   // Render loading state
   renderLoading() {
