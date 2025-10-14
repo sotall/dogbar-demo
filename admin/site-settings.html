@@ -1656,9 +1656,50 @@
         window.currentHeroPage = page;
         
         // Open media library in select mode
-        alert('Media selection integration coming soon. For now, please manually enter the media URL from your media library.');
-        // TODO: Integrate with media library for selection
+        const mediaWindow = window.open(
+          `media.html?mode=select&context=${encodeURIComponent(page + ' page hero background')}`,
+          'selectMedia',
+          'width=1200,height=800,resizable=yes,scrollbars=yes'
+        );
+
+        // If popup was blocked, provide fallback instructions
+        if (!mediaWindow || mediaWindow.closed || typeof mediaWindow.closed === 'undefined') {
+          alert('Please allow popups for this site, or navigate to the Media Library and copy the public URL of your desired image/video.');
+        }
       }
+
+      // Handle media selection callback
+      window.handleMediaSelection = function(url, type, name) {
+        const page = window.currentHeroPage;
+        if (!page) return;
+
+        // Update form fields
+        document.getElementById(`hero-${page}-url`).value = url;
+        document.getElementById(`hero-${page}-type`).value = type;
+
+        // Update preview and current text
+        const currentText = document.getElementById(`hero-${page}-current`);
+        const preview = document.getElementById(`hero-${page}-preview`);
+        
+        currentText.textContent = `${type}: ${name}`;
+        
+        if (type === 'image') {
+          preview.src = url;
+          preview.classList.remove('hidden');
+        } else {
+          preview.classList.add('hidden');
+        }
+
+        // Show/hide playback speed for videos
+        const speedContainer = document.getElementById(`hero-${page}-speed-container`);
+        if (type === 'video') {
+          speedContainer.classList.remove('hidden');
+        } else {
+          speedContainer.classList.add('hidden');
+        }
+
+        alert(`Selected: ${name}\n\nDon't forget to click "Save" to apply your changes!`);
+      };
 
       // Load hero settings for a specific page
       async function loadHeroSettings(page) {

@@ -43,28 +43,30 @@
 - ✅ Converted `pages/contact-us.html` - Now uses `<div id="contact-hero-root"></div>`
 - ✅ All pages fetch settings from database and fallback to gradients
 
-## 🔄 In Progress / TODO (Phase 3)
+### 6. Media Library Integration ✅ COMPLETED
+- ✅ Added selection mode banner to `admin/media.html`
+- ✅ Implemented URL parameter detection (`?mode=select`)
+- ✅ Replaced checkboxes with "Select" buttons in selection mode
+- ✅ Implemented `selectMediaFile()` callback function
+- ✅ Updated `selectHeroMedia()` to open media library in popup window
+- ✅ Created `window.handleMediaSelection()` callback in Site Settings
+- ✅ Auto-updates form fields, preview thumbnail, and shows/hides playback speed
+- ✅ Added cancel button to selection mode banner
 
-### 6. Media Library Integration
-Current state: "Select Media" button shows alert placeholder
+## 🔄 In Progress / TODO (Phase 4)
 
-**TODO:**
-- Add media selection mode to `admin/media.html`
-- Implement file selection callback to Site Settings
-- Auto-detect media type (image/video) from file extension
-- Pass media URL back to Site Settings form
-- Update preview thumbnail when media is selected
-
-### 7. Testing
+### 7. Testing (Manual Testing Needed)
+- [ ] **FIRST**: Run database migration in Supabase SQL Editor
 - [ ] Test with image backgrounds on all pages
 - [ ] Test with video backgrounds on all pages
 - [ ] Test playback speed variations (0.5x, 1.0x, 2.0x)
 - [ ] Test different heights (400px, 600px, 1000px)
+- [ ] Test media library selection popup
 - [ ] Test reset functionality
 - [ ] Test fallback behavior when media fails to load
 - [ ] Test cross-location functionality (st-pete vs sarasota)
 
-### 8. Documentation
+### 8. Documentation (Low Priority)
 - [ ] Update `.docs/PROJECT_FEATURES.md` with detailed feature documentation
 - [ ] Include:
   - Feature overview
@@ -103,9 +105,19 @@ To apply the database migration:
 
 ## Next Steps Priority
 
-1. **High**: Implement media library selection integration (Phase 3, Item 6)
-2. **Medium**: Comprehensive testing across all scenarios
+1. **CRITICAL**: Apply database migration (required for feature to work)
+2. **High**: Manual testing across all scenarios
 3. **Low**: Documentation updates (PROJECT_FEATURES.md)
+
+## Phase 3 Summary (COMPLETED)
+
+- ✅ Added selection mode to media library with banner UI
+- ✅ Detection of `?mode=select` URL parameter
+- ✅ "Select" buttons replace checkboxes in selection mode
+- ✅ Popup window integration with Site Settings
+- ✅ Callback function to pass selected media back
+- ✅ Auto-fill form fields and preview thumbnails
+- ✅ Conditional UI for image vs video settings
 
 ## Phase 2 Summary (COMPLETED)
 
