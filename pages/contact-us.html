@@ -242,40 +242,6 @@
           // Scroll to success message
           successMessage.scrollIntoView({ behavior: "smooth" });
         });
-
-        // Load contact information from database
-        async function loadContactInfo() {
-          try {
-            const response = await fetch(`../assets/js/app.js`);
-            // This would be replaced with actual database call
-            // For now, we'll use placeholder data
-
-            // Update contact info elements
-            document.getElementById("contact-address").textContent =
-              "Loading address...";
-            document.getElementById("contact-phone").textContent =
-              "Loading phone...";
-            document.getElementById("contact-email").textContent =
-              "Loading email...";
-
-            // Update hours
-            const hoursContainer = document.getElementById("contact-hours");
-            hoursContainer.innerHTML = `
-                        <p>Mon: Loading...</p>
-                        <p>Tue: Loading...</p>
-                        <p>Wed: Loading...</p>
-                        <p>Thu: Loading...</p>
-                        <p>Fri: Loading...</p>
-                        <p>Sat: Loading...</p>
-                        <p>Sun: Loading...</p>
-                    `;
-          } catch (error) {
-            console.error("Error loading contact info:", error);
-          }
-        }
-
-        // Load contact info when page loads
-        loadContactInfo();
       });
     </script>
 

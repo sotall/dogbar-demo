@@ -422,25 +422,42 @@
     <div id="footer-root"></div>
 
     <script>
-      // Load location-specific contact info
+      // Load location-specific contact info from database
       document.addEventListener("DOMContentLoaded", async function () {
         try {
           const urlParams = new URLSearchParams(window.location.search);
           const location = urlParams.get("location") || "st-pete";
 
-          const response = await fetch(`config/${location}.json`);
-          const config = await response.json();
+          // Wait for Supabase to be available
+          let attempts = 0;
+          while (!window.supabase && attempts < 50) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+          }
 
-          // Update contact information
-          document.getElementById("contact-phone").textContent =
-            config.phone || "Loading...";
-          document.getElementById("contact-email").textContent =
-            config.email || "Loading...";
-          document.getElementById("contact-address").textContent =
-            config.address || "Loading...";
+          if (window.supabase) {
+            const supabaseClient = window.supabase.createClient(
+              import.meta.env.VITE_SUPABASE_URL,
+              import.meta.env.VITE_SUPABASE_ANON_KEY
+            );
 
-          // Update page title
-          document.title = `Party Booking - ${config.title}`;
+            const { data, error } = await supabaseClient
+              .from("site_content")
+              .select("*")
+              .eq("location", location)
+              .limit(1)
+              .single();
+
+            if (!error && data) {
+              document.getElementById("contact-phone").textContent =
+                data.phone || "Loading...";
+              document.getElementById("contact-email").textContent =
+                data.email || "Loading...";
+              document.getElementById("contact-address").textContent =
+                data.address || "Loading...";
+              document.title = `Party Booking - ${data.name || 'The Dog Bar'}`;
+            }
+          }
         } catch (error) {
           console.error("Error loading location config:", error);
         }

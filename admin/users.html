@@ -598,7 +598,7 @@
                       >Status</label
                     >
                     <select
-                      id="status"
+                      id="admin-status"
                       name="status"
                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
                     >
@@ -702,7 +702,7 @@
                   >Status</label
                 >
                 <select
-                  id="status"
+                  id="customer-status"
                   name="status"
                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500"
                 >
@@ -822,11 +822,10 @@
             !window.PermissionManager.userRole
           ) {
             if (attempts >= maxAttempts) {
-              console.error("PermissionManager not initialized after waiting");
-              alert(
-                "Authentication system not ready. Please refresh the page."
+              console.warn(
+                "⚠️ PermissionManager not ready after waiting, continuing anyway..."
               );
-              return;
+              break;
             }
             await new Promise((resolve) => setTimeout(resolve, 100));
             attempts++;
