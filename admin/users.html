@@ -22,8 +22,8 @@
       <div class="px-4 py-6 sm:px-0">
         <div class="flex justify-between items-center mb-6">
           <div>
-            <h2 class="text-2xl font-bold text-gray-900">User Management</h2>
-            <p class="text-gray-600">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white transition-colors">User Management</h2>
+            <p class="text-gray-600 dark:text-gray-400 transition-colors">
               Manage admin accounts, staff, and customer memberships
             </p>
           </div>
@@ -55,9 +55,9 @@
 
         <!-- Admin Users Section -->
         <div id="adminUsersSection" class="space-y-4">
-          <div class="bg-white shadow rounded-lg">
+          <div class="bg-white dark:bg-gray-800 shadow rounded-lg transition-colors">
             <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">Admin Accounts</h3>
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white transition-colors">Admin Accounts</h3>
               <p class="text-sm text-gray-600">
                 Manage staff and admin access levels
               </p>
@@ -92,7 +92,7 @@
             </div>
 
             <!-- Pagination Controls (Top) -->
-            <div class="bg-white border-b border-gray-200 px-6 py-4">
+            <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 transition-colors">
               <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex items-center gap-4">
                   <div class="flex items-center gap-2">
@@ -173,7 +173,7 @@
                 </thead>
                 <tbody
                   id="adminUsersTable"
-                  class="bg-white divide-y divide-gray-200"
+                  class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700 transition-colors"
                 >
                   <!-- Admin users will be loaded here -->
                 </tbody>
@@ -184,9 +184,9 @@
 
         <!-- Customer Memberships Section -->
         <div id="customerMembershipsSection" class="space-y-4 hidden">
-          <div class="bg-white shadow rounded-lg">
+          <div class="bg-white dark:bg-gray-800 shadow rounded-lg transition-colors">
             <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white transition-colors">
                 Customer Memberships
               </h3>
               <p class="text-sm text-gray-600">
@@ -221,7 +221,7 @@
             </div>
 
             <!-- Pagination Controls (Top) -->
-            <div class="bg-white border-b border-gray-200 px-6 py-4">
+            <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 transition-colors">
               <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex items-center gap-4">
                   <div class="flex items-center gap-2">
@@ -308,7 +308,7 @@
                 </thead>
                 <tbody
                   id="customerMembershipsTable"
-                  class="bg-white divide-y divide-gray-200"
+                  class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700 transition-colors"
                 >
                   <!-- Customer memberships will be loaded here -->
                 </tbody>
@@ -325,7 +325,7 @@
       class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50"
     >
       <div
-        class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
+        class="relative top-20 mx-auto p-5 border border-gray-300 dark:border-gray-700 w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 transition-colors"
       >
         <div class="mt-3">
           <div class="flex items-center justify-between mb-4">
@@ -359,7 +359,7 @@
                 <select
                   id="userType"
                   name="userType"
-                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                  class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                 >
                   <option value="admin">Admin User</option>
                   <option value="customer">Customer Membership</option>
@@ -379,7 +379,7 @@
                     id="firstName"
                     name="firstName"
                     required
-                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                    class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     placeholder="Enter first name"
                   />
                 </div>
@@ -391,7 +391,7 @@
                     type="text"
                     id="lastName"
                     name="lastName"
-                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                    class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     placeholder="Enter last name"
                   />
                 </div>
@@ -405,7 +405,7 @@
                   type="text"
                   id="fullName"
                   name="fullName"
-                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                  class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                   placeholder="Auto-filled from first + last name"
                 />
                 <p class="text-xs text-gray-500 mt-2">
@@ -423,7 +423,7 @@
                     id="email"
                     name="email"
                     required
-                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                    class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     placeholder="user@example.com"
                   />
                 </div>
@@ -436,7 +436,7 @@
                     type="tel"
                     id="phone"
                     name="phone"
-                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                    class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     placeholder="(555) 123-4567"
                   />
                 </div>
@@ -455,7 +455,7 @@
                       id="department"
                       name="department"
                       placeholder="e.g., IT, Operations, Management"
-                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                      class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     />
                   </div>
                   <div>
@@ -467,7 +467,7 @@
                       id="jobTitle"
                       name="jobTitle"
                       placeholder="e.g., System Administrator, Manager"
-                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                      class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     />
                   </div>
                 </div>
@@ -481,7 +481,7 @@
                       type="date"
                       id="hireDate"
                       name="hireDate"
-                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                      class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     />
                   </div>
                   <div>
@@ -525,7 +525,7 @@
                     <select
                       id="emailVerified"
                       name="emailVerified"
-                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                      class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     >
                       <option value="true">Yes</option>
                       <option value="false">No</option>
@@ -541,7 +541,7 @@
                     <select
                       id="twoFactorEnabled"
                       name="twoFactorEnabled"
-                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                      class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     >
                       <option value="false">Disabled</option>
                       <option value="true">Enabled</option>
@@ -586,7 +586,7 @@
                     <select
                       id="role"
                       name="role"
-                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                      class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     >
                       <option value="staff" selected>Staff</option>
                       <option value="admin">Admin</option>
@@ -601,7 +601,7 @@
                     <select
                       id="admin-status"
                       name="status"
-                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                      class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                     >
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
@@ -622,7 +622,7 @@
                         type="password"
                         id="password"
                         name="password"
-                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition-colors"
+                        class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-colors"
                         placeholder="Enter new password"
                       />
                       <p class="text-xs text-gray-500 mt-2">
