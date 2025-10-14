@@ -29,8 +29,8 @@
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between mb-6">
         <div>
-          <h2 class="text-3xl font-bold text-gray-900">Audit Logs</h2>
-          <p class="text-gray-600">
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Audit Logs</h2>
+          <p class="text-gray-600 dark:text-gray-400 transition-colors">
             Review critical actions performed across the admin portal.
           </p>
         </div>
@@ -43,7 +43,7 @@
       </div>
 
       <!-- Filters -->
-      <div class="bg-white shadow rounded-xl p-6 mb-6">
+      <div class="bg-white dark:bg-gray-800 shadow rounded-xl transition-colors p-6 mb-6">
         <form id="filtersForm" class="grid grid-cols-1 lg:grid-cols-4 gap-4">
           <div>
             <label
@@ -113,16 +113,16 @@
       </div>
 
       <!-- Logs Table -->
-      <div class="bg-white shadow rounded-xl overflow-hidden">
+      <div class="bg-white dark:bg-gray-800 shadow rounded-xl transition-colors overflow-hidden">
         <div
           class="px-6 py-4 border-b border-gray-200 flex justify-between items-center"
         >
-          <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white transition-colors">Recent Activity</h3>
           <span id="lastUpdated" class="text-sm text-gray-500"></span>
         </div>
 
         <!-- Pagination Controls (Top) -->
-        <div class="bg-white border-b border-gray-200 px-6 py-4">
+        <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 transition-colors">
           <div
             class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
           >
@@ -221,7 +221,7 @@
             </thead>
             <tbody
               id="logsTableBody"
-              class="bg-white divide-y divide-gray-200"
+              class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700 transition-colors"
             ></tbody>
           </table>
         </div>

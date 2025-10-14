@@ -63,8 +63,8 @@
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <!-- Page Header -->
       <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-900">Admin Dashboard</h2>
-        <p class="text-gray-600">Manage your Dog Bar website and content</p>
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Admin Dashboard</h2>
+        <p class="text-gray-600 dark:text-gray-300 transition-colors">Manage your Dog Bar website and content</p>
       </div>
 
       <!-- Stats Overview -->
@@ -114,25 +114,25 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Events Management -->
         <div
-          class="admin-card bg-white rounded-xl shadow-lg p-6"
-          onclick="navigateTo('events')"
+          class="admin-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors"
+          onclick="navigateTo('config')"
         >
           <div class="flex items-center mb-4">
             <div
-              class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mr-4"
+              class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4"
             >
-              <span class="text-2xl">📅</span>
+              <span class="text-2xl">⚙️</span>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900">
-              Events Management
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white transition-colors">
+              Site Configuration
             </h3>
           </div>
-          <p class="text-gray-600 mb-4">
-            Manage events, food trucks, and special occasions. Create, edit, and
-            organize your calendar.
+          <p class="text-gray-600 dark:text-gray-300 transition-colors mb-4">
+            Configure home page settings, site content, and global preferences.
+            Customize your website appearance.
           </p>
-          <div class="flex items-center text-emerald-600 font-medium">
-            <span>Manage Events</span>
+          <div class="flex items-center text-purple-600 dark:text-purple-400 font-medium transition-colors">
+            <span>Configure Site</span>
             <svg
               class="w-4 h-4 ml-2"
               fill="none"
@@ -151,7 +151,7 @@
 
         <!-- Media Library -->
         <div
-          class="admin-card bg-white rounded-xl shadow-lg p-6"
+          class="admin-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors"
           onclick="navigateTo('media')"
         >
           <div class="flex items-center mb-4">
@@ -160,13 +160,15 @@
             >
               <span class="text-2xl">🖼️</span>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900">Media Library</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white transition-colors">
+              Media Library
+            </h3>
           </div>
-          <p class="text-gray-600 mb-4">
+          <p class="text-gray-600 dark:text-gray-300 transition-colors mb-4">
             Upload, organize, and manage images and media files. Drag and drop
             to assign images to events.
           </p>
-          <div class="flex items-center text-blue-600 font-medium">
+          <div class="flex items-center text-blue-600 dark:text-blue-400 font-medium transition-colors">
             <span>Manage Media</span>
             <svg
               class="w-4 h-4 ml-2"
@@ -186,7 +188,7 @@
 
         <!-- Site Configuration -->
         <div
-          class="admin-card bg-white rounded-xl shadow-lg p-6"
+          class="admin-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors"
           onclick="navigateTo('config')"
         >
           <div class="flex items-center mb-4">
@@ -195,9 +197,13 @@
             >
               <span class="text-2xl">⚙️</span>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white transition-colors">
               Site Configuration
             </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 transition-colors">
+              Configure home page settings, site content, and global preferences.
+              Customize your website appearance.
+            </p>
           </div>
           <p class="text-gray-600 mb-4">
             Configure home page settings, site content, and global preferences.
@@ -223,12 +229,12 @@
       </div>
 
       <!-- Recent Activity -->
-      <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+      <div class="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white transition-colors mb-4">
           Recent Activity
         </h3>
         <div id="recentActivity" class="space-y-3">
-          <div class="flex items-center text-sm text-gray-600">
+          <div class="flex items-center text-sm text-gray-600 dark:text-gray-300 transition-colors">
             <div class="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
             <span>Loading recent activity...</span>
           </div>

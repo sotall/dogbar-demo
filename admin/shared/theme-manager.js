@@ -12,11 +12,23 @@ class ThemeManager {
   }
 
   applyTheme(theme) {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
+    const isDark = theme === "dark";
+    document.documentElement.classList.toggle("dark", isDark);
+
+    const applyToBody = () => {
+      if (!document.body) return;
+      document.body.classList.toggle("dark", isDark);
+      document.body.dataset.theme = isDark ? "dark" : "light";
+    };
+
+    if (document.body) {
+      applyToBody();
     } else {
-      document.documentElement.classList.remove("dark");
+      document.addEventListener("DOMContentLoaded", applyToBody, {
+        once: true,
+      });
     }
+
     this.currentTheme = theme;
     localStorage.setItem("admin-theme", theme);
     this.notifyChange();
