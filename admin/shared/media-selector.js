@@ -23,7 +23,7 @@ class MediaSelector {
     this.sortBy = "newest";
     this.isLoading = false;
     this.transformSupported = null; // Will be tested on first load
-    
+
     // Image cache for better performance (like media.html)
     this.imageCache = new Map();
 
@@ -69,31 +69,31 @@ class MediaSelector {
 
   // Test if Supabase image transformations are enabled
   async testTransformSupport() {
+    // Supabase image transformations require a Pro plan or higher
+    // Since most users are on free tier and testing causes 400 errors in console,
+    // we'll assume transforms are NOT supported by default
+    // If you upgrade to Pro plan, set this to true manually or enable testing
+    
+    this.transformSupported = false;
+    
+    console.log(
+      "ℹ️ Image transformations disabled (Pro plan feature) - using CSS-based thumbnails"
+    );
+    
+    // Uncomment below to test if transforms are available (will show 400 error if not):
+    /*
     try {
-      // Use a small test - check if transform params are respected
       const testUrl = `${this.supabaseUrl}/storage/v1/object/public/media/test?width=1&height=1`;
       const response = await fetch(testUrl, { method: "HEAD" });
-
-      // If we get a 400, transforms aren't supported
-      // If we get 404, that's fine (test file doesn't exist)
-      // If we get 200, transforms might be supported
       this.transformSupported = response.status !== 400;
-
-      if (!this.transformSupported) {
-        console.log(
-          "⚠️ Supabase image transformations not enabled - using CSS-based thumbnails"
-        );
-      } else {
+      
+      if (this.transformSupported) {
         console.log("✅ Supabase image transformations detected");
       }
     } catch (error) {
-      // On error, assume not supported and fallback to CSS
-      console.warn(
-        "Could not test transform support, using CSS thumbnails:",
-        error
-      );
       this.transformSupported = false;
     }
+    */
   }
 
   // Load media from Supabase
