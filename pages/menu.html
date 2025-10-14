@@ -44,16 +44,7 @@
     <div id="header-root"></div>
 
     <!-- Hero Section -->
-    <section
-      class="bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 py-16"
-    >
-      <div class="container mx-auto px-4 pt-20 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Menu 🍽️</h1>
-        <p class="text-xl text-white/90 max-w-2xl mx-auto">
-          Delicious food from our food trucks and craft beverages for everyone
-        </p>
-      </div>
-    </section>
+    <div id="menu-hero-root"></div>
 
     <!-- Navigation Links -->
     <div class="sticky-nav py-4">
@@ -648,5 +639,31 @@
 
     <!-- Footer Component -->
     <div id="footer-root"></div>
+
+    <!-- Page Hero Utility -->
+    <script type="module" src="/assets/js/utils/page-hero.js"></script>
+
+    <!-- Initialize Menu Page Hero -->
+    <script type="module">
+      async function initMenuHero() {
+        let attempts = 0;
+        while ((!window.supabase || !window.renderPageHero) && attempts < 50) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          attempts++;
+        }
+
+        if (window.renderPageHero) {
+          const location = localStorage.getItem('dogbar_location') || 'st-pete';
+          
+          await window.renderPageHero('menu', location, {
+            title: 'Menu 🍽️',
+            subtitle: 'Delicious food from our food trucks and craft beverages for everyone',
+            gradientClass: 'bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600'
+          });
+        }
+      }
+
+      initMenuHero();
+    </script>
   </body>
 </html>

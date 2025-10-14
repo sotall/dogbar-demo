@@ -21,17 +21,7 @@
     <!-- Main Content -->
     <main class="min-h-screen">
       <!-- Hero Section -->
-      <section
-        class="bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 text-white py-16"
-      >
-        <div class="container mx-auto px-4 pt-20 text-center">
-          <h1 class="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
-          <p class="text-xl text-white/90 max-w-2xl mx-auto">
-            We'd love to hear from you! Get in touch with us for questions,
-            feedback, or to plan your next visit.
-          </p>
-        </div>
-      </section>
+      <div id="contact-hero-root"></div>
 
       <!-- Contact Content -->
       <section class="py-16">
@@ -287,6 +277,32 @@
         // Load contact info when page loads
         loadContactInfo();
       });
+    </script>
+
+    <!-- Page Hero Utility -->
+    <script type="module" src="/assets/js/utils/page-hero.js"></script>
+
+    <!-- Initialize Contact Page Hero -->
+    <script type="module">
+      async function initContactHero() {
+        let attempts = 0;
+        while ((!window.supabase || !window.renderPageHero) && attempts < 50) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          attempts++;
+        }
+
+        if (window.renderPageHero) {
+          const location = localStorage.getItem('dogbar_location') || 'st-pete';
+          
+          await window.renderPageHero('contact', location, {
+            title: 'Contact Us 📞',
+            subtitle: 'We\'d love to hear from you! Get in touch with us for questions, feedback, or to plan your next visit.',
+            gradientClass: 'bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600'
+          });
+        }
+      }
+
+      initContactHero();
     </script>
   </body>
 </html>

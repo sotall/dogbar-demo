@@ -35,21 +35,15 @@
   - Apply custom height from settings
   - Handle errors gracefully
 
-## 🔄 In Progress / TODO (Phase 2)
+### 5. Other Pages Hero Sections ✅ COMPLETED
+- ✅ Created reusable `assets/js/utils/page-hero.js` utility
+- ✅ Converted `pages/calendar.html` - Now uses `<div id="events-hero-root"></div>`
+- ✅ Converted `pages/menu.html` - Now uses `<div id="menu-hero-root"></div>`
+- ✅ Converted `pages/party-booking.html` - Now uses `<div id="parties-hero-root"></div>`
+- ✅ Converted `pages/contact-us.html` - Now uses `<div id="contact-hero-root"></div>`
+- ✅ All pages fetch settings from database and fallback to gradients
 
-### 5. Other Pages Hero Sections
-The following pages still have hardcoded hero sections and need to be converted to use the database settings:
-
-- `pages/calendar.html` - Currently: `bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 py-16`
-- `pages/menu.html` - Currently: `bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 py-16`
-- `pages/party-booking.html` - Currently: `gradient-bg py-16` with custom CSS
-- `pages/contact-us.html` - Currently: Blue gradient section
-
-**Approach:**
-1. Create a reusable `renderPageHero(page, location, content)` function
-2. Replace static `<section>` tags with `<div id="{page}-hero-root"></div>`
-3. Call render function on page load to fetch settings and build hero dynamically
-4. Ensure backward compatibility with gradients as fallback
+## 🔄 In Progress / TODO (Phase 3)
 
 ### 6. Media Library Integration
 Current state: "Select Media" button shows alert placeholder
@@ -109,10 +103,17 @@ To apply the database migration:
 
 ## Next Steps Priority
 
-1. **High**: Implement media library selection integration (Phase 2, Item 6)
-2. **High**: Convert other pages to dynamic heroes (Phase 2, Item 5)
-3. **Medium**: Comprehensive testing across all scenarios
-4. **Low**: Documentation updates
+1. **High**: Implement media library selection integration (Phase 3, Item 6)
+2. **Medium**: Comprehensive testing across all scenarios
+3. **Low**: Documentation updates (PROJECT_FEATURES.md)
+
+## Phase 2 Summary (COMPLETED)
+
+- ✅ Created `assets/js/utils/page-hero.js` - Reusable hero renderer
+- ✅ Supports custom images, videos, and gradient fallbacks
+- ✅ Configurable height, playback speed, title, subtitle, buttons
+- ✅ All 4 static pages converted to use dynamic heroes
+- ✅ Maintains backward compatibility with default gradients
 
 ## Known Limitations
 
