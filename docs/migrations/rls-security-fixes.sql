@@ -122,7 +122,7 @@ USING (
 -- ================================================
 -- IMPORTANT: After applying these policies
 -- ================================================
--- 1. Re-run security test at: http://localhost:5173/test-security.html
+-- 1. Re-run security test at: http://localhost:5173/tests/test-security.html
 -- 2. Verify all 3 vulnerabilities now show BLOCKED
 -- 3. Test admin portal still works for authenticated users
 -- 4. Test public site still displays published events

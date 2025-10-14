@@ -29,7 +29,7 @@ Server will start on `http://localhost:5173` or `http://localhost:5174`
 
 ### Step 2: Open Test Suite
 
-Navigate to: `http://localhost:5173/test-security.html`
+Navigate to: `http://localhost:5173/tests/test-security.html`
 
 ### Step 3: Run Tests
 
@@ -73,7 +73,7 @@ Results are color-coded:
 
 **Good news!** Your security measures are working. No fixes needed for those areas.
 
-Document this in `SECURITY-AUDIT-REPORT.md`:
+Document this in `docs/security/SECURITY-AUDIT-REPORT.md`:
 
 ```markdown
 ## Test Results (Date: 2025-10-14)
@@ -109,7 +109,7 @@ Document this in `SECURITY-AUDIT-REPORT.md`:
 **Issue:** Unauthenticated PHP upload allowed
 **Severity:** HIGH
 **Root Cause:** No storage policy restricting file types
-**Fix:** Add Supabase storage policy (see SECURITY-AUDIT-REPORT.md)
+**Fix:** Add Supabase storage policy (see docs/security/SECURITY-AUDIT-REPORT.md)
 **Status:** PENDING FIX
 ```
 
@@ -247,7 +247,7 @@ Should NOT trigger alert.
 
 1. **Document All Findings**
 
-   - Update `SECURITY-AUDIT-REPORT.md`
+   - Update `docs/security/SECURITY-AUDIT-REPORT.md`
    - Mark items as ✅ SECURE or ❌ VULNERABLE
    - Include test evidence (screenshots)
 
@@ -280,7 +280,7 @@ Before marking security audit complete:
 - [ ] Fixed any ❌ VULNERABLE items found
 - [ ] Re-tested after fixes
 - [ ] Verified security headers on deployed site
-- [ ] Updated SECURITY-AUDIT-REPORT.md with final status
+- [ ] Updated docs/security/SECURITY-AUDIT-REPORT.md with final status
 - [ ] Deleted test events from database
 
 ---
@@ -318,7 +318,7 @@ Before marking security audit complete:
 
 **If tests show vulnerabilities:**
 
-- Review `SECURITY-AUDIT-REPORT.md` for detailed fixes
+- Review `docs/security/SECURITY-AUDIT-REPORT.md` for detailed fixes
 - Check Supabase documentation for RLS policies
 - Test in isolated environment first
 

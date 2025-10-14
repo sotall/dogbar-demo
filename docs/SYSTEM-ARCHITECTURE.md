@@ -271,7 +271,8 @@ Dogbar/
 │   └── frontend-security-scan.js   # Frontend security scan
 ├── index.html                      # St. Pete homepage
 ├── site.html                       # Sarasota homepage
-├── test-security.html              # Security testing page
+├── tests/                          # Testing suite
+│   └── test-security.html          # Security testing page
 ├── vercel.json                     # Vercel deployment config
 └── tailwind.config.js              # Tailwind CSS config
 ```
@@ -473,7 +474,7 @@ VITE_APP_ENV=production
 - **Database Schema:** `docs/DATABASE-SCHEMA.md`
 - **API Endpoints:** `docs/API-ENDPOINTS.md`
 - **System Architecture:** `docs/SYSTEM-ARCHITECTURE.md` (this file)
-- **Security Audit:** `SECURITY-AUDIT-REPORT.md`
+- **Security Audit:** `docs/security/SECURITY-AUDIT-REPORT.md`
 
 ### User Documentation
 
