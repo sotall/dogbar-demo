@@ -33,6 +33,7 @@
     <!-- Shared Scripts -->
     <script type="module" src="shared/permissions.js"></script>
     <script type="module" src="shared/navigation.js"></script>
+    <script type="module" src="shared/media-selector.js"></script>
 
     <style>
       body {
@@ -1055,72 +1056,10 @@
             </button>
           </div>
 
-          <!-- Tabs -->
-          <div class="border-b border-gray-200">
-            <nav class="flex -mb-px" role="tablist">
-              <button
-                class="media-tab px-6 py-3 text-sm font-medium border-b-2 border-emerald-500 text-emerald-600"
-                data-tab="default"
-                onclick="switchMediaTab('default')"
-              >
-                Default Media
-              </button>
-              <button
-                class="media-tab px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700"
-                data-tab="uploaded"
-                onclick="switchMediaTab('uploaded')"
-              >
-                Uploaded Media
-              </button>
-            </nav>
-          </div>
-
           <!-- Content -->
-          <div class="p-6 overflow-y-auto max-h-[calc(90vh-12rem)]">
-            <!-- Default Media Tab -->
-            <div id="defaultMediaTab" class="media-tab-content">
-              <div
-                id="defaultMediaGrid"
-                class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-              >
-                <!-- Will be populated by JavaScript -->
-              </div>
-            </div>
-
-            <!-- Uploaded Media Tab -->
-            <div id="uploadedMediaTab" class="media-tab-content hidden">
-              <div id="uploadedMediaLoading" class="text-center py-8">
-                <div
-                  class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"
-                ></div>
-                <p class="text-gray-600 mt-2">Loading media files...</p>
-              </div>
-              <div
-                id="uploadedMediaGrid"
-                class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden"
-              >
-                <!-- Will be populated by JavaScript -->
-              </div>
-              <div id="uploadedMediaEmpty" class="text-center py-8 hidden">
-                <svg
-                  class="mx-auto h-12 w-12 text-gray-400 mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  ></path>
-                </svg>
-                <p class="text-gray-500">No media files found</p>
-                <p class="text-sm text-gray-400 mt-2">
-                  Upload files from the Media Library
-                </p>
-              </div>
-            </div>
+          <div class="p-6 overflow-y-auto max-h-[60vh]">
+            <!-- Media Selector Component Container -->
+            <div id="mediaSelectorGrid"></div>
           </div>
 
           <!-- Footer -->
@@ -2131,38 +2070,31 @@
         });
       });
 
-      // Default media from repo
-      const defaultMedia = [
-        {
-          name: "St. Pete Hero Video",
-          url: "/assets/media/videos/hero/st-pete-hero.mp4",
-          type: "video",
-          thumbnail: "/assets/media/videos/hero/st-pete-hero.mp4",
-        },
-        {
-          name: "Sarasota Hero Video",
-          url: "/assets/media/videos/hero/sarasota-hero.mp4",
-          type: "video",
-          thumbnail: "/assets/media/videos/hero/sarasota-hero.mp4",
-        },
-      ];
+      // Initialize media selector for hero backgrounds
+      let mediaSelector = null;
 
       // Select media for hero background
       async function selectHeroMedia(page) {
-        // Store current page for callback
         window.currentHeroPage = page;
-
-        // Show modal
         openMediaSelectionModal();
-
-        // Load default media
-        renderDefaultMedia();
-
-        // Switch to default tab
-        switchMediaTab("default");
+        
+        // Initialize media selector on first open
+        if (!mediaSelector) {
+          mediaSelector = new MediaSelector({
+            containerId: 'mediaSelectorGrid',
+            mode: 'modal',
+            selectionCallback: selectMedia,
+            showDefaultMedia: true,
+            pageSize: 12,
+            supabaseClient: supabase,
+            supabaseUrl: supabaseUrl
+          });
+        }
+        
+        // Load/refresh media
+        await mediaSelector.init();
       }
 
-      // Open media selection modal
       function openMediaSelectionModal() {
         const modal = document.getElementById("mediaSelectionModal");
         modal.classList.remove("hidden");
@@ -2173,7 +2105,6 @@
         });
       }
 
-      // Close media selection modal
       function closeMediaSelectionModal() {
         const modal = document.getElementById("mediaSelectionModal");
         modal.classList.remove("opacity-100");
@@ -2184,176 +2115,7 @@
         document.body.style.overflow = "";
       }
 
-      // Switch media tab
-      function switchMediaTab(tabName) {
-        // Update tab buttons
-        document.querySelectorAll(".media-tab").forEach((tab) => {
-          if (tab.dataset.tab === tabName) {
-            tab.classList.remove("border-transparent", "text-gray-500");
-            tab.classList.add("border-emerald-500", "text-emerald-600");
-          } else {
-            tab.classList.remove("border-emerald-500", "text-emerald-600");
-            tab.classList.add("border-transparent", "text-gray-500");
-          }
-        });
-
-        // Show/hide tab content
-        document.querySelectorAll(".media-tab-content").forEach((content) => {
-          content.classList.add("hidden");
-        });
-        document
-          .getElementById(`${tabName}MediaTab`)
-          .classList.remove("hidden");
-
-        // Load uploaded media if switching to that tab
-        if (tabName === "uploaded") {
-          loadUploadedMedia();
-        }
-      }
-
-      // Render default media grid
-      function renderDefaultMedia() {
-        const grid = document.getElementById("defaultMediaGrid");
-
-        grid.innerHTML = defaultMedia
-          .map(
-            (media) => `
-          <div class="relative group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-emerald-500"
-               onclick="selectMedia('${media.url}', '${media.type}', '${
-              media.name
-            }')">
-            <div class="aspect-video bg-gray-100 flex items-center justify-center">
-              ${
-                media.type === "video"
-                  ? `
-                <video src="${media.thumbnail}" class="w-full h-full object-cover" muted></video>
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div class="bg-black/60 rounded-full p-3">
-                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
-                    </svg>
-                  </div>
-                </div>
-              `
-                  : `
-                <img src="${media.url}" alt="${media.name}" class="w-full h-full object-cover" />
-              `
-              }
-            </div>
-            <div class="p-3">
-              <p class="text-sm font-medium text-gray-900 truncate">${
-                media.name
-              }</p>
-              <p class="text-xs text-gray-500 mt-1">${media.type}</p>
-            </div>
-            <div class="absolute inset-0 bg-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <button class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium">
-                Select
-              </button>
-            </div>
-          </div>
-        `
-          )
-          .join("");
-      }
-
-      // Load uploaded media from Supabase
-      async function loadUploadedMedia() {
-        const loadingEl = document.getElementById("uploadedMediaLoading");
-        const gridEl = document.getElementById("uploadedMediaGrid");
-        const emptyEl = document.getElementById("uploadedMediaEmpty");
-
-        loadingEl.classList.remove("hidden");
-        gridEl.classList.add("hidden");
-        emptyEl.classList.add("hidden");
-
-        try {
-          const { data, error } = await supabase.storage
-            .from("media")
-            .list("", {
-              limit: 500,
-              offset: 0,
-              sortBy: { column: "created_at", order: "desc" },
-            });
-
-          if (error) throw error;
-
-          // Filter to only images and videos
-          const mediaFiles = data.filter((file) => {
-            const ext = file.name.split(".").pop().toLowerCase();
-            return [
-              "jpg",
-              "jpeg",
-              "png",
-              "gif",
-              "webp",
-              "mp4",
-              "webm",
-              "mov",
-            ].includes(ext);
-          });
-
-          loadingEl.classList.add("hidden");
-
-          if (mediaFiles.length === 0) {
-            emptyEl.classList.remove("hidden");
-            return;
-          }
-
-          gridEl.classList.remove("hidden");
-          gridEl.innerHTML = mediaFiles
-            .map((file) => {
-              const isVideo = ["mp4", "webm", "mov"].includes(
-                file.name.split(".").pop().toLowerCase()
-              );
-              const mediaType = isVideo ? "video" : "image";
-              const publicUrl = `${supabase.supabaseUrl}/storage/v1/object/public/media/${file.name}`;
-
-              return `
-              <div class="relative group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-emerald-500"
-                   onclick="selectMedia('${publicUrl}', '${mediaType}', '${
-                file.name
-              }')">
-                <div class="aspect-video bg-gray-100 flex items-center justify-center">
-                  ${
-                    isVideo
-                      ? `
-                    <video src="${publicUrl}" class="w-full h-full object-cover" muted preload="metadata"></video>
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div class="bg-black/60 rounded-full p-3">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
-                      </div>
-                    </div>
-                  `
-                      : `
-                    <img src="${publicUrl}" alt="${file.name}" class="w-full h-full object-cover" loading="lazy" />
-                  `
-                  }
-                </div>
-                <div class="p-3">
-                  <p class="text-sm font-medium text-gray-900 truncate">${
-                    file.name
-                  }</p>
-                  <p class="text-xs text-gray-500 mt-1">${mediaType}</p>
-                </div>
-                <div class="absolute inset-0 bg-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium">
-                    Select
-                  </button>
-                </div>
-              </div>
-            `;
-            })
-            .join("");
-        } catch (error) {
-          console.error("Error loading uploaded media:", error);
-          loadingEl.classList.add("hidden");
-          emptyEl.classList.remove("hidden");
-          emptyEl.querySelector("p").textContent = "Error loading media files";
-        }
-      }
+      // Old render functions removed - now using MediaSelector component
 
       // Select media handler
       function selectMedia(url, type, name) {
@@ -2397,7 +2159,6 @@
       // Make functions globally available
       window.selectHeroMedia = selectHeroMedia;
       window.closeMediaSelectionModal = closeMediaSelectionModal;
-      window.switchMediaTab = switchMediaTab;
       window.selectMedia = selectMedia;
 
       // Load hero settings for a specific page
