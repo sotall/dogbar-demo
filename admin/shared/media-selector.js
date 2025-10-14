@@ -23,6 +23,9 @@ class MediaSelector {
     this.sortBy = "newest";
     this.isLoading = false;
     this.transformSupported = null; // Will be tested on first load
+    
+    // Image cache for better performance (like media.html)
+    this.imageCache = new Map();
 
     // Default media from repo
     this.defaultMedia = [
@@ -69,21 +72,26 @@ class MediaSelector {
     try {
       // Use a small test - check if transform params are respected
       const testUrl = `${this.supabaseUrl}/storage/v1/object/public/media/test?width=1&height=1`;
-      const response = await fetch(testUrl, { method: 'HEAD' });
-      
+      const response = await fetch(testUrl, { method: "HEAD" });
+
       // If we get a 400, transforms aren't supported
       // If we get 404, that's fine (test file doesn't exist)
       // If we get 200, transforms might be supported
       this.transformSupported = response.status !== 400;
-      
+
       if (!this.transformSupported) {
-        console.log('⚠️ Supabase image transformations not enabled - using CSS-based thumbnails');
+        console.log(
+          "⚠️ Supabase image transformations not enabled - using CSS-based thumbnails"
+        );
       } else {
-        console.log('✅ Supabase image transformations detected');
+        console.log("✅ Supabase image transformations detected");
       }
     } catch (error) {
       // On error, assume not supported and fallback to CSS
-      console.warn('Could not test transform support, using CSS thumbnails:', error);
+      console.warn(
+        "Could not test transform support, using CSS thumbnails:",
+        error
+      );
       this.transformSupported = false;
     }
   }
@@ -190,6 +198,23 @@ class MediaSelector {
     if (this.currentPage > totalPages && totalPages > 0) {
       this.currentPage = 1;
     }
+  }
+
+  // Cache image in memory for faster subsequent loads (from media.html)
+  getCachedImage(url) {
+    if (this.imageCache.has(url)) {
+      return this.imageCache.get(url);
+    }
+
+    const promise = new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = url;
+    });
+
+    this.imageCache.set(url, promise);
+    return promise;
   }
 
   // Get thumbnail URL with Supabase transform (or fallback to CSS)
@@ -339,7 +364,7 @@ class MediaSelector {
           ${
             isVideo
               ? `
-            <video src="${thumbnailUrl}" class="w-full h-full object-cover" muted preload="metadata"></video>
+            <video src="${thumbnailUrl}" class="w-full h-full object-cover" muted preload="metadata" loading="lazy"></video>
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div class="bg-black/60 rounded-full p-3">
                 <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -349,7 +374,13 @@ class MediaSelector {
             </div>
           `
               : `
-            <img src="${thumbnailUrl}" alt="${file.name}" class="w-full h-full object-cover" loading="lazy" />
+            <img 
+              src="${thumbnailUrl}" 
+              alt="${file.name}" 
+              class="w-full h-full object-cover" 
+              loading="lazy"
+              decoding="async"
+            />
           `
           }
         </div>
@@ -586,7 +617,9 @@ class MediaSelector {
     const container = document.getElementById(this.containerId);
     if (container) {
       // Find the scrollable parent (modal content or page container)
-      const scrollableParent = container.closest(".overflow-y-auto, .overflow-y-scroll");
+      const scrollableParent = container.closest(
+        ".overflow-y-auto, .overflow-y-scroll"
+      );
       if (scrollableParent) {
         scrollableParent.scrollTop = 0;
       } else {
