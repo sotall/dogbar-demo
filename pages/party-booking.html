@@ -428,35 +428,32 @@
           const urlParams = new URLSearchParams(window.location.search);
           const location = urlParams.get("location") || "st-pete";
 
-          // Wait for Supabase to be available
+          // Wait for DogBarApp to be initialized with Supabase
           let attempts = 0;
-          while (!window.supabase && attempts < 50) {
+          while (!window.DogBarApp || !window.DogBarApp.supabase) {
+            if (attempts >= 50) {
+              console.warn("Supabase not ready, skipping contact info load");
+              return;
+            }
             await new Promise(resolve => setTimeout(resolve, 100));
             attempts++;
           }
 
-          if (window.supabase) {
-            const supabaseClient = window.supabase.createClient(
-              import.meta.env.VITE_SUPABASE_URL,
-              import.meta.env.VITE_SUPABASE_ANON_KEY
-            );
+          const { data, error } = await window.DogBarApp.supabase
+            .from("site_content")
+            .select("*")
+            .eq("location", location)
+            .limit(1)
+            .single();
 
-            const { data, error } = await supabaseClient
-              .from("site_content")
-              .select("*")
-              .eq("location", location)
-              .limit(1)
-              .single();
-
-            if (!error && data) {
-              document.getElementById("contact-phone").textContent =
-                data.phone || "Loading...";
-              document.getElementById("contact-email").textContent =
-                data.email || "Loading...";
-              document.getElementById("contact-address").textContent =
-                data.address || "Loading...";
-              document.title = `Party Booking - ${data.name || 'The Dog Bar'}`;
-            }
+          if (!error && data) {
+            document.getElementById("contact-phone").textContent =
+              data.phone || "Loading...";
+            document.getElementById("contact-email").textContent =
+              data.email || "Loading...";
+            document.getElementById("contact-address").textContent =
+              data.address || "Loading...";
+            document.title = `Party Booking - ${data.name || 'The Dog Bar'}`;
           }
         } catch (error) {
           console.error("Error loading location config:", error);
@@ -472,29 +469,33 @@
       async function initPartiesHero() {
         let attempts = 0;
         while ((!window.supabase || !window.renderPageHero) && attempts < 50) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
           attempts++;
         }
 
         if (window.renderPageHero) {
-          const location = localStorage.getItem('dogbar_location') || 'st-pete';
-          
-          await window.renderPageHero('parties', location, {
-            title: 'Party Booking 🎉',
-            subtitle: 'Celebrate your pup\'s special day or host your group at The Dog Bar! We offer private party packages for birthdays, corporate events, and special occasions.',
-            gradientClass: 'bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600',
+          const location = localStorage.getItem("dogbar_location") || "st-pete";
+
+          await window.renderPageHero("parties", location, {
+            title: "Party Booking 🎉",
+            subtitle:
+              "Celebrate your pup's special day or host your group at The Dog Bar! We offer private party packages for birthdays, corporate events, and special occasions.",
+            gradientClass:
+              "bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600",
             buttons: [
               {
-                text: 'View Packages',
-                href: '#packages',
-                className: 'px-8 py-4 bg-white text-emerald-600 font-bold rounded-full hover:bg-gray-100 transition-colors shadow-lg'
+                text: "View Packages",
+                href: "#packages",
+                className:
+                  "px-8 py-4 bg-white text-emerald-600 font-bold rounded-full hover:bg-gray-100 transition-colors shadow-lg",
               },
               {
-                text: 'Contact Us',
-                href: '#contact',
-                className: 'px-8 py-4 border-2 border-white text-white font-bold rounded-full hover:bg-white/10 transition-colors'
-              }
-            ]
+                text: "Contact Us",
+                href: "#contact",
+                className:
+                  "px-8 py-4 border-2 border-white text-white font-bold rounded-full hover:bg-white/10 transition-colors",
+              },
+            ],
           });
         }
       }
