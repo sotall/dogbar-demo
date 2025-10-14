@@ -48,16 +48,21 @@
 - ✅ Converted `pages/contact-us.html` - Now uses `<div id="contact-hero-root"></div>`
 - ✅ All pages fetch settings from database and fallback to gradients
 
-### 6. Media Library Integration ✅ COMPLETED
+### 6. Media Library Integration ✅ COMPLETED (REVISED)
 
-- ✅ Added selection mode banner to `admin/media.html`
-- ✅ Implemented URL parameter detection (`?mode=select`)
-- ✅ Replaced checkboxes with "Select" buttons in selection mode
-- ✅ Implemented `selectMediaFile()` callback function
-- ✅ Updated `selectHeroMedia()` to open media library in popup window
-- ✅ Created `window.handleMediaSelection()` callback in Site Settings
-- ✅ Auto-updates form fields, preview thumbnail, and shows/hides playback speed
-- ✅ Added cancel button to selection mode banner
+**Improved UX: Replaced popup with inline modal**
+
+- ✅ Created inline modal on `admin/site-settings.html`
+- ✅ Two-tab interface: "Default Media" and "Uploaded Media"
+- ✅ Default Media tab shows repo videos (st-pete-hero.mp4, sarasota-hero.mp4)
+- ✅ Uploaded Media tab fetches from Supabase Storage bucket
+- ✅ Grid display with thumbnails, hover effects, and select buttons
+- ✅ Click any media item to select it
+- ✅ Auto-updates form fields, preview thumbnail, and playback speed controls
+- ✅ Modal closes after selection
+- ✅ Removed all popup code (`window.open()`, callbacks)
+- ✅ Removed selection mode from `admin/media.html` (banner, URL params, select buttons)
+- ✅ No popup blockers, no freezing, stays on same page
 
 ## 🔄 In Progress / TODO (Phase 4)
 
