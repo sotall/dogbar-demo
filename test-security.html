@@ -93,6 +93,59 @@
   
   <pre id="results">Click a button to run security tests...</pre>
   
+  <!-- Hidden XSS Test Instructions -->
+  <div id="xss-instructions" class="test-section" style="display: none; margin-top: 20px; border: 2px solid #fbbf24;">
+    <h3 style="color: #333; margin-top: 0;">📋 XSS Test Instructions (Manual Testing)</h3>
+    
+    <div style="background: #fff3cd; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+      <strong>⚠️ IMPORTANT:</strong> Delete all test events after testing!
+    </div>
+    
+    <h4 style="color: #0ea5e9;">Test 1: Admin Events Table</h4>
+    <ol>
+      <li>Go to <code>admin/events.html</code></li>
+      <li>Login to admin portal</li>
+      <li>Create a new event with this title: <code>&lt;script&gt;alert("XSS")&lt;/script&gt;</code></li>
+      <li>Save and view the events table</li>
+      <li>Check browser:
+        <ul>
+          <li><strong style="color: #f87171;">❌ VULNERABLE:</strong> Alert fires</li>
+          <li><strong style="color: #4ade80;">✅ SECURE:</strong> Shows as plain text</li>
+        </ul>
+      </li>
+    </ol>
+    
+    <h4 style="color: #0ea5e9;">Test 2: Dashboard Recent Activity</h4>
+    <ol>
+      <li>Go to <code>admin/dashboard.html</code></li>
+      <li>Check "Recent Activity" section</li>
+      <li>Verify test event doesn't trigger JavaScript</li>
+    </ol>
+    
+    <h4 style="color: #0ea5e9;">Test 3: Public Calendar</h4>
+    <ol>
+      <li>Go to <code>pages/calendar.html</code></li>
+      <li>Find your test event</li>
+      <li>Verify XSS payload is escaped (shows as text)</li>
+    </ol>
+    
+    <h4 style="color: #0ea5e9;">Test 4: Image Tag XSS</h4>
+    <ol>
+      <li>Create another event with title: <code>&lt;img src=x onerror=alert("XSS2")&gt;</code></li>
+      <li>Verify it doesn't trigger alert</li>
+    </ol>
+    
+    <h4 style="color: #0ea5e9;">Test 5: Form Inputs</h4>
+    <ol>
+      <li>Try submitting contact form with HTML/JavaScript in message field</li>
+      <li>Check if it's sanitized before storage/display</li>
+    </ol>
+    
+    <div style="background: #fee2e2; padding: 15px; border-radius: 4px; margin-top: 15px;">
+      <strong>🗑️ CLEANUP:</strong> After testing, delete all test events from the admin portal!
+    </div>
+  </div>
+  
   <script>
     const supabase = window.supabase.createClient(
       'https://pkomfbezaollhvcpezaw.supabase.co',
@@ -311,41 +364,18 @@
     }
     
     function testXSS() {
+      const instructions = document.getElementById('xss-instructions');
+      const results = document.getElementById('results');
+      
+      results.innerHTML = '';
       log('\n========================================', 'info');
       log('XSS PROTECTION TEST INSTRUCTIONS', 'info');
       log('========================================\n', 'info');
+      log('See detailed instructions below the test buttons.', 'info');
       
-      log('Manual testing required for XSS vulnerabilities.\n', 'warning');
-      
-      log('STEP 1: Test Admin Events Page', 'info');
-      log('  1. Go to admin/events.html', 'info');
-      log('  2. Create a new event with this title:', 'info');
-      log('     ' + String.fromCharCode(60) + 'script>alert("XSS")' + String.fromCharCode(60) + '/script>', 'vulnerable');
-      log('  3. Save and view the events table', 'info');
-      log('  4. Check browser:', 'info');
-      log('     ❌ Alert fires = VULNERABLE', 'vulnerable');
-      log('     ✅ Shows as text = SECURE\n', 'secure');
-      
-      log('STEP 2: Test Dashboard Recent Activity', 'info');
-      log('  1. Go to admin/dashboard.html', 'info');
-      log('  2. Check if the test event shows in recent activity', 'info');
-      log('  3. Verify JavaScript doesn\'t execute\n', 'info');
-      
-      log('STEP 3: Test Public Event Display', 'info');
-      log('  1. Go to pages/calendar.html', 'info');
-      log('  2. Check if event displays on public calendar', 'info');
-      log('  3. Verify XSS payload is escaped\n', 'info');
-      
-      log('STEP 4: Test Image Tags', 'info');
-      log('  1. Create event with title:', 'info');
-      log('     ' + String.fromCharCode(60) + 'img src=x onerror=alert("XSS2")>', 'vulnerable');
-      log('  2. Verify it doesn\'t trigger\n', 'info');
-      
-      log('STEP 5: Test Form Inputs', 'info');
-      log('  1. Try submitting contact form with HTML/JS', 'info');
-      log('  2. Check if it\'s sanitized before storage/display\n', 'info');
-      
-      log('After testing, delete the test events!', 'warning');
+      // Show the instructions
+      instructions.style.display = 'block';
+      instructions.scrollIntoView({ behavior: 'smooth' });
     }
     
     async function runAllTests() {
@@ -357,12 +387,12 @@
       await new Promise(resolve => setTimeout(resolve, 1000));
       await testRLS();
       await new Promise(resolve => setTimeout(resolve, 1000));
-      testXSS();
       
       log('\n========================================', 'info');
       log('AUDIT COMPLETE', 'info');
       log('========================================', 'info');
-      log('\nReview results above and fix any ❌ VULNERABLE items.', 'warning');
+      log('\nFor XSS testing, click "View XSS Test Instructions" button.', 'info');
+      log('Review results above and fix any ❌ VULNERABLE items.', 'warning');
       log('Document findings in SECURITY-AUDIT-REPORT.md', 'info');
     }
   </script>
