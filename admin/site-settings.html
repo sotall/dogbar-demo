@@ -1057,7 +1057,7 @@
           </div>
 
           <!-- Content -->
-          <div class="p-6 overflow-y-auto max-h-[60vh]">
+          <div class="p-6 overflow-y-scroll" style="max-height: 60vh; min-height: 400px;">
             <!-- Media Selector Component Container -->
             <div id="mediaSelectorGrid"></div>
           </div>
@@ -1078,7 +1078,10 @@
     </div>
 
     <!-- Toast Notification Container -->
-    <div id="toastContainer" class="fixed top-4 right-4 z-[60] space-y-2 max-w-md"></div>
+    <div
+      id="toastContainer"
+      class="fixed top-4 right-4 z-[60] space-y-2 max-w-md"
+    ></div>
 
     <!-- Confirmation Modal -->
     <div
@@ -1086,23 +1089,49 @@
       class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-200"
       aria-hidden="true"
     >
-      <div class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm" onclick="closeConfirmModal(false)"></div>
+      <div
+        class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm"
+        onclick="closeConfirmModal(false)"
+      ></div>
       <div class="absolute inset-0 flex items-center justify-center px-4">
-        <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+        <div
+          class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+        >
           <div class="p-6">
             <div class="flex items-start gap-4">
-              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 flex-shrink-0">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 flex-shrink-0"
+              >
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  ></path>
                 </svg>
               </div>
               <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2" id="confirmModalTitle">Confirm Action</h3>
-                <p class="text-gray-600" id="confirmModalMessage">Are you sure?</p>
+                <h3
+                  class="text-lg font-semibold text-gray-900 mb-2"
+                  id="confirmModalTitle"
+                >
+                  Confirm Action
+                </h3>
+                <p class="text-gray-600" id="confirmModalMessage">
+                  Are you sure?
+                </p>
               </div>
             </div>
           </div>
-          <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
+          <div
+            class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3"
+          >
             <button
               onclick="closeConfirmModal(false)"
               class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
@@ -1950,25 +1979,28 @@
       // Toast Notifications
       // ========================================
 
-      function showToast(message, type = 'success') {
-        const container = document.getElementById('toastContainer');
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toastContainer");
         const toastId = `toast-${Date.now()}`;
-        
+
         const bgColors = {
-          success: 'bg-emerald-600',
-          error: 'bg-red-600',
-          info: 'bg-blue-600',
-          warning: 'bg-yellow-600'
-        };
-        
-        const icons = {
-          success: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
-          error: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
-          info: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
-          warning: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>'
+          success: "bg-emerald-600",
+          error: "bg-red-600",
+          info: "bg-blue-600",
+          warning: "bg-yellow-600",
         };
 
-        const toast = document.createElement('div');
+        const icons = {
+          success:
+            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
+          error:
+            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
+          info: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
+          warning:
+            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>',
+        };
+
+        const toast = document.createElement("div");
         toast.id = toastId;
         toast.className = `${bgColors[type]} text-white px-6 py-4 rounded-lg shadow-2xl flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0`;
         toast.innerHTML = `
@@ -1987,11 +2019,11 @@
 
         // Animate in
         requestAnimationFrame(() => {
-          toast.classList.remove('translate-x-full', 'opacity-0');
+          toast.classList.remove("translate-x-full", "opacity-0");
         });
 
         // Auto-dismiss after 4 seconds (except errors)
-        if (type !== 'error') {
+        if (type !== "error") {
           setTimeout(() => {
             dismissToast(toastId);
           }, 4000);
@@ -2002,7 +2034,7 @@
         const toast = document.getElementById(toastId);
         if (!toast) return;
 
-        toast.classList.add('translate-x-full', 'opacity-0');
+        toast.classList.add("translate-x-full", "opacity-0");
         setTimeout(() => {
           toast.remove();
         }, 300);
@@ -2014,29 +2046,29 @@
       function showConfirmModal(title, message) {
         return new Promise((resolve) => {
           confirmModalResolve = resolve;
-          
-          document.getElementById('confirmModalTitle').textContent = title;
-          document.getElementById('confirmModalMessage').textContent = message;
-          
-          const modal = document.getElementById('confirmModal');
-          modal.classList.remove('hidden');
-          document.body.style.overflow = 'hidden';
+
+          document.getElementById("confirmModalTitle").textContent = title;
+          document.getElementById("confirmModalMessage").textContent = message;
+
+          const modal = document.getElementById("confirmModal");
+          modal.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
           requestAnimationFrame(() => {
-            modal.classList.remove('opacity-0');
-            modal.classList.add('opacity-100');
+            modal.classList.remove("opacity-0");
+            modal.classList.add("opacity-100");
           });
         });
       }
 
       function closeConfirmModal(confirmed) {
-        const modal = document.getElementById('confirmModal');
-        modal.classList.remove('opacity-100');
-        modal.classList.add('opacity-0');
+        const modal = document.getElementById("confirmModal");
+        modal.classList.remove("opacity-100");
+        modal.classList.add("opacity-0");
         setTimeout(() => {
-          modal.classList.add('hidden');
+          modal.classList.add("hidden");
         }, 200);
-        document.body.style.overflow = '';
-        
+        document.body.style.overflow = "";
+
         if (confirmModalResolve) {
           confirmModalResolve(confirmed);
           confirmModalResolve = null;
@@ -2077,20 +2109,20 @@
       async function selectHeroMedia(page) {
         window.currentHeroPage = page;
         openMediaSelectionModal();
-        
+
         // Initialize media selector on first open
         if (!mediaSelector) {
           mediaSelector = new MediaSelector({
-            containerId: 'mediaSelectorGrid',
-            mode: 'modal',
+            containerId: "mediaSelectorGrid",
+            mode: "modal",
             selectionCallback: selectMedia,
             showDefaultMedia: true,
             pageSize: 12,
             supabaseClient: supabase,
-            supabaseUrl: supabaseUrl
+            supabaseUrl: supabaseUrl,
           });
         }
-        
+
         // Load/refresh media
         await mediaSelector.init();
       }
@@ -2153,7 +2185,7 @@
         closeMediaSelectionModal();
 
         // Show confirmation toast
-        showToast(`Selected: ${name}`, 'success');
+        showToast(`Selected: ${name}`, "success");
       }
 
       // Make functions globally available
@@ -2263,7 +2295,7 @@
             console.warn("Failed to log hero settings update:", logError);
           }
 
-          showToast(`Hero settings saved for ${page} page!`, 'success');
+          showToast(`Hero settings saved for ${page} page!`, "success");
           await loadHeroSettings(page);
         } catch (error) {
           console.error("Error saving hero settings:", error);
@@ -2274,7 +2306,7 @@
       // Reset hero settings for a specific page
       async function resetHeroSettings(page) {
         const confirmed = await showConfirmModal(
-          'Reset Hero Background',
+          "Reset Hero Background",
           `Reset hero background for ${page} page to default gradient? This cannot be undone.`
         );
 
@@ -2317,10 +2349,13 @@
             .getElementById(`hero-${page}-speed-container`)
             .classList.add("hidden");
 
-          showToast(`Hero background reset for ${page} page!`, 'success');
+          showToast(`Hero background reset for ${page} page!`, "success");
         } catch (error) {
           console.error("Error resetting hero settings:", error);
-          showToast("Error resetting hero settings. Please try again.", "error");
+          showToast(
+            "Error resetting hero settings. Please try again.",
+            "error"
+          );
         }
       }
 
