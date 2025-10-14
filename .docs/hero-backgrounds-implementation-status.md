@@ -117,15 +117,18 @@ To apply the database migration:
 2. **High**: Manual testing across all scenarios
 3. **Low**: Documentation updates (PROJECT_FEATURES.md)
 
-## Phase 3 Summary (COMPLETED)
+## Phase 3 Summary (COMPLETED - REVISED)
 
-- ✅ Added selection mode to media library with banner UI
-- ✅ Detection of `?mode=select` URL parameter
-- ✅ "Select" buttons replace checkboxes in selection mode
-- ✅ Popup window integration with Site Settings
-- ✅ Callback function to pass selected media back
+**Improved from popup to inline modal approach:**
+- ✅ Inline modal on Site Settings page (no separate window)
+- ✅ Two-tab interface for Default vs Uploaded media
+- ✅ Default media array with repo video paths
+- ✅ Dynamic loading of uploaded media from Supabase
+- ✅ Grid display with thumbnails and preview
+- ✅ Click-to-select interaction
 - ✅ Auto-fill form fields and preview thumbnails
 - ✅ Conditional UI for image vs video settings
+- ✅ Removed all popup/selection mode code from media.html
 
 ## Phase 2 Summary (COMPLETED)
 
@@ -137,7 +140,7 @@ To apply the database migration:
 
 ## Known Limitations
 
-- Media selection currently requires manual URL entry
-- No preview of video playback speed in admin (must test on live page)
-- No drag-and-drop media upload (relies on existing media library)
+- No preview of video playback speed in admin modal (must test on live page)
+- No drag-and-drop media upload in selection modal (use Media Library page)
 - No image optimization (uses original file sizes)
+- Default media array is hardcoded (add new defaults manually)
