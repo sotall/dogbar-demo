@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Security Test - Dog Bar</title>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <style>
@@ -105,7 +107,7 @@
     <ol>
       <li>Go to <code>admin/events.html</code></li>
       <li>Login to admin portal</li>
-      <li>Create a new event with this title: <code>&lt;script&gt;alert("XSS")&lt;/scr​ipt&gt;</code></li>
+      <li>Create a new event with this title: <code>&lt;script&gt;alert("XSS")&lt;/script&gt;</code></li>
       <li>Save and view the events table</li>
       <li>Check browser:
         <ul>
@@ -154,10 +156,13 @@
     
     const log = (msg, type = 'info') => {
       const results = document.getElementById('results');
-      const className = type === 'secure' ? 'secure' : 
-                       type === 'vulnerable' ? 'vulnerable' : 
-                       type === 'warning' ? 'warning' : 'info';
-      results.innerHTML += `<span class="${className}">${msg}</span>\n`;
+      const className = type === 'secure' ? 'secure' :
+        (type === 'vulnerable' ? 'vulnerable' : (type === 'warning' ? 'warning' : 'info'));
+      const span = document.createElement('span');
+      span.className = className;
+      span.textContent = msg;
+      results.appendChild(span);
+      results.appendChild(document.createElement('br'));
       results.scrollTop = results.scrollHeight;
     };
     
@@ -236,7 +241,7 @@
       // Test 5: HTML file with JavaScript
       log('\nTest 5: HTML File with JavaScript', 'warning');
       try {
-        const htmlFile = new File(['<script>alert("XSS")</script>'], 'hack.html', { type: 'text/html' });
+        const htmlFile = new File(['<script>alert("XSS")<\/script>'], 'hack.html', { type: 'text/html' });
         const { data, error } = await supabase.storage.from('media').upload('hack.html', htmlFile);
         
         if (error) {
