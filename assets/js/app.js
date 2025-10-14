@@ -344,8 +344,8 @@ class DogBarApp {
   }
 }
 
-// Global component registry
-window.DogBarComponents = {};
+// Global component registry (preserve existing registrations from component modules)
+window.DogBarComponents = window.DogBarComponents || {};
 
 // Initialize app immediately when script loads
 console.log("🚀 App script loaded, initializing Dog Bar App...");

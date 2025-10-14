@@ -1,13 +1,29 @@
 <!-- Shared Admin Navigation Component -->
+<style>
+  /* Ensure email and logout are visible on desktop */
+  @media (min-width: 768px) {
+    #userEmail {
+      display: inline !important;
+    }
+    #logoutBtn {
+      display: inline-flex !important;
+    }
+  }
+</style>
 <nav class="bg-white shadow-lg">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
       <div class="flex items-center">
-        <img
-          src="../assets/media/logo.png?v=2"
-          alt="Dog Bar Logo"
-          class="h-8 w-auto mr-3"
-        />
+        <a
+          href="dashboard.html"
+          class="flex items-center hover:opacity-90 transition-opacity"
+        >
+          <img
+            src="../assets/media/logo.png?v=2"
+            alt="Dog Bar Logo"
+            class="h-8 w-auto mr-3 drop-shadow transition-transform duration-150 ease-in-out active:scale-95 hover:scale-105 cursor-pointer"
+          />
+        </a>
         <h1 class="text-xl font-bold text-gray-900" id="pageTitle">
           Admin Portal
         </h1>

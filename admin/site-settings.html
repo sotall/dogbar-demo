@@ -451,6 +451,258 @@
             </div>
           </details>
 
+          <!-- Page Hero Backgrounds -->
+          <details class="accordion-section" data-section="page-hero-backgrounds">
+            <summary class="accordion-header">
+              <span class="accordion-title">Page Hero Backgrounds</span>
+              <span class="accordion-icon">▼</span>
+            </summary>
+            <div class="accordion-content">
+              <p class="text-sm text-gray-600 mb-4">
+                Customize the hero section background for each page with images or videos from your media library.
+              </p>
+              
+              <!-- Page Tabs -->
+              <div class="mb-6 border-b border-gray-200">
+                <nav class="flex space-x-4" role="tablist">
+                  <button class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-emerald-500 text-emerald-600" data-page="home">
+                    Home
+                  </button>
+                  <button class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-page="events">
+                    Events
+                  </button>
+                  <button class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-page="menu">
+                    Menu
+                  </button>
+                  <button class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-page="parties">
+                    Parties
+                  </button>
+                  <button class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-page="contact">
+                    Contact
+                  </button>
+                </nav>
+              </div>
+
+              <!-- Page Content -->
+              <div id="hero-page-content">
+                <!-- Home Page Settings -->
+                <div class="hero-page-content" data-page="home">
+                  <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                      <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                          <h4 class="text-sm font-medium text-gray-900 mb-1">Current Background</h4>
+                          <p class="text-xs text-gray-500" id="hero-home-current">No custom background set (using gradient)</p>
+                        </div>
+                        <img id="hero-home-preview" class="w-24 h-16 object-cover rounded hidden" alt="Preview">
+                      </div>
+                      <button onclick="selectHeroMedia('home')" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                        📁 Select Media
+                      </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Height (px)</label>
+                        <input type="number" id="hero-home-height" min="400" max="1000" value="600" 
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                      </div>
+                      <div id="hero-home-speed-container" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Playback Speed</label>
+                        <input type="number" id="hero-home-speed" min="0.5" max="2.0" step="0.1" value="1.0" 
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                      </div>
+                    </div>
+
+                    <input type="hidden" id="hero-home-url">
+                    <input type="hidden" id="hero-home-type">
+
+                    <div class="flex space-x-2">
+                      <button onclick="saveHeroSettings('home')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                        💾 Save
+                      </button>
+                      <button onclick="resetHeroSettings('home')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm">
+                        🔄 Reset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Events Page Settings -->
+                <div class="hero-page-content hidden" data-page="events">
+                  <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                      <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                          <h4 class="text-sm font-medium text-gray-900 mb-1">Current Background</h4>
+                          <p class="text-xs text-gray-500" id="hero-events-current">No custom background set (using gradient)</p>
+                        </div>
+                        <img id="hero-events-preview" class="w-24 h-16 object-cover rounded hidden" alt="Preview">
+                      </div>
+                      <button onclick="selectHeroMedia('events')" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                        📁 Select Media
+                      </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Height (px)</label>
+                        <input type="number" id="hero-events-height" min="400" max="1000" value="600" 
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                      </div>
+                      <div id="hero-events-speed-container" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Playback Speed</label>
+                        <input type="number" id="hero-events-speed" min="0.5" max="2.0" step="0.1" value="1.0" 
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                      </div>
+                    </div>
+
+                    <input type="hidden" id="hero-events-url">
+                    <input type="hidden" id="hero-events-type">
+
+                    <div class="flex space-x-2">
+                      <button onclick="saveHeroSettings('events')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                        💾 Save
+                      </button>
+                      <button onclick="resetHeroSettings('events')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm">
+                        🔄 Reset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Menu Page Settings -->
+                <div class="hero-page-content hidden" data-page="menu">
+                  <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                      <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                          <h4 class="text-sm font-medium text-gray-900 mb-1">Current Background</h4>
+                          <p class="text-xs text-gray-500" id="hero-menu-current">No custom background set (using gradient)</p>
+                        </div>
+                        <img id="hero-menu-preview" class="w-24 h-16 object-cover rounded hidden" alt="Preview">
+                      </div>
+                      <button onclick="selectHeroMedia('menu')" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                        📁 Select Media
+                      </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Height (px)</label>
+                        <input type="number" id="hero-menu-height" min="400" max="1000" value="600" 
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                      </div>
+                      <div id="hero-menu-speed-container" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Playback Speed</label>
+                        <input type="number" id="hero-menu-speed" min="0.5" max="2.0" step="0.1" value="1.0" 
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                      </div>
+                    </div>
+
+                    <input type="hidden" id="hero-menu-url">
+                    <input type="hidden" id="hero-menu-type">
+
+                    <div class="flex space-x-2">
+                      <button onclick="saveHeroSettings('menu')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                        💾 Save
+                      </button>
+                      <button onclick="resetHeroSettings('menu')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm">
+                        🔄 Reset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Parties Page Settings -->
+                <div class="hero-page-content hidden" data-page="parties">
+                  <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                      <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                          <h4 class="text-sm font-medium text-gray-900 mb-1">Current Background</h4>
+                          <p class="text-xs text-gray-500" id="hero-parties-current">No custom background set (using gradient)</p>
+                        </div>
+                        <img id="hero-parties-preview" class="w-24 h-16 object-cover rounded hidden" alt="Preview">
+                      </div>
+                      <button onclick="selectHeroMedia('parties')" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                        📁 Select Media
+                      </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Height (px)</label>
+                        <input type="number" id="hero-parties-height" min="400" max="1000" value="600" 
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                      </div>
+                      <div id="hero-parties-speed-container" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Playback Speed</label>
+                        <input type="number" id="hero-parties-speed" min="0.5" max="2.0" step="0.1" value="1.0" 
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                      </div>
+                    </div>
+
+                    <input type="hidden" id="hero-parties-url">
+                    <input type="hidden" id="hero-parties-type">
+
+                    <div class="flex space-x-2">
+                      <button onclick="saveHeroSettings('parties')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                        💾 Save
+                      </button>
+                      <button onclick="resetHeroSettings('parties')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm">
+                        🔄 Reset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Contact Page Settings -->
+                <div class="hero-page-content hidden" data-page="contact">
+                  <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                      <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                          <h4 class="text-sm font-medium text-gray-900 mb-1">Current Background</h4>
+                          <p class="text-xs text-gray-500" id="hero-contact-current">No custom background set (using gradient)</p>
+                        </div>
+                        <img id="hero-contact-preview" class="w-24 h-16 object-cover rounded hidden" alt="Preview">
+                      </div>
+                      <button onclick="selectHeroMedia('contact')" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                        📁 Select Media
+                      </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Height (px)</label>
+                        <input type="number" id="hero-contact-height" min="400" max="1000" value="600" 
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                      </div>
+                      <div id="hero-contact-speed-container" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Playback Speed</label>
+                        <input type="number" id="hero-contact-speed" min="0.5" max="2.0" step="0.1" value="1.0" 
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                      </div>
+                    </div>
+
+                    <input type="hidden" id="hero-contact-url">
+                    <input type="hidden" id="hero-contact-type">
+
+                    <div class="flex space-x-2">
+                      <button onclick="saveHeroSettings('contact')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                        💾 Save
+                      </button>
+                      <button onclick="resetHeroSettings('contact')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm">
+                        🔄 Reset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+
           <!-- Feature Toggles -->
           <details class="accordion-section" data-section="feature-toggles">
             <summary class="accordion-header">
@@ -1372,6 +1624,187 @@
           window.location.href = "login.html";
         });
       }
+
+      // ========================================
+      // Hero Settings Functions
+      // ========================================
+
+      // Tab switching for hero pages
+      document.querySelectorAll('.hero-page-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const page = tab.dataset.page;
+          
+          // Update tab styles
+          document.querySelectorAll('.hero-page-tab').forEach(t => {
+            t.classList.remove('border-emerald-500', 'text-emerald-600');
+            t.classList.add('border-transparent', 'text-gray-500');
+          });
+          tab.classList.remove('border-transparent', 'text-gray-500');
+          tab.classList.add('border-emerald-500', 'text-emerald-600');
+          
+          // Show selected page content
+          document.querySelectorAll('.hero-page-content').forEach(content => {
+            content.classList.add('hidden');
+          });
+          document.querySelector(`.hero-page-content[data-page="${page}"]`).classList.remove('hidden');
+        });
+      });
+
+      // Select media for hero background
+      async function selectHeroMedia(page) {
+        // Store current page for callback
+        window.currentHeroPage = page;
+        
+        // Open media library in select mode
+        alert('Media selection integration coming soon. For now, please manually enter the media URL from your media library.');
+        // TODO: Integrate with media library for selection
+      }
+
+      // Load hero settings for a specific page
+      async function loadHeroSettings(page) {
+        try {
+          const { data, error } = await supabase
+            .from('page_hero_settings')
+            .select('*')
+            .eq('location', currentLocation)
+            .eq('page', page)
+            .maybeSingle();
+
+          if (error && error.code !== 'PGRST116') throw error;
+
+          if (data) {
+            // Update UI with loaded data
+            document.getElementById(`hero-${page}-url`).value = data.media_url || '';
+            document.getElementById(`hero-${page}-type`).value = data.media_type || '';
+            document.getElementById(`hero-${page}-height`).value = data.height || 600;
+            document.getElementById(`hero-${page}-speed`).value = data.playback_speed || 1.0;
+
+            // Update current text and preview
+            const currentText = document.getElementById(`hero-${page}-current`);
+            const preview = document.getElementById(`hero-${page}-preview`);
+            
+            if (data.media_url) {
+              const fileName = data.media_url.split('/').pop();
+              currentText.textContent = `${data.media_type}: ${fileName}`;
+              
+              if (data.media_type === 'image') {
+                preview.src = data.media_url;
+                preview.classList.remove('hidden');
+              }
+
+              // Show/hide playback speed for videos
+              const speedContainer = document.getElementById(`hero-${page}-speed-container`);
+              if (data.media_type === 'video') {
+                speedContainer.classList.remove('hidden');
+              } else {
+                speedContainer.classList.add('hidden');
+              }
+            } else {
+              currentText.textContent = 'No custom background set (using gradient)';
+              preview.classList.add('hidden');
+            }
+          }
+        } catch (error) {
+          console.error('Error loading hero settings:', error);
+        }
+      }
+
+      // Save hero settings for a specific page
+      async function saveHeroSettings(page) {
+        try {
+          const url = document.getElementById(`hero-${page}-url`).value;
+          const type = document.getElementById(`hero-${page}-type`).value;
+          const height = parseInt(document.getElementById(`hero-${page}-height`).value);
+          const speed = parseFloat(document.getElementById(`hero-${page}-speed`).value);
+
+          if (!url) {
+            alert('Please select a media file first.');
+            return;
+          }
+
+          const settings = {
+            location: currentLocation,
+            page: page,
+            media_url: url,
+            media_type: type,
+            height: height,
+            playback_speed: speed
+          };
+
+          const { error } = await supabase
+            .from('page_hero_settings')
+            .upsert(settings, { onConflict: 'location,page' });
+
+          if (error) throw error;
+
+          // Log the change
+          await window.Logger.log('hero_settings_updated', {
+            page: page,
+            location: currentLocation,
+            media_type: type,
+            height: height
+          });
+
+          alert(`Hero settings saved for ${page} page!`);
+          await loadHeroSettings(page);
+        } catch (error) {
+          console.error('Error saving hero settings:', error);
+          alert('Error saving hero settings. Please try again.');
+        }
+      }
+
+      // Reset hero settings for a specific page
+      async function resetHeroSettings(page) {
+        if (!confirm(`Reset hero background for ${page} page to default gradient?`)) {
+          return;
+        }
+
+        try {
+          const { error } = await supabase
+            .from('page_hero_settings')
+            .delete()
+            .eq('location', currentLocation)
+            .eq('page', page);
+
+          if (error) throw error;
+
+          // Log the change
+          await window.Logger.log('hero_settings_reset', {
+            page: page,
+            location: currentLocation
+          });
+
+          // Clear UI
+          document.getElementById(`hero-${page}-url`).value = '';
+          document.getElementById(`hero-${page}-type`).value = '';
+          document.getElementById(`hero-${page}-height`).value = 600;
+          document.getElementById(`hero-${page}-speed`).value = 1.0;
+          document.getElementById(`hero-${page}-current`).textContent = 'No custom background set (using gradient)';
+          document.getElementById(`hero-${page}-preview`).classList.add('hidden');
+          document.getElementById(`hero-${page}-speed-container`).classList.add('hidden');
+
+          alert(`Hero background reset for ${page} page!`);
+        } catch (error) {
+          console.error('Error resetting hero settings:', error);
+          alert('Error resetting hero settings. Please try again.');
+        }
+      }
+
+      // Load hero settings for all pages on init
+      async function loadAllHeroSettings() {
+        const pages = ['home', 'events', 'menu', 'parties', 'contact'];
+        for (const page of pages) {
+          await loadHeroSettings(page);
+        }
+      }
+
+      // Make functions globally available
+      window.selectHeroMedia = selectHeroMedia;
+      window.saveHeroSettings = saveHeroSettings;
+      window.resetHeroSettings = resetHeroSettings;
+
+      // Load hero settings when page loads
+      loadAllHeroSettings();
     </script>
   </body>
 </html>

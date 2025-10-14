@@ -5,6 +5,7 @@ export default {
     "./site.html",
     "./pages/**/*.html",
     "./admin/**/*.html",
+    "./admin/shared/**/*.html",
     "./assets/js/**/*.js",
   ],
   theme: {

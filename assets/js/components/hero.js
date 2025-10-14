@@ -2,34 +2,96 @@
 window.DogBarComponents = window.DogBarComponents || {};
 
 const HeroComponent = {
-  render(location, config) {
+  async render(location, config) {
     const root = document.getElementById("hero-root");
     if (!root) return;
 
-    // Use video background if available, otherwise gradient fallback
-    const videoPath = `assets/media/videos/hero/${location}-hero.mp4`;
+    // Try to load custom hero settings from database
+    let customSettings = null;
+    try {
+      const supabaseClient = window.supabase.createClient(
+        import.meta.env.VITE_SUPABASE_URL,
+        import.meta.env.VITE_SUPABASE_ANON_KEY
+      );
+      
+      const { data, error } = await supabaseClient
+        .from('page_hero_settings')
+        .select('*')
+        .eq('location', location)
+        .eq('page', 'home')
+        .maybeSingle();
+
+      if (!error && data) {
+        customSettings = data;
+      }
+    } catch (error) {
+      console.warn('Could not load custom hero settings, using defaults:', error);
+    }
+
+    // Use custom settings if available, otherwise use defaults
+    const height = customSettings?.height || 600;
+    const mediaUrl = customSettings?.media_url;
+    const mediaType = customSettings?.media_type;
+    const playbackSpeed = customSettings?.playback_speed || 1.0;
+
+    // Fallback gradient styles
     const backgroundStyle =
       location === "st-pete"
         ? "bg-gradient-to-br from-emerald-600 via-green-500 to-teal-600"
         : "bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600";
 
-    root.innerHTML = `
-        <section class="relative h-[600px] overflow-hidden">
-          <!-- Video Background -->
+    // Build hero section HTML
+    let backgroundHTML = '';
+    if (customSettings && mediaUrl) {
+      if (mediaType === 'video') {
+        backgroundHTML = `
           <video
             class="absolute inset-0 w-full h-full object-cover"
             autoplay
             muted
             loop
             playsinline
+            playbackRate="${playbackSpeed}"
             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
           >
-            <source src="${videoPath}" type="video/mp4">
+            <source src="${mediaUrl}" type="video/mp4">
             Your browser does not support the video tag.
           </video>
-          
-          <!-- Gradient Fallback (hidden by default, shown if video fails) -->
           <div class="absolute inset-0 w-full h-full ${backgroundStyle}" style="display: none;"></div>
+        `;
+      } else if (mediaType === 'image') {
+        backgroundHTML = `
+          <div 
+            class="absolute inset-0 w-full h-full bg-cover bg-center"
+            style="background-image: url('${mediaUrl}');"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+          ></div>
+          <div class="absolute inset-0 w-full h-full ${backgroundStyle}" style="display: none;"></div>
+        `;
+      }
+    } else {
+      // Use default video or gradient
+      const videoPath = `assets/media/videos/hero/${location}-hero.mp4`;
+      backgroundHTML = `
+        <video
+          class="absolute inset-0 w-full h-full object-cover"
+          autoplay
+          muted
+          loop
+          playsinline
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+        >
+          <source src="${videoPath}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="absolute inset-0 w-full h-full ${backgroundStyle}" style="display: none;"></div>
+      `;
+    }
+
+    root.innerHTML = `
+        <section class="relative overflow-hidden" style="height: ${height}px;">
+          <!-- Background (Video/Image or Gradient) -->
+          ${backgroundHTML}
 
           <!-- Dark Overlay -->
           <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
@@ -59,6 +121,16 @@ const HeroComponent = {
           </div>
         </section>
       `;
+
+    // Set playback speed for videos if custom speed is set
+    if (mediaType === 'video' && playbackSpeed !== 1.0) {
+      setTimeout(() => {
+        const video = root.querySelector('video');
+        if (video) {
+          video.playbackRate = playbackSpeed;
+        }
+      }, 100);
+    }
   },
 };
 
