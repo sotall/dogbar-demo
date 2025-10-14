@@ -3,7 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Book your dog's birthday party or host a private event at The Dog Bar. Multiple packages available!" />
+    <meta name="theme-color" content="#0ea5e9" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Party Booking - The Dog Bar" />
+    <meta property="og:description" content="Book your dog's birthday party or host a private event at The Dog Bar. Multiple packages available!" />
+    <meta property="og:image" content="https://dogbar.com/assets/media/logo.png" />
+    <meta property="og:type" content="website" />
+    
     <title>Party Booking - The Dog Bar</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/media/logo.png?v=2" />
 
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
@@ -435,7 +447,7 @@
               console.warn("Supabase not ready, skipping contact info load");
               return;
             }
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 100));
             attempts++;
           }
 
@@ -453,7 +465,7 @@
               data.email || "Loading...";
             document.getElementById("contact-address").textContent =
               data.address || "Loading...";
-            document.title = `Party Booking - ${data.name || 'The Dog Bar'}`;
+            document.title = `Party Booking - ${data.name || "The Dog Bar"}`;
           }
         } catch (error) {
           console.error("Error loading location config:", error);

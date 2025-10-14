@@ -3,8 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Contact The Dog Bar for questions, feedback, or to plan your next visit. We'd love to hear from you!" />
+    <meta name="theme-color" content="#0ea5e9" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Contact Us - The Dog Bar" />
+    <meta property="og:description" content="Contact The Dog Bar for questions, feedback, or to plan your next visit. We'd love to hear from you!" />
+    <meta property="og:image" content="https://dogbar.com/assets/media/logo.png" />
+    <meta property="og:type" content="website" />
+    
     <title>Contact Us - The Dog Bar</title>
-    <link rel="icon" href="../assets/media/logo.png?v=2" type="image/png" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/media/logo.png?v=2" />
 
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
@@ -253,17 +264,19 @@
       async function initContactHero() {
         let attempts = 0;
         while ((!window.supabase || !window.renderPageHero) && attempts < 50) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
           attempts++;
         }
 
         if (window.renderPageHero) {
-          const location = localStorage.getItem('dogbar_location') || 'st-pete';
-          
-          await window.renderPageHero('contact', location, {
-            title: 'Contact Us 📞',
-            subtitle: 'We\'d love to hear from you! Get in touch with us for questions, feedback, or to plan your next visit.',
-            gradientClass: 'bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600'
+          const location = localStorage.getItem("dogbar_location") || "st-pete";
+
+          await window.renderPageHero("contact", location, {
+            title: "Contact Us 📞",
+            subtitle:
+              "We'd love to hear from you! Get in touch with us for questions, feedback, or to plan your next visit.",
+            gradientClass:
+              "bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600",
           });
         }
       }
