@@ -28,7 +28,7 @@ CREATE POLICY "Admins can read admin_users"
 ON admin_users FOR SELECT
 USING (
   auth.uid() IN (
-    SELECT user_id FROM admin_users WHERE status = 'active'
+    SELECT id FROM admin_users WHERE status = 'active'
   )
 );
 
@@ -37,7 +37,7 @@ CREATE POLICY "Super admins can insert admin_users"
 ON admin_users FOR INSERT
 WITH CHECK (
   auth.uid() IN (
-    SELECT user_id FROM admin_users WHERE status = 'active' AND role = 'super_admin'
+    SELECT id FROM admin_users WHERE status = 'active' AND role = 'super_admin'
   )
 );
 
@@ -46,7 +46,7 @@ CREATE POLICY "Admins can update admin_users"
 ON admin_users FOR UPDATE
 USING (
   auth.uid() IN (
-    SELECT user_id FROM admin_users WHERE status = 'active'
+    SELECT id FROM admin_users WHERE status = 'active'
   )
 );
 
@@ -55,7 +55,7 @@ CREATE POLICY "Super admins can delete admin_users"
 ON admin_users FOR DELETE
 USING (
   auth.uid() IN (
-    SELECT user_id FROM admin_users WHERE status = 'active' AND role = 'super_admin'
+    SELECT id FROM admin_users WHERE status = 'active' AND role = 'super_admin'
   )
 );
 
@@ -83,7 +83,7 @@ CREATE POLICY "Admins can insert events"
 ON events FOR INSERT
 WITH CHECK (
   auth.uid() IN (
-    SELECT user_id FROM admin_users WHERE status = 'active'
+    SELECT id FROM admin_users WHERE status = 'active'
   )
 );
 
@@ -92,7 +92,7 @@ CREATE POLICY "Admins can update events"
 ON events FOR UPDATE
 USING (
   auth.uid() IN (
-    SELECT user_id FROM admin_users WHERE status = 'active'
+    SELECT id FROM admin_users WHERE status = 'active'
   )
 );
 
@@ -101,7 +101,7 @@ CREATE POLICY "Admins can delete events"
 ON events FOR DELETE
 USING (
   auth.uid() IN (
-    SELECT user_id FROM admin_users WHERE status = 'active'
+    SELECT id FROM admin_users WHERE status = 'active'
   )
 );
 
