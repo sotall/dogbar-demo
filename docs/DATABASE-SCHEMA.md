@@ -24,6 +24,7 @@ The Dog Bar application uses Supabase (PostgreSQL) with the following key compon
 **Purpose:** Manages admin user accounts and permissions
 
 **Schema:**
+
 ```sql
 CREATE TABLE admin_users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -54,16 +55,19 @@ CREATE TABLE admin_users (
 ```
 
 **Roles:**
+
 - `super_admin`: Full system access, can manage other admins
 - `admin`: Standard admin access, can manage content
 - `viewer`: Read-only access
 
 **Status Values:**
+
 - `active`: User can log in and access system
 - `inactive`: User account disabled
 - `suspended`: Temporary suspension
 
 **RLS Policies:**
+
 - ✅ **SELECT:** Only authenticated admins can read
 - ✅ **INSERT:** Only super admins can create new admin users
 - ✅ **UPDATE:** Only authenticated admins can update
@@ -76,6 +80,7 @@ CREATE TABLE admin_users (
 **Purpose:** Stores event information for both St. Pete and Sarasota locations
 
 **Schema:**
+
 ```sql
 CREATE TABLE events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -107,21 +112,25 @@ CREATE TABLE events (
 ```
 
 **Location Values:**
+
 - `st-pete`: St. Petersburg location
 - `sarasota`: Sarasota location
 
 **Status Values:**
+
 - `draft`: Not visible to public, admin only
 - `published`: Visible to public
 - `cancelled`: Event cancelled, may be visible with notice
 
 **Categories:**
+
 - `live-music`: Musical performances
 - `comedy`: Comedy shows
 - `trivia`: Trivia nights
 - `special-event`: Special occasions, parties, etc.
 
 **RLS Policies:**
+
 - ✅ **SELECT:** Public can read published events only
 - ✅ **INSERT:** Only authenticated admins can create events
 - ✅ **UPDATE:** Only authenticated admins can update events
@@ -134,6 +143,7 @@ CREATE TABLE events (
 **Purpose:** Manages food truck schedules and information
 
 **Schema:**
+
 ```sql
 CREATE TABLE food_trucks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -156,6 +166,7 @@ CREATE TABLE food_trucks (
 ```
 
 **RLS Policies:**
+
 - ✅ **SELECT:** Public can read active food trucks
 - ✅ **INSERT:** Only authenticated admins can create
 - ✅ **UPDATE:** Only authenticated admins can update
@@ -168,6 +179,7 @@ CREATE TABLE food_trucks (
 **Purpose:** Stores dynamic content for website pages
 
 **Schema:**
+
 ```sql
 CREATE TABLE site_content (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -187,6 +199,7 @@ CREATE TABLE site_content (
 ```
 
 **Page Values:**
+
 - `home`: Homepage content
 - `about`: About page content
 - `contact`: Contact page content
@@ -194,6 +207,7 @@ CREATE TABLE site_content (
 - `menu`: Menu page content
 
 **Section Examples:**
+
 - `hero`: Hero section content
 - `about-text`: Main about text
 - `contact-info`: Contact information
@@ -201,6 +215,7 @@ CREATE TABLE site_content (
 - `address`: Physical address
 
 **RLS Policies:**
+
 - ✅ **SELECT:** Public can read active content
 - ✅ **INSERT:** Only authenticated admins can create
 - ✅ **UPDATE:** Only authenticated admins can update
@@ -213,6 +228,7 @@ CREATE TABLE site_content (
 **Purpose:** Manages hero section settings for different pages
 
 **Schema:**
+
 ```sql
 CREATE TABLE page_hero_settings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -236,6 +252,7 @@ CREATE TABLE page_hero_settings (
 ```
 
 **RLS Policies:**
+
 - ✅ **SELECT:** Public can read active hero settings
 - ✅ **INSERT:** Only authenticated admins can create
 - ✅ **UPDATE:** Only authenticated admins can update
@@ -248,6 +265,7 @@ CREATE TABLE page_hero_settings (
 **Purpose:** Audit trail for admin actions
 
 **Schema:**
+
 ```sql
 CREATE TABLE admin_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -264,6 +282,7 @@ CREATE TABLE admin_logs (
 ```
 
 **RLS Policies:**
+
 - ✅ **SELECT:** Only super admins can read logs
 - ✅ **INSERT:** System can create logs (no user access)
 - ❌ **UPDATE:** No updates allowed
@@ -297,14 +316,14 @@ USING (
 
 ### Current Security Status
 
-| Table | RLS Enabled | Public Read | Admin Write | Status |
-|-------|-------------|-------------|-------------|---------|
-| `admin_users` | ✅ | ❌ | ✅ | SECURE |
-| `events` | ✅ | Published only | ✅ | SECURE |
-| `food_trucks` | ✅ | Active only | ✅ | SECURE |
-| `site_content` | ✅ | Active only | ✅ | SECURE |
-| `page_hero_settings` | ✅ | Active only | ✅ | SECURE |
-| `admin_logs` | ❌ | ❌ | ❌ | Not implemented |
+| Table                | RLS Enabled | Public Read    | Admin Write | Status          |
+| -------------------- | ----------- | -------------- | ----------- | --------------- |
+| `admin_users`        | ✅          | ❌             | ✅          | SECURE          |
+| `events`             | ✅          | Published only | ✅          | SECURE          |
+| `food_trucks`        | ✅          | Active only    | ✅          | SECURE          |
+| `site_content`       | ✅          | Active only    | ✅          | SECURE          |
+| `page_hero_settings` | ✅          | Active only    | ✅          | SECURE          |
+| `admin_logs`         | ❌          | ❌             | ❌          | Not implemented |
 
 ---
 
@@ -315,6 +334,7 @@ USING (
 **Purpose:** Stores uploaded images and videos
 
 **Structure:**
+
 ```
 media/
 ├── events/
@@ -332,11 +352,13 @@ media/
 ```
 
 **Policies:**
+
 - ✅ **Public Read:** Anyone can view media
 - ✅ **Admin Upload:** Only authenticated admins can upload
 - ✅ **Admin Delete:** Only authenticated admins can delete
 
 **File Types Allowed:**
+
 - Images: `.jpg`, `.jpeg`, `.png`, `.gif`
 - Videos: `.mp4`
 - Max Size: 10MB per file
@@ -356,16 +378,17 @@ LANGUAGE SQL
 SECURITY DEFINER
 AS $$
   SELECT EXISTS (
-    SELECT 1 FROM admin_users 
-    WHERE id = auth.uid() 
+    SELECT 1 FROM admin_users
+    WHERE id = auth.uid()
     AND status = 'active'
   );
 $$;
 ```
 
 **Usage:**
+
 ```javascript
-const { data: isAdmin, error } = await supabase.rpc('is_admin_user');
+const { data: isAdmin, error } = await supabase.rpc("is_admin_user");
 ```
 
 ---
@@ -386,10 +409,12 @@ admin_users (1) ──┐
 ### Key Relationships
 
 1. **Admin Users → All Content**
+
    - Every content record tracks who created/updated it
    - Enables audit trails and ownership
 
 2. **Events → Locations**
+
    - Events belong to either St. Pete or Sarasota
    - Location determines which site displays the event
 
@@ -406,15 +431,17 @@ admin_users (1) ──┐
 ```javascript
 // Login
 const { data, error } = await supabase.auth.signInWithPassword({
-  email: 'admin@example.com',
-  password: 'password'
+  email: "admin@example.com",
+  password: "password",
 });
 
 // Logout
 await supabase.auth.signOut();
 
 // Get current user
-const { data: { user } } = await supabase.auth.getUser();
+const {
+  data: { user },
+} = await supabase.auth.getUser();
 ```
 
 ### Events
@@ -422,22 +449,20 @@ const { data: { user } } = await supabase.auth.getUser();
 ```javascript
 // Get published events for public site
 const { data: events } = await supabase
-  .from('events')
-  .select('*')
-  .eq('status', 'published')
-  .eq('location', 'st-pete')
-  .order('event_date', { ascending: true });
+  .from("events")
+  .select("*")
+  .eq("status", "published")
+  .eq("location", "st-pete")
+  .order("event_date", { ascending: true });
 
 // Create new event (admin only)
-const { data, error } = await supabase
-  .from('events')
-  .insert({
-    title: 'Live Music Night',
-    description: 'Amazing local bands',
-    event_date: '2025-10-20',
-    location: 'st-pete',
-    status: 'published'
-  });
+const { data, error } = await supabase.from("events").insert({
+  title: "Live Music Night",
+  description: "Amazing local bands",
+  event_date: "2025-10-20",
+  location: "st-pete",
+  status: "published",
+});
 ```
 
 ### Media Upload
@@ -445,10 +470,10 @@ const { data, error } = await supabase
 ```javascript
 // Upload file to storage
 const { data, error } = await supabase.storage
-  .from('media')
-  .upload('events/event-123.jpg', file, {
-    cacheControl: '3600',
-    upsert: false
+  .from("media")
+  .upload("events/event-123.jpg", file, {
+    cacheControl: "3600",
+    upsert: false,
   });
 ```
 
@@ -497,13 +522,13 @@ ORDER BY event_date, start_time;
 
 ```sql
 -- Clean up old password reset tokens
-UPDATE admin_users 
-SET password_reset_token = NULL, 
+UPDATE admin_users
+SET password_reset_token = NULL,
     password_reset_expires = NULL
 WHERE password_reset_expires < NOW();
 
 -- Archive old events
-UPDATE events 
+UPDATE events
 SET status = 'archived'
 WHERE event_date < CURRENT_DATE - INTERVAL '1 year'
   AND status = 'published';
@@ -513,13 +538,13 @@ WHERE event_date < CURRENT_DATE - INTERVAL '1 year'
 
 ```sql
 -- Add indexes for common queries
-CREATE INDEX idx_events_location_status_date 
+CREATE INDEX idx_events_location_status_date
 ON events(location, status, event_date);
 
-CREATE INDEX idx_events_featured 
+CREATE INDEX idx_events_featured
 ON events(featured) WHERE featured = true;
 
-CREATE INDEX idx_admin_users_status 
+CREATE INDEX idx_admin_users_status
 ON admin_users(status) WHERE status = 'active';
 ```
 
@@ -528,18 +553,21 @@ ON admin_users(status) WHERE status = 'active';
 ## 📋 Security Checklist
 
 ### RLS Policies
+
 - [ ] All tables have RLS enabled
 - [ ] Public tables only allow read access to published/active records
 - [ ] Admin tables require authentication
 - [ ] No permissive policies exist
 
 ### Data Validation
+
 - [ ] All required fields have NOT NULL constraints
 - [ ] Email fields have proper validation
 - [ ] Date fields have appropriate ranges
 - [ ] JSONB fields have proper structure
 
 ### Access Control
+
 - [ ] Admin functions use SECURITY DEFINER
 - [ ] Sensitive operations require super_admin role
 - [ ] Audit logging for critical operations
@@ -550,12 +578,14 @@ ON admin_users(status) WHERE status = 'active';
 ## 🔄 Migration History
 
 ### October 14, 2025
+
 - ✅ Fixed critical RLS vulnerabilities
 - ✅ Secured admin_users table
 - ✅ Secured events table operations
 - ✅ Added comprehensive RLS policies
 
 ### Previous Versions
+
 - Initial schema creation
 - Basic RLS implementation
 - Admin user management

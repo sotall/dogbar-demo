@@ -35,7 +35,7 @@
       body:not(.dark) {
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       }
-      
+
       body.dark {
         background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
       }
@@ -47,7 +47,11 @@
       <!-- Page Header -->
       <div class="flex justify-between items-center mb-8">
         <div>
-          <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Media Library</h2>
+          <h2
+            class="text-3xl font-bold text-gray-900 dark:text-white transition-colors"
+          >
+            Media Library
+          </h2>
           <p class="text-gray-600 dark:text-gray-400 transition-colors">
             Upload, organize, and manage your media files
           </p>
@@ -77,25 +81,25 @@
 
       <!-- Media Grid Container (MediaSelector will render here) -->
       <div id="mediaGrid"></div>
-      </div>
+    </div>
 
     <script type="module">
       // Wait for all dependencies to load
       async function initMediaPage() {
         // Wait for PermissionManager to be initialized with currentUser
-          let attempts = 0;
-          while (
-            !window.PermissionManager ||
+        let attempts = 0;
+        while (
+          !window.PermissionManager ||
           !window.PermissionManager.currentUser
         ) {
           if (attempts >= 50) {
             console.error("PermissionManager not initialized");
             alert("Failed to load permission system. Please refresh the page.");
             return;
-            }
-            await new Promise((resolve) => setTimeout(resolve, 100));
-            attempts++;
           }
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          attempts++;
+        }
 
         // Wait for MediaSelector class
         attempts = 0;
@@ -107,8 +111,8 @@
         if (!window.MediaSelector) {
           console.error("MediaSelector not loaded");
           alert("Failed to load media selector. Please refresh the page.");
-            return;
-          }
+          return;
+        }
 
         // Check admin permissions (PermissionManager.init() already verified admin status)
         if (!window.PermissionManager.currentUser) {
@@ -166,7 +170,7 @@
       // Initialize when DOM is ready
       if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initMediaPage);
-        } else {
+      } else {
         initMediaPage();
       }
     </script>

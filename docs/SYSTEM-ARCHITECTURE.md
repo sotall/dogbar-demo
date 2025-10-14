@@ -45,6 +45,7 @@
 ### 1. Frontend Applications
 
 #### Public Website (`/`)
+
 - **Technology:** Vanilla HTML/CSS/JavaScript
 - **Purpose:** Public-facing website for both locations
 - **Features:**
@@ -60,6 +61,7 @@
   - `assets/js/components/` - Reusable components
 
 #### Admin Portal (`/admin/`)
+
 - **Technology:** Vanilla HTML/CSS/JavaScript + Tailwind CSS
 - **Purpose:** Content management system for admins
 - **Features:**
@@ -79,6 +81,7 @@
 ### 2. Backend Services (Supabase)
 
 #### Database Layer
+
 - **Technology:** PostgreSQL with Row Level Security
 - **Purpose:** Data storage and access control
 - **Features:**
@@ -88,6 +91,7 @@
   - Data validation and constraints
 
 #### Authentication Service
+
 - **Technology:** Supabase Auth
 - **Purpose:** User authentication and session management
 - **Features:**
@@ -97,6 +101,7 @@
   - Password reset functionality
 
 #### Storage Service
+
 - **Technology:** Supabase Storage
 - **Purpose:** File storage and management
 - **Features:**
@@ -106,6 +111,7 @@
   - Access control policies
 
 #### Real-time Service
+
 - **Technology:** Supabase Realtime
 - **Purpose:** Live updates and notifications
 - **Features:**
@@ -135,11 +141,13 @@
 ### Authorization Layers
 
 1. **Client-Side Validation**
+
    - JavaScript checks for valid session
    - Redirects to login if not authenticated
    - Role-based UI elements
 
 2. **API-Level Security**
+
    - JWT token validation on every request
    - Row Level Security (RLS) policies
    - Function-level access control
@@ -275,12 +283,14 @@ Dogbar/
 ### Local Development
 
 1. **Start Development Server**
+
    ```bash
    npm run dev
    # Starts Vite dev server on http://localhost:5173
    ```
 
 2. **Database Setup**
+
    - Supabase project configured
    - RLS policies applied
    - Admin users created
@@ -294,12 +304,14 @@ Dogbar/
 ### Deployment Process
 
 1. **Build Process**
+
    ```bash
    npm run build
    # Creates optimized production build
    ```
 
 2. **Vercel Deployment**
+
    - Automatic deployment on git push
    - Environment variables configured
    - Custom domain setup
@@ -316,6 +328,7 @@ Dogbar/
 ### Security Testing
 
 1. **Automated Tests**
+
    - `test-security.html` - Browser-based security tests
    - RLS policy verification
    - File upload security
@@ -330,6 +343,7 @@ Dogbar/
 ### Performance Testing
 
 1. **Frontend Performance**
+
    - Page load times
    - JavaScript bundle size
    - Image optimization
@@ -348,6 +362,7 @@ Dogbar/
 ### Application Monitoring
 
 1. **Error Tracking**
+
    - Console error logging
    - Supabase error logs
    - User feedback collection
@@ -360,6 +375,7 @@ Dogbar/
 ### Business Analytics
 
 1. **Event Analytics**
+
    - Event view counts
    - Popular event categories
    - Location-based metrics
@@ -376,11 +392,13 @@ Dogbar/
 ### Planned Features
 
 1. **Mobile App**
+
    - React Native or Flutter
    - Push notifications
    - Offline support
 
 2. **Advanced Analytics**
+
    - Google Analytics integration
    - Custom dashboard
    - Business intelligence
@@ -393,11 +411,13 @@ Dogbar/
 ### Technical Improvements
 
 1. **Performance**
+
    - Service worker implementation
    - Advanced caching strategies
    - CDN optimization
 
 2. **Security**
+
    - Two-factor authentication
    - Advanced audit logging
    - Security monitoring
@@ -468,11 +488,13 @@ VITE_APP_ENV=production
 ### Development Guidelines
 
 1. **Code Style**
+
    - Use consistent indentation
    - Comment complex logic
    - Follow naming conventions
 
 2. **Security**
+
    - Validate all inputs
    - Use RLS policies
    - Test security changes
@@ -485,6 +507,7 @@ VITE_APP_ENV=production
 ### Git Workflow
 
 1. **Feature Branches**
+
    - Create branch for each feature
    - Test thoroughly before merge
    - Use descriptive commit messages

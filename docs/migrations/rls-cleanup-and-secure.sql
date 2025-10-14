@@ -141,3 +141,4 @@ USING (
 -- Test that anonymous access is blocked:
 -- SELECT count(*) FROM admin_users; -- Should return 0 or error
 
+

@@ -39,59 +39,29 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ## 📁 Project Structure
 
+See [PROJECT-STRUCTURE.md](PROJECT-STRUCTURE.md) for complete directory organization.
+
+**Key Directories:**
+- **`/admin/`** - Admin portal (CMS)
+- **`/pages/`** - Public website pages  
+- **`/assets/`** - Static assets (CSS, JS, images)
+- **`/docs/`** - Complete documentation
+- **`/tests/`** - Security and functional testing
+
+**Quick Overview:**
 ```
 dogbar/
-├── .docs/                      # Development documentation
-│   ├── AGENT-RULES.md          # AI agent guidelines
-│   ├── CURRENT-SPRINT.md       # Active tasks
-│   ├── PROJECT-PLAN.md         # Strategic plan
-│   ├── PROJECT-STATUS.md       # Current status
-│   └── supabase-setup.md       # Database setup
-│
 ├── admin/                      # Admin portal
-│   ├── shared/                 # Shared components
-│   │   ├── navigation.html     # Menu template
-│   │   ├── navigation.js       # Menu logic
-│   │   └── permissions.js      # Auth & RBAC
-│   ├── dashboard.html          # Admin dashboard
-│   ├── events.html             # Event management
-│   ├── food-trucks.html        # Food truck management
-│   ├── login.html              # Admin login
-│   ├── logs.html               # Audit logs
-│   ├── media.html              # Media library
-│   ├── schema-inspector.html   # Database inspector
-│   ├── site-settings.html      # Site settings
-│   └── users.html              # User management
-│
 ├── assets/                     # Static assets
-│   ├── css/
-│   │   ├── styles.css          # Global styles
-│   │   ├── tailwind.input.css  # Tailwind source
-│   │   └── tailwind.output.css # Compiled CSS (gitignored)
-│   ├── js/
-│   │   ├── components/         # Reusable components
-│   │   ├── social/             # Social media integrations
-│   │   ├── app.js              # Main app controller
-│   │   └── config.js           # Environment config
-│   └── media/                  # Images & videos
-│
-├── pages/                      # Additional pages
-│   ├── calendar.html           # Events calendar
-│   ├── contact-us.html         # Contact form
-│   ├── debug.html              # Debug tools
-│   ├── menu.html               # Food/drinks menu
-│   └── party-booking.html      # Party booking
-│
-├── .env.local                  # Local environment (gitignored)
-├── .gitignore                  # Git ignore rules
-├── index.html                  # Location chooser (entry point)
-├── site.html                   # Main site (location-aware)
-├── package.json                # Dependencies & scripts
-├── postcss.config.js           # PostCSS config
-├── tailwind.config.js          # Tailwind config
-├── vercel.json                 # Vercel deployment config
-├── vite.config.js              # Vite build config
-└── README.md                   # This file
+├── docs/                       # Documentation
+│   ├── security/               # Security docs
+│   ├── deployment/             # Deployment docs
+│   └── migrations/             # Database migrations
+├── pages/                      # Public pages
+├── tests/                      # Testing suite
+├── index.html                  # St. Pete homepage
+├── site.html                   # Sarasota homepage
+└── package.json                # Dependencies
 ```
 
 ---
@@ -214,9 +184,9 @@ npm run build
 
 ## 📊 Project Status
 
-**Phase:** Production Ready  
+**Phase:** Production Ready ✅  
 **Version:** 1.0.0  
-**Last Updated:** January 2025
+**Last Updated:** October 14, 2025
 
 ### ✅ Completed
 
@@ -228,10 +198,26 @@ npm run build
 - Session management and auth
 - Audit logging
 - Production build pipeline
+- **🔒 Security Audit Complete** - All critical vulnerabilities fixed
+- **📚 Documentation Complete** - Comprehensive system documentation
+- **🧪 Test Suite Created** - Automated security testing
+- **📁 Project Organization** - Clean directory structure
 
-### 🚧 Active Work
+### 🧪 Testing
 
-- Check `.notes.md` in project root for current working notes
+**Security Testing:**
+```bash
+# Start dev server
+npm run dev
+
+# Navigate to security tests
+open http://localhost:5173/tests/test-security.html
+
+# Run complete security audit
+# Click "Run Complete Security Audit" button
+```
+
+**Status:** ✅ **SECURED** - All critical vulnerabilities fixed
 
 ---
 

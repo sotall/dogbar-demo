@@ -3,6 +3,7 @@
 ## ✅ What We've Done So Far
 
 1. **Created Security Test Suite** (`test-security.html`)
+
    - Automated tests for storage, RLS, and XSS
    - Browser-based UI with color-coded results
    - Tests actual API calls (not assumptions)
@@ -35,18 +36,21 @@ Navigate to: `http://localhost:5173/test-security.html`
 Click the buttons to run tests:
 
 1. **Test Storage Security** - Tests file upload restrictions
+
    - Tries to upload .php, .exe files
    - Tries to upload oversized files (20MB)
    - Tries path traversal attacks
    - Tries to upload malicious HTML
 
 2. **Test RLS Policies** - Tests database access restrictions
+
    - Tries to read admin_users table
    - Tries to read draft events
    - Tries to update/delete events
    - Tries to read admin logs
 
 3. **XSS Protection Tests** - Manual testing instructions
+
    - Provides step-by-step guide for testing XSS
    - Shows what payloads to try
    - Explains what to look for
@@ -56,6 +60,7 @@ Click the buttons to run tests:
 ### Step 4: Review Results
 
 Results are color-coded:
+
 - ✅ **GREEN (SECURE)** - Security measure is working
 - ❌ **RED (VULNERABLE)** - Security issue found
 - ⚠️ **YELLOW (WARNING)** - Needs attention
@@ -69,16 +74,19 @@ Results are color-coded:
 **Good news!** Your security measures are working. No fixes needed for those areas.
 
 Document this in `SECURITY-AUDIT-REPORT.md`:
+
 ```markdown
 ## Test Results (Date: 2025-10-14)
 
 ### Storage Security: ✅ SECURE
+
 - Unauthenticated uploads: BLOCKED
 - Malicious file types: BLOCKED
 - Oversized files: BLOCKED
 - Path traversal: BLOCKED
 
 ### RLS Policies: ✅ SECURE
+
 - admin_users: Protected
 - draft events: Not visible publicly
 - Unauthorized modifications: BLOCKED
@@ -94,6 +102,7 @@ Document this in `SECURITY-AUDIT-REPORT.md`:
 4. Re-run test to verify fix
 
 **Example:**
+
 ```markdown
 ## Vulnerability Found
 
@@ -113,11 +122,12 @@ Document this in `SECURITY-AUDIT-REPORT.md`:
 Go to **Supabase Dashboard → Storage → media bucket → Policies**
 
 Add policy:
+
 ```sql
 CREATE POLICY "Restrict file types"
 ON storage.objects FOR INSERT
 WITH CHECK (
-  bucket_id = 'media' 
+  bucket_id = 'media'
   AND (
     LOWER(RIGHT(name, 4)) IN ('.jpg', '.png', '.gif', '.mp4')
     OR LOWER(RIGHT(name, 5)) IN ('.jpeg', '.webp')
@@ -145,13 +155,17 @@ Add `InputSanitizer` to affected files:
 
 ```javascript
 // Import at top
-<script type="module" src="../admin/shared/sanitize.js"></script>
+<script type="module" src="../admin/shared/sanitize.js"></script>;
 
 // Use when rendering
-tbody.innerHTML = events.map((event) => `
+tbody.innerHTML = events
+  .map(
+    (event) => `
   <td>${InputSanitizer.sanitizeHTML(event.title)}</td>
   <td>${InputSanitizer.sanitizeHTML(event.description)}</td>
-`).join("");
+`
+  )
+  .join("");
 ```
 
 ---
@@ -159,16 +173,19 @@ tbody.innerHTML = events.map((event) => `
 ## 🎯 Testing Priorities
 
 ### High Priority (Test First):
+
 1. Storage security (file uploads)
 2. RLS on sensitive tables (admin_users, admin_logs)
 3. XSS in event titles/descriptions
 
 ### Medium Priority:
+
 4. RLS on public tables (events, site_content)
 5. Form input sanitization
 6. Session management
 
 ### Low Priority:
+
 7. Console logging
 8. Inline scripts
 9. Dependency versions
@@ -189,10 +206,12 @@ After running automated tests, manually test XSS:
 6. Check events table
 
 **Expected (SECURE):**
+
 - Shows as text: `<script>alert("XSS")</script>`
 - No alert pops up
 
 **Vulnerable:**
+
 - Alert pops up
 - JavaScript executes
 
@@ -211,6 +230,7 @@ After running automated tests, manually test XSS:
 ### Test 4: Image Tag XSS
 
 Try creating event with:
+
 ```html
 <img src=x onerror=alert("XSS2")>
 ```
@@ -226,16 +246,19 @@ Should NOT trigger alert.
 ## 🚀 Next Steps After Testing
 
 1. **Document All Findings**
+
    - Update `SECURITY-AUDIT-REPORT.md`
    - Mark items as ✅ SECURE or ❌ VULNERABLE
    - Include test evidence (screenshots)
 
 2. **Prioritize Fixes**
+
    - Fix HIGH risk items first
    - Medium risk within 2 weeks
    - Low risk when convenient
 
 3. **Implement Only Necessary Fixes**
+
    - Don't fix what isn't broken
    - Test each fix thoroughly
    - Re-run security tests after fixes
@@ -267,16 +290,19 @@ Before marking security audit complete:
 **Key Principles:**
 
 1. **Verify > Assume**
+
    - Don't assume something is vulnerable
    - Test to confirm actual state
    - Save time by not fixing non-issues
 
 2. **Measure > Estimate**
+
    - Use actual test results
    - Document evidence
    - Make data-driven decisions
 
 3. **Fix > Workaround**
+
    - Fix root causes, not symptoms
    - Implement proper security controls
    - Don't rely on client-side validation alone
@@ -291,11 +317,13 @@ Before marking security audit complete:
 ## 📞 Need Help?
 
 **If tests show vulnerabilities:**
+
 - Review `SECURITY-AUDIT-REPORT.md` for detailed fixes
 - Check Supabase documentation for RLS policies
 - Test in isolated environment first
 
 **If tests fail to run:**
+
 - Check browser console for errors
 - Verify Supabase credentials are correct
 - Ensure dev server is running
@@ -305,4 +333,3 @@ Before marking security audit complete:
 **Remember:** The goal is to find the TRUTH about your security posture, not to create a false sense of security by assuming everything is perfect!
 
 Run the tests and let the data guide your next steps. 🎯
-
