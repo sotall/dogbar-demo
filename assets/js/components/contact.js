@@ -8,13 +8,11 @@ const ContactComponent = {
       const appConfig = appInstance?.getConfig?.();
       const appLocation = appInstance?.getLocation?.();
 
-      if (
-        appConfig &&
-        appConfig.address &&
-        (!location || !appLocation || appLocation === location)
-      ) {
-        this.applyContactData(appConfig);
-        return;
+      if (appConfig && appConfig.address) {
+        if (!location || location === appLocation) {
+          this.applyContactData(appConfig);
+          return;
+        }
       }
 
       // Fallback: fetch directly from Supabase if app config isn't available yet

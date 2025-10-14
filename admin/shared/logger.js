@@ -14,7 +14,9 @@ class AuditLogger {
 
   async log(action, details = {}) {
     try {
-      const { data: { session } } = await this.supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await this.supabase.auth.getSession();
       const email = session?.user?.email || "unknown";
       const payload = {
         action,
@@ -39,9 +41,7 @@ class AuditLogger {
     while (this.queue.length > 0) {
       const batch = this.queue.splice(0, 5);
       try {
-        const { error } = await this.supabase
-          .from("audit_logs")
-          .insert(batch);
+        const { error } = await this.supabase.from("audit_logs").insert(batch);
         if (error) {
           throw error;
         }

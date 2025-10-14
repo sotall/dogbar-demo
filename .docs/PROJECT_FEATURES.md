@@ -571,4 +571,268 @@ await supabase.from("admin_logs").insert({
 
 ---
 
+## 📸 Unified Media Selector Component
+
+**Feature:** Reusable media management component supporting both modal selection and full page library management.
+
+**Purpose:** Provide a single, consistent media interface across the admin portal, eliminating code duplication and ensuring feature parity.
+
+### Files Involved
+
+- `admin/shared/media-selector.js` - Unified MediaSelector class (~2000 lines)
+- `admin/media.html` - Media library page (now ~220 lines, down from ~2400)
+- `admin/site-settings.html` - Uses MediaSelector for hero background selection
+
+### Component Modes
+
+#### Modal Mode (`mode: "modal"`)
+
+Used for media selection (e.g., hero backgrounds in site-settings):
+
+```javascript
+const mediaSelector = new MediaSelector({
+  containerId: "mediaSelectorGrid",
+  mode: "modal",
+  selectionCallback: selectMedia, // Called when user selects a file
+  showDefaultMedia: true,
+  pageSize: 12,
+  supabaseClient: supabase,
+  supabaseUrl: supabaseUrl,
+});
+```
+
+**Features:**
+- Media grid display
+- Search, filter, sort
+- Pagination
+- Click to select
+- Calls callback with selected file
+
+#### Page Mode (`mode: "page"`)
+
+Used for full media library management (admin/media.html):
+
+```javascript
+const mediaManager = new MediaSelector({
+  containerId: "mediaGrid",
+  mode: "page",
+  allowUpload: true,
+  allowDelete: true,
+  allowBulkSelection: true,
+  showViewToggle: true,
+  showViewer: true,
+  pageSize: 20,
+  supabaseClient: supabase,
+  supabaseUrl: supabaseUrl,
+});
+```
+
+**Features:**
+- All modal mode features, plus:
+- Drag-and-drop file upload
+- Bulk selection with checkboxes
+- Bulk delete
+- Grid/list view toggle
+- Full-screen image/video viewer with keyboard navigation
+- Individual file delete
+- Select all/clear selection
+
+### Key Methods
+
+#### Constructor Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `containerId` | string | `"mediaGrid"` | DOM element ID to render into |
+| `mode` | string | `"modal"` | `"modal"` or `"page"` |
+| `selectionCallback` | function | `null` | Called on file selection (modal mode) |
+| `allowUpload` | boolean | `false` | Show upload area (page mode) |
+| `allowDelete` | boolean | `false` | Show delete buttons (page mode) |
+| `allowBulkSelection` | boolean | `false` | Show checkboxes for bulk ops (page mode) |
+| `showViewToggle` | boolean | `false` | Show grid/list toggle (page mode) |
+| `showViewer` | boolean | `false` | Enable full-screen viewer (page mode) |
+| `pageSize` | number | `20` | Items per page |
+| `supabaseClient` | object | `window.supabase` | Supabase client instance |
+| `supabaseUrl` | string | `""` | Supabase project URL |
+
+#### Public Methods
+
+- `async init()` - Initialize component, load media, render
+- `async loadMedia()` - Fetch media from Supabase storage
+- `async refresh()` - Reload media and re-render
+- `applyFilters()` - Apply search, type, and sort filters
+- `render()` - Re-render the entire component
+- `openViewer(index)` - Open full-screen viewer (page mode)
+- `closeViewer()` - Close viewer
+- `handleUpload(files)` - Upload files to storage (page mode)
+- `showDeleteModal(files)` - Show delete confirmation (page mode)
+- `processDeletions(files)` - Delete files with progress modal (page mode)
+
+### State Management
+
+The component maintains internal state:
+
+```javascript
+{
+  allFiles: [],           // All media from storage
+  filteredFiles: [],      // After search/filter/sort
+  currentPage: 1,         // Current pagination page
+  searchTerm: "",         // Search query
+  typeFilter: "all",      // "all", "image", or "video"
+  sortBy: "newest",       // "newest", "oldest", "name", "size"
+  viewMode: "grid",       // "grid" or "list" (page mode)
+  selectedFiles: Set(),   // IDs of selected files (page mode)
+  imageCache: Map()       // In-memory image cache for performance
+}
+```
+
+### Media File Structure
+
+```javascript
+{
+  id: "filename.jpg",             // Unique identifier
+  name: "filename.jpg",           // Display name
+  url: "https://...public/media/filename.jpg", // Full URL
+  type: "image" | "video",        // Media type
+  size: 1048576,                  // Size in bytes
+  created_at: "2025-01-14T...",  // Upload timestamp
+  isDefault: false                // True for hardcoded repo files
+}
+```
+
+### Performance Optimizations
+
+1. **Image Caching**: In-memory `Map` cache for faster subsequent loads
+2. **Lazy Loading**: Native `loading="lazy"` on images
+3. **Async Decoding**: `decoding="async"` to prevent main thread blocking
+4. **Pagination**: Only render current page items
+5. **CSS-based Thumbnails**: Falls back to CSS sizing when Supabase transforms unavailable (free tier)
+
+### Modals and UI Elements
+
+#### Page Mode UI Elements
+
+1. **Upload Area**: Drag-and-drop zone with file input
+2. **Bulk Toolbar**: Shows selection count, clear, and delete buttons
+3. **View Toggle**: Switch between grid and list views
+4. **Full-Screen Viewer**: 
+   - Image/video display
+   - Previous/next navigation
+   - Delete button
+   - Keyboard controls (arrow keys, ESC)
+5. **Delete Confirmation Modal**: Shows files to be deleted with previews
+6. **Deletion Progress Modal**: Live progress bar during bulk delete
+
+### Integration Example (Page Mode)
+
+```html
+<!-- admin/media.html -->
+<div id="mediaGrid"></div>
+
+<script type="module">
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  
+  const mediaManager = new MediaSelector({
+    containerId: "mediaGrid",
+    mode: "page",
+    allowUpload: true,
+    allowDelete: true,
+    allowBulkSelection: true,
+    showViewToggle: true,
+    showViewer: true,
+    pageSize: 20,
+    supabaseClient: supabase,
+    supabaseUrl: SUPABASE_URL,
+  });
+  
+  await mediaManager.init();
+  
+  // Refresh button
+  document.getElementById("refreshBtn").addEventListener("click", () => {
+    mediaManager.refresh();
+  });
+</script>
+```
+
+### Integration Example (Modal Mode)
+
+```html
+<!-- admin/site-settings.html -->
+<div id="mediaSelectorGrid"></div>
+
+<script>
+  let mediaSelector = null;
+  
+  function openMediaModal() {
+    if (!mediaSelector) {
+      mediaSelector = new MediaSelector({
+        containerId: "mediaSelectorGrid",
+        mode: "modal",
+        selectionCallback: (url, type, name) => {
+          console.log("Selected:", url, type, name);
+          // Handle selection
+        },
+        showDefaultMedia: true,
+        pageSize: 12,
+        supabaseClient: supabase,
+        supabaseUrl: supabaseUrl,
+      });
+    }
+    await mediaSelector.init();
+  }
+</script>
+```
+
+### Benefits
+
+✅ **Single Source of Truth**: One component for all media displays
+✅ **Consistent UI**: Same look and feel everywhere
+✅ **Reduced Code**: Eliminated ~2200 lines of duplicate code
+✅ **Easier Maintenance**: Fix bugs once, applies everywhere
+✅ **Feature Parity**: All features available in appropriate contexts
+✅ **Scalable**: Easy to add new features to both modes
+
+### Edge Cases Handled
+
+1. **No files**: Shows empty state with helpful message
+2. **Upload errors**: Logs errors, shows alerts
+3. **Delete errors**: Continues with remaining files, logs errors
+4. **Supabase transforms disabled**: Falls back to CSS-based sizing
+5. **Large file lists**: Pagination prevents performance issues
+6. **Video playback**: Pauses video when closing viewer
+7. **Keyboard navigation**: ESC closes viewer, arrows navigate
+
+### Dependencies
+
+- Supabase JS SDK (v2)
+- Tailwind CSS (for styling)
+- Modern browser with ES6+ support
+- Supabase Storage bucket named `media`
+
+### Supabase Storage Configuration
+
+The component expects a Supabase Storage bucket named `media` with public access:
+
+```sql
+-- Enable RLS
+ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+
+-- Public read access
+CREATE POLICY "Public can view media"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'media');
+
+-- Authenticated users can upload
+CREATE POLICY "Authenticated can upload media"
+  ON storage.objects FOR INSERT
+  WITH CHECK (bucket_id = 'media' AND auth.role() = 'authenticated');
+
+-- Authenticated users can delete their uploads
+CREATE POLICY "Authenticated can delete media"
+  ON storage.objects FOR DELETE
+  USING (bucket_id = 'media' AND auth.role() = 'authenticated');
+```
+
+---
+
 **This document will be updated as features are added or modified.**

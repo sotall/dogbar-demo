@@ -3,17 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="View upcoming events, food trucks, and special occasions at The Dog Bar calendar." />
+    <meta
+      name="description"
+      content="View upcoming events, food trucks, and special occasions at The Dog Bar calendar."
+    />
     <meta name="theme-color" content="#0ea5e9" />
-    
+
     <!-- Open Graph / Social Media -->
     <meta property="og:title" content="Events Calendar - The Dog Bar" />
-    <meta property="og:description" content="View upcoming events, food trucks, and special occasions at The Dog Bar calendar." />
-    <meta property="og:image" content="https://dogbar.com/assets/media/logo.png" />
+    <meta
+      property="og:description"
+      content="View upcoming events, food trucks, and special occasions at The Dog Bar calendar."
+    />
+    <meta
+      property="og:image"
+      content="https://dogbar.com/assets/media/logo.png"
+    />
     <meta property="og:type" content="website" />
-    
+
     <title>Events Calendar - The Dog Bar</title>
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="../assets/media/logo.png?v=2" />
 
@@ -1003,18 +1012,19 @@
       async function initEventsHero() {
         let attempts = 0;
         while ((!window.supabase || !window.renderPageHero) && attempts < 50) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
           attempts++;
         }
 
         if (window.renderPageHero) {
           // Get location from localStorage or default to 'st-pete'
-          const location = localStorage.getItem('dogbar_location') || 'st-pete';
-          
-          await window.renderPageHero('events', location, {
-            title: 'Events Calendar 📅',
-            subtitle: 'Click on a date to see events and details',
-            gradientClass: 'bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600'
+          const location = localStorage.getItem("dogbar_location") || "st-pete";
+
+          await window.renderPageHero("events", location, {
+            title: "Events Calendar 📅",
+            subtitle: "Click on a date to see events and details",
+            gradientClass:
+              "bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600",
           });
         }
       }
