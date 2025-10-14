@@ -231,7 +231,7 @@ class MediaSelector {
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
   }
 
   // Create page mode UI elements (modals, etc.)
@@ -394,15 +394,16 @@ class MediaSelector {
     }
 
     // Bulk selection toolbar (page mode only)
-    if (this.mode === "page" && this.allowBulkSelection && this.selectedFiles.size > 0) {
+    if (
+      this.mode === "page" &&
+      this.allowBulkSelection &&
+      this.selectedFiles.size > 0
+    ) {
       html += this.renderBulkToolbar();
     }
 
-    // Main container with dark background
-    html += `<div class="bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700 rounded-xl shadow-lg p-6">`;
-
-    // Filters and Pagination combined at TOP
-    html += `<div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-6">`;
+    // Filters and Pagination - WHITE background
+    html += `<div class="bg-white rounded-lg shadow-md p-6 mb-6">`;
     html += this.renderFiltersAndPagination();
     html += `</div>`;
 
@@ -411,12 +412,9 @@ class MediaSelector {
       html += this.renderMediaHeader();
     }
 
-    // Grid/List
-    html += `<div id="${this.containerId}-grid" class="mb-0">`;
+    // Grid/List with DARK background (only around the grid)
+    html += `<div id="${this.containerId}-grid" class="bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700 rounded-xl p-6 shadow-lg">`;
     html += this.renderGrid();
-    html += `</div>`;
-
-    // Close main container
     html += `</div>`;
 
     container.innerHTML = html;
@@ -443,17 +441,23 @@ class MediaSelector {
   // Render bulk selection toolbar
   renderBulkToolbar() {
     return `
-      <div id="${this.containerId}-bulkToolbar" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center justify-between">
+      <div id="${
+        this.containerId
+      }-bulkToolbar" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center justify-between">
         <div class="flex items-center gap-4">
           <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
           <span class="text-blue-800 font-medium">
-            <span id="${this.containerId}-selectedCount">${this.selectedFiles.size}</span> items selected
+            <span id="${this.containerId}-selectedCount">${
+      this.selectedFiles.size
+    }</span> items selected
           </span>
         </div>
         <div class="flex gap-2">
-          <button id="${this.containerId}-clearSelection" class="px-4 py-2 border-2 border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 hover:border-gray-400 transition font-medium">
+          <button id="${
+            this.containerId
+          }-clearSelection" class="px-4 py-2 border-2 border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 hover:border-gray-400 transition font-medium">
             Clear Selection
           </button>
           ${
@@ -476,8 +480,14 @@ class MediaSelector {
   // Render filters and pagination combined
   renderFiltersAndPagination() {
     const totalPages = Math.ceil(this.filteredFiles.length / this.pageSize);
-    const startItem = this.filteredFiles.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
-    const endItem = Math.min(this.currentPage * this.pageSize, this.filteredFiles.length);
+    const startItem =
+      this.filteredFiles.length === 0
+        ? 0
+        : (this.currentPage - 1) * this.pageSize + 1;
+    const endItem = Math.min(
+      this.currentPage * this.pageSize,
+      this.filteredFiles.length
+    );
 
     return `
       <!-- Search Bar -->
@@ -487,7 +497,7 @@ class MediaSelector {
           id="${this.containerId}-search"
           placeholder="Search by file name..."
           value="${this.searchTerm}"
-          class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
         />
       </div>
 
@@ -495,49 +505,73 @@ class MediaSelector {
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <!-- Left: Filters -->
         <div class="flex flex-wrap items-center gap-3">
-          <label class="text-sm font-medium text-white">Type:</label>
+          <label class="text-sm font-medium text-gray-700">Type:</label>
           <select
             id="${this.containerId}-type"
             class="px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
           >
-            <option value="all" ${this.typeFilter === "all" ? "selected" : ""}>All Types</option>
-            <option value="image" ${this.typeFilter === "image" ? "selected" : ""}>Images</option>
-            <option value="video" ${this.typeFilter === "video" ? "selected" : ""}>Videos</option>
+            <option value="all" ${
+              this.typeFilter === "all" ? "selected" : ""
+            }>All Types</option>
+            <option value="image" ${
+              this.typeFilter === "image" ? "selected" : ""
+            }>Images</option>
+            <option value="video" ${
+              this.typeFilter === "video" ? "selected" : ""
+            }>Videos</option>
           </select>
 
-          <label class="text-sm font-medium text-white">Sort:</label>
+          <label class="text-sm font-medium text-gray-700">Sort:</label>
           <select
             id="${this.containerId}-sort"
             class="px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
           >
-            <option value="newest" ${this.sortBy === "newest" ? "selected" : ""}>Newest First</option>
-            <option value="oldest" ${this.sortBy === "oldest" ? "selected" : ""}>Oldest First</option>
-            <option value="name" ${this.sortBy === "name" ? "selected" : ""}>Name A-Z</option>
-            <option value="size" ${this.sortBy === "size" ? "selected" : ""}>Size</option>
+            <option value="newest" ${
+              this.sortBy === "newest" ? "selected" : ""
+            }>Newest First</option>
+            <option value="oldest" ${
+              this.sortBy === "oldest" ? "selected" : ""
+            }>Oldest First</option>
+            <option value="name" ${
+              this.sortBy === "name" ? "selected" : ""
+            }>Name A-Z</option>
+            <option value="size" ${
+              this.sortBy === "size" ? "selected" : ""
+            }>Size</option>
           </select>
 
-          <label class="text-sm font-medium text-white">Per Page:</label>
+          <label class="text-sm font-medium text-gray-700">Per Page:</label>
           <select 
             id="${this.containerId}-pageSize"
             class="px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
           >
-            <option value="12" ${this.pageSize === 12 ? "selected" : ""}>12</option>
-            <option value="20" ${this.pageSize === 20 ? "selected" : ""}>20</option>
-            <option value="36" ${this.pageSize === 36 ? "selected" : ""}>36</option>
-            <option value="50" ${this.pageSize === 50 ? "selected" : ""}>50</option>
+            <option value="12" ${
+              this.pageSize === 12 ? "selected" : ""
+            }>12</option>
+            <option value="20" ${
+              this.pageSize === 20 ? "selected" : ""
+            }>20</option>
+            <option value="36" ${
+              this.pageSize === 36 ? "selected" : ""
+            }>36</option>
+            <option value="50" ${
+              this.pageSize === 50 ? "selected" : ""
+            }>50</option>
           </select>
         </div>
 
         <!-- Right: Pagination -->
-        ${totalPages > 1 ? `
+        ${
+          totalPages > 1
+            ? `
         <div class="flex items-center gap-3">
-          <span class="text-sm text-white font-medium">
+          <span class="text-sm text-gray-700 font-medium">
             ${startItem}-${endItem} of ${this.filteredFiles.length}
           </span>
 
           <button 
             id="${this.containerId}-prevPage"
-            class="px-3 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+            class="px-3 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-emerald-500 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
             ${this.currentPage === 1 ? "disabled" : ""}
           >
             Previous
@@ -552,22 +586,24 @@ class MediaSelector {
               value="${this.currentPage}"
               class="w-16 px-2 py-2 bg-white border border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
             />
-            <span class="text-sm text-white">of ${totalPages}</span>
+            <span class="text-sm text-gray-700">of ${totalPages}</span>
           </div>
 
           <button 
             id="${this.containerId}-nextPage"
-            class="px-3 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+            class="px-3 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-emerald-500 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
             ${this.currentPage === totalPages ? "disabled" : ""}
           >
             Next
           </button>
         </div>
-        ` : `
-        <span class="text-sm text-white font-medium">
+        `
+            : `
+        <span class="text-sm text-gray-700 font-medium">
           ${this.filteredFiles.length} items
         </span>
-        `}
+        `
+        }
       </div>
     `;
   }
@@ -595,14 +631,22 @@ class MediaSelector {
             <h3 class="text-lg font-semibold text-gray-900">Media Files</h3>
           </div>
           <div class="flex items-center gap-4">
-            <span id="${this.containerId}-fileCount" class="text-sm text-gray-600">${this.filteredFiles.length} files</span>
+            <span id="${
+              this.containerId
+            }-fileCount" class="text-sm text-gray-600">${
+      this.filteredFiles.length
+    } files</span>
             ${
               this.showViewToggle
                 ? `
               <div class="flex gap-2">
                 <button
                   id="${this.containerId}-gridView"
-                  class="p-2 rounded-lg ${this.viewMode === "grid" ? "bg-emerald-100 text-emerald-600" : "text-gray-400 hover:bg-gray-100"}"
+                  class="p-2 rounded-lg ${
+                    this.viewMode === "grid"
+                      ? "bg-emerald-100 text-emerald-600"
+                      : "text-gray-400 hover:bg-gray-100"
+                  }"
                   title="Grid View"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -611,7 +655,11 @@ class MediaSelector {
                 </button>
                 <button
                   id="${this.containerId}-listView"
-                  class="p-2 rounded-lg ${this.viewMode === "list" ? "bg-emerald-100 text-emerald-600" : "text-gray-400 hover:bg-gray-100"}"
+                  class="p-2 rounded-lg ${
+                    this.viewMode === "list"
+                      ? "bg-emerald-100 text-emerald-600"
+                      : "text-gray-400 hover:bg-gray-100"
+                  }"
                   title="List View"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -666,7 +714,9 @@ class MediaSelector {
   renderGridView(pageFiles, startIndex) {
     return `
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        ${pageFiles.map((file, index) => this.renderMediaItem(file, startIndex + index)).join("")}
+        ${pageFiles
+          .map((file, index) => this.renderMediaItem(file, startIndex + index))
+          .join("")}
       </div>
     `;
   }
@@ -675,7 +725,11 @@ class MediaSelector {
   renderListView(pageFiles, startIndex) {
     return `
       <div class="space-y-2">
-        ${pageFiles.map((file, index) => this.renderMediaItemList(file, startIndex + index)).join("")}
+        ${pageFiles
+          .map((file, index) =>
+            this.renderMediaItemList(file, startIndex + index)
+          )
+          .join("")}
       </div>
     `;
   }
@@ -689,7 +743,9 @@ class MediaSelector {
     return `
       <div 
         class="relative group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border-2 ${
-          isSelected ? "border-emerald-500" : "border-transparent hover:border-emerald-500"
+          isSelected
+            ? "border-emerald-500"
+            : "border-transparent hover:border-emerald-500"
         }"
         data-media-index="${index}"
         data-media-id="${file.id}"
@@ -737,8 +793,12 @@ class MediaSelector {
           }
         </div>
         <div class="p-3">
-          <p class="text-sm font-medium text-gray-900 truncate" title="${file.name}">${file.name}</p>
-          <p class="text-xs text-gray-500 mt-1">${file.type}${file.isDefault ? " • Default" : ""}</p>
+          <p class="text-sm font-medium text-gray-900 truncate" title="${
+            file.name
+          }">${file.name}</p>
+          <p class="text-xs text-gray-500 mt-1">${file.type}${
+      file.isDefault ? " • Default" : ""
+    }</p>
         </div>
         ${
           this.mode === "modal"
@@ -798,7 +858,9 @@ class MediaSelector {
         
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-gray-900 truncate">${file.name}</p>
-          <p class="text-xs text-gray-500 mt-1">${file.type} • ${this.formatFileSize(file.size)}</p>
+          <p class="text-xs text-gray-500 mt-1">${
+            file.type
+          } • ${this.formatFileSize(file.size)}</p>
         </div>
         
         ${
@@ -819,7 +881,6 @@ class MediaSelector {
       </div>
     `;
   }
-
 
   // Render loading state
   renderLoading() {
@@ -869,7 +930,9 @@ class MediaSelector {
     }
 
     // Page size
-    const pageSizeSelect = document.getElementById(`${this.containerId}-pageSize`);
+    const pageSizeSelect = document.getElementById(
+      `${this.containerId}-pageSize`
+    );
     if (pageSizeSelect) {
       pageSizeSelect.addEventListener("change", (e) => {
         this.pageSize = parseInt(e.target.value);
@@ -904,7 +967,9 @@ class MediaSelector {
     }
 
     // Page jump
-    const pageJumpInput = document.getElementById(`${this.containerId}-pageJump`);
+    const pageJumpInput = document.getElementById(
+      `${this.containerId}-pageJump`
+    );
     if (pageJumpInput) {
       pageJumpInput.addEventListener("change", (e) => {
         const page = parseInt(e.target.value);
@@ -936,7 +1001,9 @@ class MediaSelector {
     }
 
     // Select all checkbox
-    const selectAllCheckbox = document.getElementById(`${this.containerId}-selectAll`);
+    const selectAllCheckbox = document.getElementById(
+      `${this.containerId}-selectAll`
+    );
     if (selectAllCheckbox) {
       selectAllCheckbox.addEventListener("change", (e) => {
         const startIndex = (this.currentPage - 1) * this.pageSize;
@@ -968,7 +1035,9 @@ class MediaSelector {
     });
 
     // Clear selection
-    const clearSelectionBtn = document.getElementById(`${this.containerId}-clearSelection`);
+    const clearSelectionBtn = document.getElementById(
+      `${this.containerId}-clearSelection`
+    );
     if (clearSelectionBtn) {
       clearSelectionBtn.addEventListener("click", () => {
         this.selectedFiles.clear();
@@ -977,10 +1046,14 @@ class MediaSelector {
     }
 
     // Delete selected
-    const deleteSelectedBtn = document.getElementById(`${this.containerId}-deleteSelected`);
+    const deleteSelectedBtn = document.getElementById(
+      `${this.containerId}-deleteSelected`
+    );
     if (deleteSelectedBtn) {
       deleteSelectedBtn.addEventListener("click", () => {
-        const filesToDelete = this.allFiles.filter((f) => this.selectedFiles.has(f.id));
+        const filesToDelete = this.allFiles.filter((f) =>
+          this.selectedFiles.has(f.id)
+        );
         this.showDeleteModal(filesToDelete);
       });
     }
@@ -999,7 +1072,9 @@ class MediaSelector {
     });
 
     // Upload area
-    const uploadArea = document.getElementById(`${this.containerId}-uploadArea`);
+    const uploadArea = document.getElementById(
+      `${this.containerId}-uploadArea`
+    );
     const fileInput = document.getElementById(`${this.containerId}-fileInput`);
     if (uploadArea && fileInput) {
       uploadArea.addEventListener("click", () => fileInput.click());
@@ -1028,7 +1103,10 @@ class MediaSelector {
     if (container) {
       container.addEventListener("click", (e) => {
         // Don't trigger if clicking checkbox or delete button
-        if (e.target.closest(".media-checkbox") || e.target.closest(".delete-btn")) {
+        if (
+          e.target.closest(".media-checkbox") ||
+          e.target.closest(".delete-btn")
+        ) {
           return;
         }
 
@@ -1195,7 +1273,9 @@ class MediaSelector {
     const extra = document.getElementById("deleteModalExtra");
 
     title.textContent =
-      files.length > 1 ? `Delete ${files.length} files?` : `Delete "${files[0].name}"?`;
+      files.length > 1
+        ? `Delete ${files.length} files?`
+        : `Delete "${files[0].name}"?`;
     detail.textContent =
       files.length > 1
         ? "These files will be permanently removed from storage. This action cannot be undone."
@@ -1207,11 +1287,17 @@ class MediaSelector {
         (file) => `
         <div class="flex items-center gap-3 rounded-xl border border-gray-200 px-3 py-2">
           <div class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border border-gray-100">
-            <img src="${file.url}" alt="${file.name}" class="h-full w-full object-cover" />
+            <img src="${file.url}" alt="${
+          file.name
+        }" class="h-full w-full object-cover" />
           </div>
           <div class="flex-1">
-            <p class="text-sm font-medium text-gray-900 truncate">${file.name}</p>
-            <p class="text-xs text-gray-500">${this.formatFileSize(file.size)}</p>
+            <p class="text-sm font-medium text-gray-900 truncate">${
+              file.name
+            }</p>
+            <p class="text-xs text-gray-500">${this.formatFileSize(
+              file.size
+            )}</p>
           </div>
         </div>
       `
@@ -1276,7 +1362,9 @@ class MediaSelector {
         const displayName =
           file.name.length > 30 ? `${file.name.slice(0, 27)}...` : file.name;
         if (progressText) {
-          progressText.textContent = `Deleting ${completed + 1} of ${total}: ${displayName}`;
+          progressText.textContent = `Deleting ${
+            completed + 1
+          } of ${total}: ${displayName}`;
         }
 
         if (!file.isDefault) {
@@ -1325,7 +1413,9 @@ class MediaSelector {
   scrollToTop() {
     const container = document.getElementById(this.containerId);
     if (container) {
-      const scrollableParent = container.closest(".overflow-y-auto, .overflow-y-scroll");
+      const scrollableParent = container.closest(
+        ".overflow-y-auto, .overflow-y-scroll"
+      );
       if (scrollableParent) {
         scrollableParent.scrollTop = 0;
       } else {
