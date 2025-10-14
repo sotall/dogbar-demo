@@ -14,8 +14,7 @@ class AuditLogger {
 
   async log(action, details = {}) {
     try {
-      const sessionRaw = localStorage.getItem("supabase.auth.token");
-      const session = sessionRaw ? JSON.parse(sessionRaw) : null;
+      const { data: { session } } = await this.supabase.auth.getSession();
       const email = session?.user?.email || "unknown";
       const payload = {
         action,
