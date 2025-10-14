@@ -383,12 +383,15 @@
           const { data, error } = await supabase
             .from("events")
             .update({ title: "HACKED BY SECURITY TEST" })
-            .eq("id", "00000000-0000-0000-0000-000000000000"); // Non-existent ID
+            .eq("id", "00000000-0000-0000-0000-000000000000") // Non-existent ID
+            .select();
 
           if (error) {
             log(`  Result: ✅ BLOCKED - ${error.message}`, "secure");
+          } else if (!data || data.length === 0) {
+            log(`  Result: ✅ BLOCKED - RLS prevented update (0 rows affected)`, "secure");
           } else {
-            log(`  Result: ❌ VULNERABLE - Update succeeded!`, "vulnerable");
+            log(`  Result: ❌ VULNERABLE - Update succeeded on ${data.length} rows!`, "vulnerable");
           }
         } catch (e) {
           log(`  Result: ✅ BLOCKED - ${e.message}`, "secure");
@@ -400,12 +403,15 @@
           const { data, error } = await supabase
             .from("events")
             .delete()
-            .eq("id", "00000000-0000-0000-0000-000000000000");
+            .eq("id", "00000000-0000-0000-0000-000000000000")
+            .select();
 
           if (error) {
             log(`  Result: ✅ BLOCKED - ${error.message}`, "secure");
+          } else if (!data || data.length === 0) {
+            log(`  Result: ✅ BLOCKED - RLS prevented delete (0 rows affected)`, "secure");
           } else {
-            log(`  Result: ❌ VULNERABLE - Delete succeeded!`, "vulnerable");
+            log(`  Result: ❌ VULNERABLE - Delete succeeded on ${data.length} rows!`, "vulnerable");
           }
         } catch (e) {
           log(`  Result: ✅ BLOCKED - ${e.message}`, "secure");
