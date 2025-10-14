@@ -320,7 +320,7 @@
       log('STEP 1: Test Admin Events Page', 'info');
       log('  1. Go to admin/events.html', 'info');
       log('  2. Create a new event with this title:', 'info');
-      log('     <script>alert("XSS")</script>', 'vulnerable');
+      log('     <' + 'script>alert("XSS")<' + '/script>', 'vulnerable');
       log('  3. Save and view the events table', 'info');
       log('  4. Check browser:', 'info');
       log('     ❌ Alert fires = VULNERABLE', 'vulnerable');
@@ -338,7 +338,7 @@
       
       log('STEP 4: Test Image Tags', 'info');
       log('  1. Create event with title:', 'info');
-      log('     <img src=x onerror=alert("XSS2")>', 'vulnerable');
+      log('     <' + 'img src=x onerror=alert("XSS2")>', 'vulnerable');
       log('  2. Verify it doesn\'t trigger\n', 'info');
       
       log('STEP 5: Test Form Inputs', 'info');
