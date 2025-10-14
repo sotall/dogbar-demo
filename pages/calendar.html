@@ -11,26 +11,8 @@
     <!-- Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    <!-- Wait for Supabase to load, then start app -->
-    <script>
-      // Wait for Supabase to be available
-      function waitForSupabase() {
-        if (window.supabase) {
-          console.log("✅ Supabase loaded, starting app...");
-          // Load the main app script
-          const script = document.createElement("script");
-          script.type = "module";
-          script.src = "../assets/js/app.js";
-          document.head.appendChild(script);
-        } else {
-          console.log("⏳ Waiting for Supabase to load...");
-          setTimeout(waitForSupabase, 100);
-        }
-      }
-
-      // Start checking when DOM is ready
-      document.addEventListener("DOMContentLoaded", waitForSupabase);
-    </script>
+    <!-- Main App Script (Vite will process this during build) -->
+    <script type="module" src="/assets/js/app.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"

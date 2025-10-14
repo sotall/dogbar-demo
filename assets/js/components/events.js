@@ -1,350 +1,350 @@
 // Events Component
-(function () {
-  const EventsComponent = {
-    // Get upcoming events from Supabase
-    async getUpcomingEvents(limit = 2) {
-      try {
-        // Get Supabase client from global app
-        const app = window.DogBarApp;
-        if (!app || !app.getSupabase()) {
-          console.warn("Supabase not available, using fallback data");
-          return EventsComponent.getFallbackEvents(limit);
-        }
+window.DogBarComponents = window.DogBarComponents || {};
 
-        const supabase = app.getSupabase();
-        const location = app.getLocation();
-
-        // Fetch upcoming events from database
-        const { data, error } = await supabase
-          .from("events")
-          .select("*")
-          .eq("location", location)
-          .eq("status", "published")
-          .gte("date", new Date().toISOString().split("T")[0])
-          .order("date", { ascending: true })
-          .limit(limit);
-
-        if (error) {
-          console.error("Error fetching events from database:", error);
-          return EventsComponent.getFallbackEvents(limit);
-        }
-
-        // Transform database events to expected format
-        return data.map((event) => ({
-          title: event.title,
-          time: `${event.start_time || "TBD"} - ${event.end_time || "TBD"}`,
-          description: event.description || "Join us for this exciting event!",
-          image:
-            event.image_url ||
-            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-          type: EventsComponent.getEventType(event.event_type),
-          date: new Date(event.date),
-          dateStr: event.date,
-        }));
-      } catch (error) {
-        console.error("Error in getUpcomingEvents:", error);
+const EventsComponent = {
+  // Get upcoming events from Supabase
+  async getUpcomingEvents(limit = 2) {
+    try {
+      // Get Supabase client from global app
+      const app = window.DogBarApp;
+      if (!app || !app.getSupabase()) {
+        console.warn("Supabase not available, using fallback data");
         return EventsComponent.getFallbackEvents(limit);
       }
-    },
 
-    // Get featured events from Supabase
-    async getFeaturedEvents(limit = 2) {
-      try {
-        // Get Supabase client from global app
-        const app = window.DogBarApp;
-        if (!app || !app.getSupabase()) {
-          console.warn("Supabase not available for featured events");
-          return [];
-        }
+      const supabase = app.getSupabase();
+      const location = app.getLocation();
 
-        const supabase = app.getSupabase();
-        const location = app.getLocation();
+      // Fetch upcoming events from database
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .eq("location", location)
+        .eq("status", "published")
+        .gte("date", new Date().toISOString().split("T")[0])
+        .order("date", { ascending: true })
+        .limit(limit);
 
-        // Fetch featured events from database
-        const { data, error } = await supabase
-          .from("events")
-          .select("*")
-          .eq("location", location)
-          .eq("status", "published")
-          .eq("is_featured", true)
-          .gte("date", new Date().toISOString().split("T")[0])
-          .order("date", { ascending: true })
-          .limit(limit);
+      if (error) {
+        console.error("Error fetching events from database:", error);
+        return EventsComponent.getFallbackEvents(limit);
+      }
 
-        if (error) {
-          console.error("Error fetching featured events from database:", error);
-          return [];
-        }
+      // Transform database events to expected format
+      return data.map((event) => ({
+        title: event.title,
+        time: `${event.start_time || "TBD"} - ${event.end_time || "TBD"}`,
+        description: event.description || "Join us for this exciting event!",
+        image:
+          event.image_url ||
+          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+        type: EventsComponent.getEventType(event.event_type),
+        date: new Date(event.date),
+        dateStr: event.date,
+      }));
+    } catch (error) {
+      console.error("Error in getUpcomingEvents:", error);
+      return EventsComponent.getFallbackEvents(limit);
+    }
+  },
 
-        // Transform database events to expected format
-        return data.map((event) => ({
-          title: event.title,
-          time: `${event.start_time || "TBD"} - ${event.end_time || "TBD"}`,
-          description: event.description || "Join us for this exciting event!",
-          image:
-            event.image_url ||
-            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-          type: EventsComponent.getEventType(event.event_type),
-          date: new Date(event.date),
-          dateStr: event.date,
-        }));
-      } catch (error) {
-        console.error("Error in getFeaturedEvents:", error);
+  // Get featured events from Supabase
+  async getFeaturedEvents(limit = 2) {
+    try {
+      // Get Supabase client from global app
+      const app = window.DogBarApp;
+      if (!app || !app.getSupabase()) {
+        console.warn("Supabase not available for featured events");
         return [];
       }
-    },
 
-    getEventType(eventType) {
-      const typeMap = {
-        "food-truck": "Food Truck",
-        special: "Special Event",
-        recurring: "Entertainment",
-        wellness: "Wellness",
-      };
-      return typeMap[eventType] || "Event";
-    },
+      const supabase = app.getSupabase();
+      const location = app.getLocation();
 
-    // Fallback events data (original hardcoded data)
-    getFallbackEvents(limit = 2) {
-      const eventsData = {
-        // October 2025
-        "2025-10-03": [
-          {
-            title: "Food Truck Friday - Latin Lunchbox",
-            time: "5:00 PM - 9:00 PM",
-            description:
-              "Delicious Latin cuisine from Latin Lunchbox food truck",
-            image: "uploads/2025/08/latin_lunchbox_menu_820x1024.jpg",
-            type: "Food Truck",
-          },
-        ],
-        "2025-10-05": [
-          {
-            title: "Yoga with Pups",
-            time: "10:00 AM - 11:00 AM",
-            description:
-              "First Sunday monthly yoga session with your furry friend",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Wellness",
-          },
-        ],
-        "2025-10-06": [
-          {
-            title: "Trivia Night",
-            time: "7:00 PM - 9:00 PM",
-            description: "Every Monday - Test your knowledge and win prizes!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-10-07": [
-          {
-            title: "Bingo Night",
-            time: "6:30 PM - 9:30 PM",
-            description: "Fun bingo with prizes for you and your pup!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-10-10": [
-          {
-            title: "Food Truck Friday - Poke 'Em",
-            time: "5:00 PM - 9:00 PM",
-            description: "Fresh poke bowls and Hawaiian cuisine",
-            image: "uploads/2025/09/poke_em_menu_no_prices_1_791x1024.png",
-            type: "Food Truck",
-          },
-        ],
-        "2025-10-13": [
-          {
-            title: "Trivia Night",
-            time: "7:00 PM - 9:00 PM",
-            description: "Every Monday - Test your knowledge and win prizes!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-10-14": [
-          {
-            title: "Bingo Night",
-            time: "6:30 PM - 9:30 PM",
-            description: "Fun bingo with prizes for you and your pup!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-10-17": [
-          {
-            title: "Food Truck Friday - Go Stuff Urself",
-            time: "5:00 PM - 9:00 PM",
-            description: "Amazing wings and loaded fries",
-            image: "uploads/2024/06/go_stuff_urself_menu_798x1024.jpg",
-            type: "Food Truck",
-          },
-        ],
-        "2025-10-20": [
-          {
-            title: "Trivia Night",
-            time: "7:00 PM - 9:00 PM",
-            description: "Every Monday - Test your knowledge and win prizes!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-10-21": [
-          {
-            title: "Bingo Night",
-            time: "6:30 PM - 9:30 PM",
-            description: "Fun bingo with prizes for you and your pup!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-10-24": [
-          {
-            title: "Food Truck Friday - Saucin Wings",
-            time: "5:00 PM - 9:00 PM",
-            description: "The best wings in Tampa Bay!",
-            image: "uploads/2023/04/saucin_wings_menu_1_683x1024.png",
-            type: "Food Truck",
-          },
-        ],
-        "2025-10-27": [
-          {
-            title: "Trivia Night",
-            time: "7:00 PM - 9:00 PM",
-            description: "Every Monday - Test your knowledge and win prizes!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-10-28": [
-          {
-            title: "Bingo Night",
-            time: "6:30 PM - 9:30 PM",
-            description: "Fun bingo with prizes for you and your pup!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-10-31": [
-          {
-            title: "Halloween Howl-o-ween Party 🎃",
-            time: "5:00 PM - 10:00 PM",
-            description:
-              "Costume contest, treats, and spooky fun for dogs and their humans!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Special Event",
-          },
-        ],
-        // November 2025
-        "2025-11-02": [
-          {
-            title: "Yoga with Pups",
-            time: "10:00 AM - 11:00 AM",
-            description: "First Sunday monthly yoga session",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Wellness",
-          },
-        ],
-        "2025-11-03": [
-          {
-            title: "Trivia Night",
-            time: "7:00 PM - 9:00 PM",
-            description: "Every Monday - Test your knowledge!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-11-07": [
-          {
-            title: "Food Truck Friday - Johnny Nevada's",
-            time: "5:00 PM - 9:00 PM",
-            description: "Gourmet tacos and Mexican street food",
-            image: "uploads/2023/03/johnny_nevadas_menu_3.16_1024x577.png",
-            type: "Food Truck",
-          },
-        ],
-        "2025-11-10": [
-          {
-            title: "Trivia Night",
-            time: "7:00 PM - 9:00 PM",
-            description: "Every Monday - Test your knowledge!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-11-14": [
-          {
-            title: "Food Truck Friday - Got Lobstah",
-            time: "5:00 PM - 9:00 PM",
-            description: "Fresh lobster rolls and seafood",
-            image: "uploads/2021/04/got_lobstah_menu_2_298x400.jpg",
-            type: "Food Truck",
-          },
-        ],
-        "2025-11-17": [
-          {
-            title: "Trivia Night",
-            time: "7:00 PM - 9:00 PM",
-            description: "Every Monday - Test your knowledge!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-11-21": [
-          {
-            title: "Food Truck Friday - Polish Kitchen",
-            time: "5:00 PM - 9:00 PM",
-            description: "Authentic Polish pierogis and kielbasa",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzY2NjY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Food Truck",
-          },
-        ],
-        "2025-11-24": [
-          {
-            title: "Trivia Night",
-            time: "7:00 PM - 9:00 PM",
-            description: "Every Monday - Test your knowledge!",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Entertainment",
-          },
-        ],
-        "2025-11-28": [
-          {
-            title: "Food Truck Friday - Thanksgiving Weekend",
-            time: "5:00 PM - 9:00 PM",
-            description: "Special Thanksgiving weekend food truck",
-            image:
-              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-            type: "Food Truck",
-          },
-        ],
-      };
-    },
+      // Fetch featured events from database
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .eq("location", location)
+        .eq("status", "published")
+        .eq("is_featured", true)
+        .gte("date", new Date().toISOString().split("T")[0])
+        .order("date", { ascending: true })
+        .limit(limit);
 
-    async render(location, config) {
-      const root = document.getElementById("events-root");
-      if (!root) return;
+      if (error) {
+        console.error("Error fetching featured events from database:", error);
+        return [];
+      }
 
-      // Show loading state
-      root.innerHTML = `
+      // Transform database events to expected format
+      return data.map((event) => ({
+        title: event.title,
+        time: `${event.start_time || "TBD"} - ${event.end_time || "TBD"}`,
+        description: event.description || "Join us for this exciting event!",
+        image:
+          event.image_url ||
+          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+        type: EventsComponent.getEventType(event.event_type),
+        date: new Date(event.date),
+        dateStr: event.date,
+      }));
+    } catch (error) {
+      console.error("Error in getFeaturedEvents:", error);
+      return [];
+    }
+  },
+
+  getEventType(eventType) {
+    const typeMap = {
+      "food-truck": "Food Truck",
+      special: "Special Event",
+      recurring: "Entertainment",
+      wellness: "Wellness",
+    };
+    return typeMap[eventType] || "Event";
+  },
+
+  // Fallback events data (original hardcoded data)
+  getFallbackEvents(limit = 2) {
+    const eventsData = {
+      // October 2025
+      "2025-10-03": [
+        {
+          title: "Food Truck Friday - Latin Lunchbox",
+          time: "5:00 PM - 9:00 PM",
+          description: "Delicious Latin cuisine from Latin Lunchbox food truck",
+          image: "uploads/2025/08/latin_lunchbox_menu_820x1024.jpg",
+          type: "Food Truck",
+        },
+      ],
+      "2025-10-05": [
+        {
+          title: "Yoga with Pups",
+          time: "10:00 AM - 11:00 AM",
+          description:
+            "First Sunday monthly yoga session with your furry friend",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Wellness",
+        },
+      ],
+      "2025-10-06": [
+        {
+          title: "Trivia Night",
+          time: "7:00 PM - 9:00 PM",
+          description: "Every Monday - Test your knowledge and win prizes!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-10-07": [
+        {
+          title: "Bingo Night",
+          time: "6:30 PM - 9:30 PM",
+          description: "Fun bingo with prizes for you and your pup!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-10-10": [
+        {
+          title: "Food Truck Friday - Poke 'Em",
+          time: "5:00 PM - 9:00 PM",
+          description: "Fresh poke bowls and Hawaiian cuisine",
+          image: "uploads/2025/09/poke_em_menu_no_prices_1_791x1024.png",
+          type: "Food Truck",
+        },
+      ],
+      "2025-10-13": [
+        {
+          title: "Trivia Night",
+          time: "7:00 PM - 9:00 PM",
+          description: "Every Monday - Test your knowledge and win prizes!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-10-14": [
+        {
+          title: "Bingo Night",
+          time: "6:30 PM - 9:30 PM",
+          description: "Fun bingo with prizes for you and your pup!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-10-17": [
+        {
+          title: "Food Truck Friday - Go Stuff Urself",
+          time: "5:00 PM - 9:00 PM",
+          description: "Amazing wings and loaded fries",
+          image: "uploads/2024/06/go_stuff_urself_menu_798x1024.jpg",
+          type: "Food Truck",
+        },
+      ],
+      "2025-10-20": [
+        {
+          title: "Trivia Night",
+          time: "7:00 PM - 9:00 PM",
+          description: "Every Monday - Test your knowledge and win prizes!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-10-21": [
+        {
+          title: "Bingo Night",
+          time: "6:30 PM - 9:30 PM",
+          description: "Fun bingo with prizes for you and your pup!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-10-24": [
+        {
+          title: "Food Truck Friday - Saucin Wings",
+          time: "5:00 PM - 9:00 PM",
+          description: "The best wings in Tampa Bay!",
+          image: "uploads/2023/04/saucin_wings_menu_1_683x1024.png",
+          type: "Food Truck",
+        },
+      ],
+      "2025-10-27": [
+        {
+          title: "Trivia Night",
+          time: "7:00 PM - 9:00 PM",
+          description: "Every Monday - Test your knowledge and win prizes!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-10-28": [
+        {
+          title: "Bingo Night",
+          time: "6:30 PM - 9:30 PM",
+          description: "Fun bingo with prizes for you and your pup!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-10-31": [
+        {
+          title: "Halloween Howl-o-ween Party 🎃",
+          time: "5:00 PM - 10:00 PM",
+          description:
+            "Costume contest, treats, and spooky fun for dogs and their humans!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Special Event",
+        },
+      ],
+      // November 2025
+      "2025-11-02": [
+        {
+          title: "Yoga with Pups",
+          time: "10:00 AM - 11:00 AM",
+          description: "First Sunday monthly yoga session",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Wellness",
+        },
+      ],
+      "2025-11-03": [
+        {
+          title: "Trivia Night",
+          time: "7:00 PM - 9:00 PM",
+          description: "Every Monday - Test your knowledge!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-11-07": [
+        {
+          title: "Food Truck Friday - Johnny Nevada's",
+          time: "5:00 PM - 9:00 PM",
+          description: "Gourmet tacos and Mexican street food",
+          image: "uploads/2023/03/johnny_nevadas_menu_3.16_1024x577.png",
+          type: "Food Truck",
+        },
+      ],
+      "2025-11-10": [
+        {
+          title: "Trivia Night",
+          time: "7:00 PM - 9:00 PM",
+          description: "Every Monday - Test your knowledge!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-11-14": [
+        {
+          title: "Food Truck Friday - Got Lobstah",
+          time: "5:00 PM - 9:00 PM",
+          description: "Fresh lobster rolls and seafood",
+          image: "uploads/2021/04/got_lobstah_menu_2_298x400.jpg",
+          type: "Food Truck",
+        },
+      ],
+      "2025-11-17": [
+        {
+          title: "Trivia Night",
+          time: "7:00 PM - 9:00 PM",
+          description: "Every Monday - Test your knowledge!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-11-21": [
+        {
+          title: "Food Truck Friday - Polish Kitchen",
+          time: "5:00 PM - 9:00 PM",
+          description: "Authentic Polish pierogis and kielbasa",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzY2NjY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Food Truck",
+        },
+      ],
+      "2025-11-24": [
+        {
+          title: "Trivia Night",
+          time: "7:00 PM - 9:00 PM",
+          description: "Every Monday - Test your knowledge!",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Entertainment",
+        },
+      ],
+      "2025-11-28": [
+        {
+          title: "Food Truck Friday - Thanksgiving Weekend",
+          time: "5:00 PM - 9:00 PM",
+          description: "Special Thanksgiving weekend food truck",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          type: "Food Truck",
+        },
+      ],
+    };
+  },
+
+  async render(location, config) {
+    const root = document.getElementById("events-root");
+    if (!root) return;
+
+    // Show loading state
+    root.innerHTML = `
         <section id="events" class="py-20 bg-gray-50">
           <div class="container mx-auto px-4">
             <div class="text-center mb-12">
@@ -358,12 +358,12 @@
         </section>
       `;
 
-      // Get upcoming events from database
-      const upcomingEvents = await EventsComponent.getUpcomingEvents(2);
+    // Get upcoming events from database
+    const upcomingEvents = await EventsComponent.getUpcomingEvents(2);
 
-      const eventsHTML = upcomingEvents
-        .map(
-          (event, index) => `
+    const eventsHTML = upcomingEvents
+      .map(
+        (event, index) => `
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group event-card" data-event-index="${index}">
           <div class="relative cursor-pointer" onclick="toggleEventDetails(${index})">
           <img
@@ -475,10 +475,10 @@
           </div>
         </div>
       `
-        )
-        .join("");
+      )
+      .join("");
 
-      root.innerHTML = `
+    root.innerHTML = `
         <section id="events" class="py-20 bg-gray-50">
           <div class="container mx-auto px-4">
             <div class="text-center mb-12">
@@ -510,40 +510,39 @@
           </div>
         </section>
       `;
-    },
-  };
+  },
+};
 
-  // Register component
-  window.DogBarComponents.Events = EventsComponent;
+// Register component
+window.DogBarComponents.Events = EventsComponent;
 
-  // Global function to toggle event details
-  window.toggleEventDetails = function (eventIndex) {
-    const eventCard = document.querySelector(
-      `[data-event-index="${eventIndex}"]`
-    );
-    if (!eventCard) return;
+// Global function to toggle event details
+window.toggleEventDetails = function (eventIndex) {
+  const eventCard = document.querySelector(
+    `[data-event-index="${eventIndex}"]`
+  );
+  if (!eventCard) return;
 
-    const detailsSection = eventCard.querySelector(".event-details");
-    const toggleText = eventCard.querySelector(".toggle-text");
-    const toggleIcon = eventCard.querySelector(".toggle-icon");
-    const expandIcon = eventCard.querySelector(".expand-icon");
+  const detailsSection = eventCard.querySelector(".event-details");
+  const toggleText = eventCard.querySelector(".toggle-text");
+  const toggleIcon = eventCard.querySelector(".toggle-icon");
+  const expandIcon = eventCard.querySelector(".expand-icon");
 
-    if (detailsSection.classList.contains("hidden")) {
-      // Expand
-      detailsSection.classList.remove("hidden");
-      toggleText.textContent = "Hide Details";
-      toggleIcon.style.transform = "rotate(180deg)";
-      expandIcon.style.transform = "rotate(180deg)";
-      eventCard.style.transform = "translateY(-8px)";
-      eventCard.style.boxShadow = "0 20px 40px rgba(0,0,0,0.15)";
-    } else {
-      // Collapse
-      detailsSection.classList.add("hidden");
-      toggleText.textContent = "View Details";
-      toggleIcon.style.transform = "rotate(0deg)";
-      expandIcon.style.transform = "rotate(0deg)";
-      eventCard.style.transform = "translateY(0)";
-      eventCard.style.boxShadow = "0 10px 25px rgba(0,0,0,0.1)";
-    }
-  };
-})();
+  if (detailsSection.classList.contains("hidden")) {
+    // Expand
+    detailsSection.classList.remove("hidden");
+    toggleText.textContent = "Hide Details";
+    toggleIcon.style.transform = "rotate(180deg)";
+    expandIcon.style.transform = "rotate(180deg)";
+    eventCard.style.transform = "translateY(-8px)";
+    eventCard.style.boxShadow = "0 20px 40px rgba(0,0,0,0.15)";
+  } else {
+    // Collapse
+    detailsSection.classList.add("hidden");
+    toggleText.textContent = "View Details";
+    toggleIcon.style.transform = "rotate(0deg)";
+    expandIcon.style.transform = "rotate(0deg)";
+    eventCard.style.transform = "translateY(0)";
+    eventCard.style.boxShadow = "0 10px 25px rgba(0,0,0,0.1)";
+  }
+};

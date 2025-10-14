@@ -1,6 +1,27 @@
 // Dog Bar - Main Application Controller
 // Manages component loading and location-specific content
 
+// Initialize global namespace BEFORE importing components
+window.DogBarComponents = window.DogBarComponents || {};
+
+// Static imports for Vite bundling
+import "/assets/js/components/header.js";
+import "/assets/js/components/hero.js";
+import "/assets/js/components/stats.js";
+import "/assets/js/components/events.js";
+import "/assets/js/components/footer.js";
+import "/assets/js/components/contact.js";
+import "/assets/js/components/location-chooser.js";
+
+// Social components
+import "/assets/js/social/facebook.js";
+import "/assets/js/social/instagram.js";
+import "/assets/js/social/twitter.js";
+import "/assets/js/social/tiktok.js";
+import "/assets/js/social/youtube.js";
+import "/assets/js/social/linkedin.js";
+import "/assets/js/social/snapchat.js";
+
 class DogBarApp {
   constructor() {
     this.location = this.detectLocation();
@@ -33,11 +54,32 @@ class DogBarApp {
     return "st-pete";
   }
 
+  async waitForSupabase() {
+    // Wait for Supabase to be loaded from CDN
+    let attempts = 0;
+    const maxAttempts = 50; // 5 seconds
+
+    while (!window.supabase && attempts < maxAttempts) {
+      console.log("⏳ Waiting for Supabase to load...");
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      attempts++;
+    }
+
+    if (window.supabase) {
+      console.log("✅ Supabase loaded");
+    } else {
+      console.error("❌ Supabase failed to load after 5 seconds");
+    }
+  }
+
   async init() {
     try {
       console.log("🚀 Starting Dog Bar App initialization...");
       // Prevent any automatic scrolling on page load
       window.scrollTo(0, 0);
+
+      // Wait for Supabase to be available
+      await this.waitForSupabase();
 
       // Initialize Supabase
       console.log("🔧 Initializing Supabase...");
@@ -169,14 +211,10 @@ class DogBarApp {
 
   async loadComponents() {
     console.log("📦 loadComponents() called");
-    console.log("📦 Loading components...");
+    console.log("📦 Components already loaded via static imports");
 
-    const assetsBase = this.getAssetsBasePath();
-
-    // Load and render header FIRST to avoid header flash on navigation
+    // Render header FIRST to avoid header flash on navigation
     try {
-      console.log("📦 Loading header component early...");
-      await this.loadScript(`${assetsBase}/js/components/header.js`);
       if (window.DogBarComponents?.Header) {
         console.log("✅ Rendering Header early");
         window.DogBarComponents.Header.renderWithInit(
@@ -186,72 +224,15 @@ class DogBarApp {
         this.headerRendered = true;
       }
     } catch (e) {
-      console.warn("❌ Early header load failed:", e);
+      console.warn("❌ Early header render failed:", e);
     }
 
-    // Load social icon data (kept separate from footer for cleanliness)
-    const socialScripts = [
-      "facebook",
-      "instagram",
-      "twitter",
-      "tiktok",
-      "youtube",
-      "linkedin",
-      "snapchat",
-    ];
+    // Give a tiny moment for any async component registration
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
-    for (const s of socialScripts) {
-      try {
-        await this.loadScript(`${assetsBase}/js/social/${s}.js`);
-      } catch (e) {
-        console.warn(`❌ Social icon ${s} failed to load:`, e);
-      }
-    }
-
-    // Load remaining component scripts (header already loaded)
-    const components = [
-      "hero",
-      "stats",
-      "events",
-      "footer",
-      "location-chooser",
-      "contact",
-    ];
-
-    for (const component of components) {
-      try {
-        console.log(`📦 Loading ${component} component...`);
-        await this.loadScript(`${assetsBase}/js/components/${component}.js`);
-        console.log(`✅ ${component} component loaded`);
-      } catch (error) {
-        console.warn(`❌ Component ${component} failed to load:`, error);
-      }
-    }
-
-    // Give components time to register
-    console.log("⏳ Waiting for components to register...");
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    // Render components
+    // Render remaining components
     console.log("🔍 About to render components...");
     this.renderComponents();
-  }
-
-  // Helper method to get correct base path for assets
-  getAssetsBasePath() {
-    const currentPath = window.location.pathname;
-    const isInPagesDir = currentPath.includes("/pages/");
-    return isInPagesDir ? "../assets" : "assets";
-  }
-
-  loadScript(src) {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.src = src;
-      script.onload = resolve;
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
   }
 
   renderComponents() {

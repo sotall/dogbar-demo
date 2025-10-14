@@ -1,59 +1,58 @@
 // Header Component
-(function () {
-  const HeaderComponent = {
-    // Helper function to determine correct paths based on current page
-    getPaths() {
-      const currentPath = window.location.pathname;
-      const isInPagesDir = currentPath.includes("/pages/");
+window.DogBarComponents = window.DogBarComponents || {};
 
-      if (isInPagesDir) {
-        return {
-          home: "../site.html",
-          calendar: "calendar.html",
-          menu: "menu.html",
-          partyBooking: "party-booking.html",
-          contactUs: "contact-us.html",
-          logo: "../assets/media/logo.png?v=2",
-        };
-      } else {
-        return {
-          home: "site.html",
-          calendar: "pages/calendar.html",
-          menu: "pages/menu.html",
-          partyBooking: "pages/party-booking.html",
-          contactUs: "pages/contact-us.html",
-          logo: "assets/media/logo.png?v=2",
-        };
-      }
-    },
+const HeaderComponent = {
+  // Helper function to determine correct paths based on current page
+  getPaths() {
+    const currentPath = window.location.pathname;
+    const isInPagesDir = currentPath.includes("/pages/");
 
-    render(location, config) {
-      console.log("🎨 Header render called with location:", location);
-      const root = document.getElementById("header-root");
-      console.log("🔍 Header root element:", root);
-      if (!root) {
-        console.warn("❌ Header root element not found!");
-        return;
-      }
+    if (isInPagesDir) {
+      return {
+        home: "../site.html",
+        calendar: "calendar.html",
+        menu: "menu.html",
+        partyBooking: "party-booking.html",
+        contactUs: "contact-us.html",
+        logo: "../assets/media/logo.png?v=2",
+      };
+    } else {
+      return {
+        home: "site.html",
+        calendar: "pages/calendar.html",
+        menu: "pages/menu.html",
+        partyBooking: "pages/party-booking.html",
+        contactUs: "pages/contact-us.html",
+        logo: "assets/media/logo.png?v=2",
+      };
+    }
+  },
 
-      // Skip re-rendering if header already exists and location hasn't changed
-      if (root.innerHTML && root.dataset.location === location) {
-        console.log("🔄 Header already rendered for location:", location);
-        return;
-      }
+  render(location, config) {
+    console.log("🎨 Header render called with location:", location);
+    const root = document.getElementById("header-root");
+    console.log("🔍 Header root element:", root);
+    if (!root) {
+      console.warn("❌ Header root element not found!");
+      return;
+    }
 
-      const locationName = location === "st-pete" ? "St. Pete" : "Sarasota";
-      const otherLocation = location === "st-pete" ? "sarasota" : "st-pete";
-      const otherLocationName =
-        location === "st-pete" ? "Sarasota" : "St. Petersburg";
-      const otherLocationUrl =
-        location === "st-pete"
-          ? "https://dbsrq.com"
-          : "https://dogbarstpete.com";
+    // Skip re-rendering if header already exists and location hasn't changed
+    if (root.innerHTML && root.dataset.location === location) {
+      console.log("🔄 Header already rendered for location:", location);
+      return;
+    }
 
-      const paths = this.getPaths();
+    const locationName = location === "st-pete" ? "St. Pete" : "Sarasota";
+    const otherLocation = location === "st-pete" ? "sarasota" : "st-pete";
+    const otherLocationName =
+      location === "st-pete" ? "Sarasota" : "St. Petersburg";
+    const otherLocationUrl =
+      location === "st-pete" ? "https://dbsrq.com" : "https://dogbarstpete.com";
 
-      root.innerHTML = `
+    const paths = this.getPaths();
+
+    root.innerHTML = `
         <header class="absolute top-0 left-0 right-0 z-50 overflow-hidden">
           <div class="container mx-auto relative">
              <div class="flex items-center py-3">
@@ -185,74 +184,73 @@
         </header>
       `;
 
-      // Store location for future checks
-      root.dataset.location = location;
-    },
+    // Store location for future checks
+    root.dataset.location = location;
+  },
 
-    // Initialize mobile menu functionality
-    initMobileMenu() {
-      // Define the toggle function globally if not already defined
-      if (typeof window.toggleMobileMenu === "undefined") {
-        window.toggleMobileMenu = function () {
-          const mobileMenu = document.getElementById("mobile-menu");
-          if (mobileMenu) {
-            if (mobileMenu.classList.contains("hidden")) {
-              // Show menu with smooth transition
-              mobileMenu.classList.remove("hidden");
-              mobileMenu.style.maxHeight = "0px";
-              mobileMenu.style.opacity = "0";
-              requestAnimationFrame(() => {
-                mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
-                mobileMenu.style.opacity = "1";
-              });
-            } else {
-              // Hide menu with smooth transition
-              mobileMenu.style.maxHeight = "0px";
-              mobileMenu.style.opacity = "0";
-              setTimeout(() => {
-                mobileMenu.classList.add("hidden");
-              }, 300);
-            }
-          }
-        };
-      }
-
-      // Close mobile menu when navigation links are clicked
-      this.closeMobileMenuOnNavigation();
-    },
-
-    closeMobileMenuOnNavigation() {
-      // Add click handlers to all navigation links to close mobile menu
-      const navLinks = document.querySelectorAll(
-        'a[href*="?location="], a[href*=".html"]'
-      );
-      navLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-          const mobileMenu = document.getElementById("mobile-menu");
-          if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
-            // Smooth close transition
+  // Initialize mobile menu functionality
+  initMobileMenu() {
+    // Define the toggle function globally if not already defined
+    if (typeof window.toggleMobileMenu === "undefined") {
+      window.toggleMobileMenu = function () {
+        const mobileMenu = document.getElementById("mobile-menu");
+        if (mobileMenu) {
+          if (mobileMenu.classList.contains("hidden")) {
+            // Show menu with smooth transition
+            mobileMenu.classList.remove("hidden");
+            mobileMenu.style.maxHeight = "0px";
+            mobileMenu.style.opacity = "0";
+            requestAnimationFrame(() => {
+              mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
+              mobileMenu.style.opacity = "1";
+            });
+          } else {
+            // Hide menu with smooth transition
             mobileMenu.style.maxHeight = "0px";
             mobileMenu.style.opacity = "0";
             setTimeout(() => {
               mobileMenu.classList.add("hidden");
-            }, 150); // Faster close for navigation
+            }, 300);
           }
-        });
+        }
+      };
+    }
+
+    // Close mobile menu when navigation links are clicked
+    this.closeMobileMenuOnNavigation();
+  },
+
+  closeMobileMenuOnNavigation() {
+    // Add click handlers to all navigation links to close mobile menu
+    const navLinks = document.querySelectorAll(
+      'a[href*="?location="], a[href*=".html"]'
+    );
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        const mobileMenu = document.getElementById("mobile-menu");
+        if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
+          // Smooth close transition
+          mobileMenu.style.maxHeight = "0px";
+          mobileMenu.style.opacity = "0";
+          setTimeout(() => {
+            mobileMenu.classList.add("hidden");
+          }, 150); // Faster close for navigation
+        }
       });
-    },
+    });
+  },
 
-    // Enhanced render method that also initializes mobile menu
-    renderWithInit(location, config) {
-      this.render(location, config);
+  // Enhanced render method that also initializes mobile menu
+  renderWithInit(location, config) {
+    this.render(location, config);
 
-      // Only initialize mobile menu if not already initialized
-      if (!window.mobileMenuInitialized) {
-        this.initMobileMenu();
-        window.mobileMenuInitialized = true;
-      }
-    },
-  };
+    // Only initialize mobile menu if not already initialized
+    if (!window.mobileMenuInitialized) {
+      this.initMobileMenu();
+      window.mobileMenuInitialized = true;
+    }
+  },
+};
 
-  // Register component
-  window.DogBarComponents.Header = HeaderComponent;
-})();
+// Register component
+window.DogBarComponents.Header = HeaderComponent;

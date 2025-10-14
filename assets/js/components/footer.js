@@ -1,38 +1,38 @@
 // Footer Component
-(function () {
-  const FooterComponent = {
-    render(location, config) {
-      const root = document.getElementById("footer-root");
-      if (!root) return;
+window.DogBarComponents = window.DogBarComponents || {};
 
-      const locationName =
-        location === "st-pete" ? "St. Petersburg" : "Sarasota";
+const FooterComponent = {
+  render(location, config) {
+    const root = document.getElementById("footer-root");
+    if (!root) return;
 
-      // Use database values only (no fallbacks)
-      const address = config?.address || "";
-      const phone = config?.phone || "";
-      const email = config?.email || "";
-      const hours = config?.hours || {};
+    const locationName = location === "st-pete" ? "St. Petersburg" : "Sarasota";
 
-      const socialAccounts = Array.isArray(config?.social?.accounts)
-        ? config.social.accounts
-        : [];
+    // Use database values only (no fallbacks)
+    const address = config?.address || "";
+    const phone = config?.phone || "";
+    const email = config?.email || "";
+    const hours = config?.hours || {};
 
-      // Use globally available social icons
-      const socialIcons = window.SocialIcons || {};
+    const socialAccounts = Array.isArray(config?.social?.accounts)
+      ? config.social.accounts
+      : [];
 
-      const filteredSocial = socialAccounts.filter(
-        (a) => a && a.platform && a.url
-      );
+    // Use globally available social icons
+    const socialIcons = window.SocialIcons || {};
 
-      const assetsBase =
-        typeof window.DogBarApp?.getAssetsBasePath === "function"
-          ? window.DogBarApp.getAssetsBasePath()
-          : window.location.pathname.includes("/pages/")
-          ? "../assets"
-          : "assets";
+    const filteredSocial = socialAccounts.filter(
+      (a) => a && a.platform && a.url
+    );
 
-      root.innerHTML = `
+    const assetsBase =
+      typeof window.DogBarApp?.getAssetsBasePath === "function"
+        ? window.DogBarApp.getAssetsBasePath()
+        : window.location.pathname.includes("/pages/")
+        ? "../assets"
+        : "assets";
+
+    root.innerHTML = `
         <footer class="bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 text-white py-12">
           <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-4 gap-8">
@@ -99,10 +99,10 @@
         </footer>
       `;
 
-      // Update contact info in contact section
-      const contactInfo = document.getElementById("contact-info");
-      if (contactInfo) {
-        contactInfo.innerHTML = `
+    // Update contact info in contact section
+    const contactInfo = document.getElementById("contact-info");
+    if (contactInfo) {
+      contactInfo.innerHTML = `
           <p class="text-gray-600"><strong>Address:</strong><br/>${address}</p>
           <p class="text-gray-600"><strong>Phone:</strong><br/>${phone}</p>
           <p class="text-gray-600"><strong>Email:</strong><br/>${email}</p>
@@ -117,10 +117,9 @@
             <p class="text-gray-600">Sun: ${hours?.sunday || ""}</p>
           </div>
         `;
-      }
-    },
-  };
+    }
+  },
+};
 
-  // Register component
-  window.DogBarComponents.Footer = FooterComponent;
-})();
+// Register component
+window.DogBarComponents.Footer = FooterComponent;

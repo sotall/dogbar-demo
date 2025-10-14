@@ -1,18 +1,19 @@
 // Hero Component
-(function () {
-  const HeroComponent = {
-    render(location, config) {
-      const root = document.getElementById("hero-root");
-      if (!root) return;
+window.DogBarComponents = window.DogBarComponents || {};
 
-      // Use video background if available, otherwise gradient fallback
-      const videoPath = `assets/media/videos/hero/${location}-hero.mp4`;
-      const backgroundStyle =
-        location === "st-pete"
-          ? "bg-gradient-to-br from-emerald-600 via-green-500 to-teal-600"
-          : "bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600";
+const HeroComponent = {
+  render(location, config) {
+    const root = document.getElementById("hero-root");
+    if (!root) return;
 
-      root.innerHTML = `
+    // Use video background if available, otherwise gradient fallback
+    const videoPath = `assets/media/videos/hero/${location}-hero.mp4`;
+    const backgroundStyle =
+      location === "st-pete"
+        ? "bg-gradient-to-br from-emerald-600 via-green-500 to-teal-600"
+        : "bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600";
+
+    root.innerHTML = `
         <section class="relative h-[600px] overflow-hidden">
           <!-- Video Background -->
           <video
@@ -58,9 +59,8 @@
           </div>
         </section>
       `;
-    },
-  };
+  },
+};
 
-  // Register component
-  window.DogBarComponents.Hero = HeroComponent;
-})();
+// Register component
+window.DogBarComponents.Hero = HeroComponent;
