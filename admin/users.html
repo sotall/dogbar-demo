@@ -35,6 +35,52 @@
           </button>
         </div>
 
+        <!-- Create User Section (Super Admin Only) -->
+        <div id="createUserSection" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6" style="display: none;">
+          <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Create New Admin User</h3>
+          <form id="createUserForm" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Email *</label>
+                <input type="email" id="newUserEmail" required 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Password *</label>
+                <input type="password" id="newUserPassword" required minlength="6"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Full Name *</label>
+                <input type="text" id="newUserFullName" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Role *</label>
+                <select id="newUserRole" required class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                  <option value="viewer">Viewer</option>
+                  <option value="admin">Admin</option>
+                  <option value="super_admin">Super Admin</option>
+                </select>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700">
+                Create User
+              </button>
+              <button type="button" onclick="toggleCreateUserForm()" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <button id="showCreateUserBtn" onclick="toggleCreateUserForm()" 
+                class="mb-4 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
+                style="display: none;">
+          + Create New User
+        </button>
+
         <!-- User Type Tabs -->
         <div class="border-b border-gray-200 mb-6">
           <nav class="-mb-px flex space-x-8">
@@ -793,6 +839,20 @@
         setupNameAutoFill();
       });
 
+      // Show/hide create user form (super_admin only)
+      function toggleCreateUserForm() {
+        const section = document.getElementById('createUserSection');
+        const btn = document.getElementById('showCreateUserBtn');
+        if (section.style.display === 'none') {
+          section.style.display = 'block';
+          btn.style.display = 'none';
+        } else {
+          section.style.display = 'none';
+          btn.style.display = 'block';
+          document.getElementById('createUserForm').reset();
+        }
+      }
+
       // Check authentication
       async function checkAuth() {
         const token = localStorage.getItem("supabase.auth.token");
@@ -851,6 +911,11 @@
           }
 
           console.log("✅ Access granted - user has manage_users permission");
+          
+          // Check if super_admin and show create button
+          if (window.PermissionManager.isSuperAdmin()) {
+            document.getElementById('showCreateUserBtn').style.display = 'block';
+          }
         } catch (error) {
           console.error("Auth check failed:", error);
           window.location.href = "login.html";
@@ -895,6 +960,12 @@
         }
         if (logoutBtn) {
           logoutBtn.addEventListener("click", logout);
+        }
+        
+        // Create user form
+        const createUserForm = document.getElementById('createUserForm');
+        if (createUserForm) {
+          createUserForm.addEventListener('submit', handleCreateUserSubmit);
         }
         
         // Admin pagination
@@ -1091,6 +1162,48 @@
         }
       }
 
+      // Handle create user form submission
+      async function handleCreateUserSubmit(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('newUserEmail').value;
+        const password = document.getElementById('newUserPassword').value;
+        const fullName = document.getElementById('newUserFullName').value;
+        const role = document.getElementById('newUserRole').value;
+        
+        try {
+          // Create auth user using admin API
+          const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+            email: email,
+            password: password,
+            email_confirm: true
+          });
+          
+          if (authError) throw authError;
+          
+          // Add to admin_users table
+          const { error: dbError } = await supabase
+            .from('admin_users')
+            .insert({
+              id: authData.user.id,
+              email: email,
+              role: role,
+              status: 'active',
+              full_name: fullName,
+              created_by: window.PermissionManager.getCurrentUser().id
+            });
+          
+          if (dbError) throw dbError;
+          
+          alert('User created successfully!');
+          toggleCreateUserForm();
+          loadAdminUsers(); // Reload the user list
+        } catch (error) {
+          alert('Error creating user: ' + error.message);
+          console.error('Create user error:', error);
+        }
+      }
+
       // Load admin users
       async function loadAdminUsers() {
         try {
@@ -1216,9 +1329,10 @@
                             <button onclick="editUser('${
                               user.id
                             }', 'admin')" class="text-emerald-600 hover:text-emerald-900 mr-3">Edit</button>
-                            <button onclick="deleteUser('${
-                              user.id
-                            }')" class="text-red-600 hover:text-red-900">Delete</button>
+                            ${user.role === 'super_admin' 
+                              ? '<button disabled class="px-3 py-1 bg-gray-300 text-gray-500 rounded cursor-not-allowed" title="Super admins cannot be deleted">Delete</button>'
+                              : `<button onclick="deleteUser('${user.id}')" class="text-red-600 hover:text-red-900">Delete</button>`
+                            }
                         </td>
                     `;
             tbody.appendChild(row);
@@ -1665,6 +1779,18 @@
 
       // Delete user
       async function deleteUser(userId) {
+        // Check if trying to delete super_admin
+        const { data: userData } = await supabase
+          .from('admin_users')
+          .select('role')
+          .eq('id', userId)
+          .single();
+        
+        if (userData?.role === 'super_admin') {
+          alert('Cannot delete super admin accounts!');
+          return;
+        }
+        
         if (!confirm("Are you sure you want to delete this user?")) return;
 
         try {
