@@ -94,17 +94,16 @@
     <script type="module">
       // Wait for all dependencies to load
       async function initMediaPage() {
-        // Wait for PermissionManager
+        // Wait for PermissionManager to be initialized with currentUser
         let attempts = 0;
-        while (!window.PermissionManager && attempts < 50) {
+        while (!window.PermissionManager || !window.PermissionManager.currentUser) {
+          if (attempts >= 50) {
+            console.error("PermissionManager not initialized");
+            alert("Failed to load permission system. Please refresh the page.");
+            return;
+          }
           await new Promise((resolve) => setTimeout(resolve, 100));
           attempts++;
-        }
-
-        if (!window.PermissionManager) {
-          console.error("PermissionManager not loaded");
-          alert("Failed to load permission system. Please refresh the page.");
-          return;
         }
 
         // Wait for MediaSelector class
@@ -120,10 +119,10 @@
           return;
         }
 
-        // Check admin permissions
-        const isAdmin = await window.PermissionManager.checkAdmin();
-        if (!isAdmin) {
-          return; // PermissionManager handles redirect
+        // Check admin permissions (PermissionManager.init() already verified admin status)
+        if (!window.PermissionManager.currentUser) {
+          console.error("Not authenticated");
+          return; // PermissionManager already redirected if not admin
         }
 
         // Initialize Supabase
