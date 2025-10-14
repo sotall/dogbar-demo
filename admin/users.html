@@ -1165,16 +1165,26 @@
         const role = document.getElementById('newUserRole').value;
         
         try {
-          // Create auth user using admin API
-          const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+          // Create auth user using public signup API
+          const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
             password: password,
-            email_confirm: true
+            options: {
+              emailRedirectTo: window.location.origin + '/admin/login.html',
+              data: {
+                full_name: fullName
+              }
+            }
           });
           
           if (authError) throw authError;
           
+          if (!authData.user) {
+            throw new Error('User creation failed - no user returned');
+          }
+          
           // Add to admin_users table
+          const currentUser = window.PermissionManager.getCurrentUser();
           const { error: dbError } = await supabase
             .from('admin_users')
             .insert({
@@ -1183,17 +1193,23 @@
               role: role,
               status: 'active',
               full_name: fullName,
-              created_by: window.PermissionManager.getCurrentUser().id
+              created_by: currentUser ? currentUser.id : null
             });
           
           if (dbError) throw dbError;
           
-          alert('User created successfully!');
+          alert(`User created successfully! An email confirmation has been sent to ${email}`);
+          
+          // Reset form and hide section
+          document.getElementById('createUserForm').reset();
           toggleCreateUserForm();
-          loadAdminUsers(); // Reload the user list
+          
+          // Reload admin users list
+          loadAdminUsers();
+          
         } catch (error) {
-          alert('Error creating user: ' + error.message);
           console.error('Create user error:', error);
+          alert(`Failed to create user: ${error.message}`);
         }
       }
 
