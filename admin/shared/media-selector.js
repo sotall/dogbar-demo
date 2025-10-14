@@ -402,19 +402,27 @@ class MediaSelector {
       html += this.renderBulkToolbar();
     }
 
-    // Filters and Pagination - WHITE background
-    html += `<div class="bg-white rounded-lg shadow-md p-6 mb-6">`;
+    // ONE white container wrapping filters, header, AND grid
+    html += `<div class="bg-white rounded-lg shadow-md overflow-hidden">`;
+
+    // Filters section (with padding, border bottom)
+    html += `<div class="p-6 border-b border-gray-200">`;
     html += this.renderFiltersAndPagination();
     html += `</div>`;
 
-    // Media header (file count + view toggle) - page mode only
+    // Header section (with padding, border bottom) - page mode only
     if (this.mode === "page") {
-      html += this.renderMediaHeader();
+      html += `<div class="p-6 border-b border-gray-200">`;
+      html += this.renderMediaHeaderContent();
+      html += `</div>`;
     }
 
-    // Grid/List with DARK background (only around the grid)
-    html += `<div id="${this.containerId}-grid" class="bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700 rounded-xl p-6 shadow-lg">`;
+    // Grid with DARK background
+    html += `<div id="${this.containerId}-grid" class="bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800 p-6">`;
     html += this.renderGrid();
+    html += `</div>`;
+
+    // Close main container
     html += `</div>`;
 
     container.innerHTML = html;
@@ -425,7 +433,7 @@ class MediaSelector {
   renderUploadArea() {
     return `
       <div class="mb-8">
-        <div id="${this.containerId}-uploadArea" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center bg-white hover:bg-gray-50 transition cursor-pointer">
+        <div id="${this.containerId}-uploadArea" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center bg-white hover:bg-emerald-50 hover:border-emerald-500 transition-all cursor-pointer">
           <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
           </svg>
@@ -608,69 +616,67 @@ class MediaSelector {
     `;
   }
 
-  // Render media header (file count, view toggle)
-  renderMediaHeader() {
+  // Render media header content (without container wrapper)
+  renderMediaHeaderContent() {
     return `
-      <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-        <div class="flex justify-between items-center">
-          <div class="flex items-center gap-4">
-            ${
-              this.allowBulkSelection
-                ? `
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  id="${this.containerId}-selectAll"
-                  class="w-5 h-5 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 focus:ring-2 cursor-pointer"
-                />
-                <span class="text-sm font-medium text-gray-700">Select All</span>
-              </label>
-            `
-                : ""
-            }
-            <h3 class="text-lg font-semibold text-gray-900">Media Files</h3>
-          </div>
-          <div class="flex items-center gap-4">
-            <span id="${
-              this.containerId
-            }-fileCount" class="text-sm text-gray-600">${
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-4">
+          ${
+            this.allowBulkSelection
+              ? `
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="${this.containerId}-selectAll"
+                class="w-5 h-5 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 focus:ring-2 cursor-pointer"
+              />
+              <span class="text-sm font-medium text-gray-700">Select All</span>
+            </label>
+          `
+              : ""
+          }
+          <h3 class="text-lg font-semibold text-gray-900">Media Files</h3>
+        </div>
+        <div class="flex items-center gap-4">
+          <span id="${
+            this.containerId
+          }-fileCount" class="text-sm text-gray-600">${
       this.filteredFiles.length
     } files</span>
-            ${
-              this.showViewToggle
-                ? `
-              <div class="flex gap-2">
-                <button
-                  id="${this.containerId}-gridView"
-                  class="p-2 rounded-lg ${
-                    this.viewMode === "grid"
-                      ? "bg-emerald-100 text-emerald-600"
-                      : "text-gray-400 hover:bg-gray-100"
-                  }"
-                  title="Grid View"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                  </svg>
-                </button>
-                <button
-                  id="${this.containerId}-listView"
-                  class="p-2 rounded-lg ${
-                    this.viewMode === "list"
-                      ? "bg-emerald-100 text-emerald-600"
-                      : "text-gray-400 hover:bg-gray-100"
-                  }"
-                  title="List View"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
-                  </svg>
-                </button>
-              </div>
-            `
-                : ""
-            }
-          </div>
+          ${
+            this.showViewToggle
+              ? `
+            <div class="flex gap-2">
+              <button
+                id="${this.containerId}-gridView"
+                class="p-2 rounded-lg ${
+                  this.viewMode === "grid"
+                    ? "bg-emerald-100 text-emerald-600"
+                    : "text-gray-400 hover:bg-gray-100"
+                }"
+                title="Grid View"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                </svg>
+              </button>
+              <button
+                id="${this.containerId}-listView"
+                class="p-2 rounded-lg ${
+                  this.viewMode === "list"
+                    ? "bg-emerald-100 text-emerald-600"
+                    : "text-gray-400 hover:bg-gray-100"
+                }"
+                title="List View"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                </svg>
+              </button>
+            </div>
+          `
+              : ""
+          }
         </div>
       </div>
     `;
