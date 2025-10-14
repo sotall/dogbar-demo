@@ -402,23 +402,23 @@ class MediaSelector {
       html += this.renderBulkToolbar();
     }
 
-    // ONE white container wrapping filters, header, AND grid
-    html += `<div class="bg-white rounded-lg shadow-md overflow-hidden">`;
+    // ONE DARK container wrapping filters, header, AND grid
+    html += `<div class="bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800 rounded-lg shadow-xl overflow-hidden">`;
 
     // Filters section (with padding, border bottom)
-    html += `<div class="p-6 border-b border-gray-200">`;
+    html += `<div class="p-6 border-b border-gray-700">`;
     html += this.renderFiltersAndPagination();
     html += `</div>`;
 
     // Header section (with padding, border bottom) - page mode only
     if (this.mode === "page") {
-      html += `<div class="p-6 border-b border-gray-200">`;
+      html += `<div class="p-6 border-b border-gray-700">`;
       html += this.renderMediaHeaderContent();
       html += `</div>`;
     }
 
-    // Grid with DARK background
-    html += `<div id="${this.containerId}-grid" class="bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800 p-6">`;
+    // Grid section (same dark background, blends with container)
+    html += `<div id="${this.containerId}-grid" class="p-6">`;
     html += this.renderGrid();
     html += `</div>`;
 
@@ -513,7 +513,7 @@ class MediaSelector {
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <!-- Left: Filters -->
         <div class="flex flex-wrap items-center gap-3">
-          <label class="text-sm font-medium text-gray-700">Type:</label>
+          <label class="text-sm font-medium text-gray-300">Type:</label>
           <select
             id="${this.containerId}-type"
             class="px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
@@ -529,7 +529,7 @@ class MediaSelector {
             }>Videos</option>
           </select>
 
-          <label class="text-sm font-medium text-gray-700">Sort:</label>
+          <label class="text-sm font-medium text-gray-300">Sort:</label>
           <select
             id="${this.containerId}-sort"
             class="px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
@@ -548,7 +548,7 @@ class MediaSelector {
             }>Size</option>
           </select>
 
-          <label class="text-sm font-medium text-gray-700">Per Page:</label>
+          <label class="text-sm font-medium text-gray-300">Per Page:</label>
           <select 
             id="${this.containerId}-pageSize"
             class="px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
@@ -573,7 +573,7 @@ class MediaSelector {
           totalPages > 1
             ? `
         <div class="flex items-center gap-3">
-          <span class="text-sm text-gray-700 font-medium">
+          <span class="text-sm text-gray-300 font-medium">
             ${startItem}-${endItem} of ${this.filteredFiles.length}
           </span>
 
@@ -594,7 +594,7 @@ class MediaSelector {
               value="${this.currentPage}"
               class="w-16 px-2 py-2 bg-white border border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
             />
-            <span class="text-sm text-gray-700">of ${totalPages}</span>
+            <span class="text-sm text-gray-300">of ${totalPages}</span>
           </div>
 
           <button 
@@ -607,7 +607,7 @@ class MediaSelector {
         </div>
         `
             : `
-        <span class="text-sm text-gray-700 font-medium">
+        <span class="text-sm text-gray-300 font-medium">
           ${this.filteredFiles.length} items
         </span>
         `
@@ -628,19 +628,19 @@ class MediaSelector {
               <input
                 type="checkbox"
                 id="${this.containerId}-selectAll"
-                class="w-5 h-5 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 focus:ring-2 cursor-pointer"
+                class="w-5 h-5 text-emerald-600 rounded border-gray-500 bg-gray-700 focus:ring-emerald-500 focus:ring-2 cursor-pointer"
               />
-              <span class="text-sm font-medium text-gray-700">Select All</span>
+              <span class="text-sm font-medium text-gray-300">Select All</span>
             </label>
           `
               : ""
           }
-          <h3 class="text-lg font-semibold text-gray-900">Media Files</h3>
+          <h3 class="text-lg font-semibold text-white">Media Files</h3>
         </div>
         <div class="flex items-center gap-4">
           <span id="${
             this.containerId
-          }-fileCount" class="text-sm text-gray-600">${
+          }-fileCount" class="text-sm text-gray-300">${
       this.filteredFiles.length
     } files</span>
           ${
@@ -651,8 +651,8 @@ class MediaSelector {
                 id="${this.containerId}-gridView"
                 class="p-2 rounded-lg ${
                   this.viewMode === "grid"
-                    ? "bg-emerald-100 text-emerald-600"
-                    : "text-gray-400 hover:bg-gray-100"
+                    ? "bg-emerald-600 text-white"
+                    : "text-gray-400 hover:bg-gray-700 hover:text-gray-200"
                 }"
                 title="Grid View"
               >
@@ -664,8 +664,8 @@ class MediaSelector {
                 id="${this.containerId}-listView"
                 class="p-2 rounded-lg ${
                   this.viewMode === "list"
-                    ? "bg-emerald-100 text-emerald-600"
-                    : "text-gray-400 hover:bg-gray-100"
+                    ? "bg-emerald-600 text-white"
+                    : "text-gray-400 hover:bg-gray-700 hover:text-gray-200"
                 }"
                 title="List View"
               >
@@ -687,8 +687,8 @@ class MediaSelector {
     if (this.isLoading) {
       return `
         <div class="text-center py-12">
-          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
-          <p class="text-gray-600 mt-4">Loading media files...</p>
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+          <p class="text-gray-300 mt-4">Loading media files...</p>
         </div>
       `;
     }
@@ -696,10 +696,10 @@ class MediaSelector {
     if (this.filteredFiles.length === 0) {
       return `
         <div class="text-center py-12">
-          <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="mx-auto h-12 w-12 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
           </svg>
-          <p class="text-gray-500 text-lg font-medium">No media files found</p>
+          <p class="text-gray-300 text-lg font-medium">No media files found</p>
           <p class="text-sm text-gray-400 mt-2">Try adjusting your filters or upload new files</p>
         </div>
       `;
