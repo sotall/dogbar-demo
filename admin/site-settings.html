@@ -452,32 +452,51 @@
           </details>
 
           <!-- Page Hero Backgrounds -->
-          <details class="accordion-section" data-section="page-hero-backgrounds">
+          <details
+            class="accordion-section"
+            data-section="page-hero-backgrounds"
+          >
             <summary class="accordion-header">
               <span class="accordion-title">Page Hero Backgrounds</span>
               <span class="accordion-icon">▼</span>
             </summary>
             <div class="accordion-content">
               <p class="text-sm text-gray-600 mb-4">
-                Customize the hero section background for each page with images or videos from your media library.
+                Customize the hero section background for each page with images
+                or videos from your media library.
               </p>
-              
+
               <!-- Page Tabs -->
               <div class="mb-6 border-b border-gray-200">
                 <nav class="flex space-x-4" role="tablist">
-                  <button class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-emerald-500 text-emerald-600" data-page="home">
+                  <button
+                    class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-emerald-500 text-emerald-600"
+                    data-page="home"
+                  >
                     Home
                   </button>
-                  <button class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-page="events">
+                  <button
+                    class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700"
+                    data-page="events"
+                  >
                     Events
                   </button>
-                  <button class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-page="menu">
+                  <button
+                    class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700"
+                    data-page="menu"
+                  >
                     Menu
                   </button>
-                  <button class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-page="parties">
+                  <button
+                    class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700"
+                    data-page="parties"
+                  >
                     Parties
                   </button>
-                  <button class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-page="contact">
+                  <button
+                    class="hero-page-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700"
+                    data-page="contact"
+                  >
                     Contact
                   </button>
                 </nav>
@@ -491,37 +510,76 @@
                     <div class="bg-gray-50 p-4 rounded-lg">
                       <div class="flex items-start justify-between mb-3">
                         <div class="flex-1">
-                          <h4 class="text-sm font-medium text-gray-900 mb-1">Current Background</h4>
-                          <p class="text-xs text-gray-500" id="hero-home-current">No custom background set (using gradient)</p>
+                          <h4 class="text-sm font-medium text-gray-900 mb-1">
+                            Current Background
+                          </h4>
+                          <p
+                            class="text-xs text-gray-500"
+                            id="hero-home-current"
+                          >
+                            No custom background set (using gradient)
+                          </p>
                         </div>
-                        <img id="hero-home-preview" class="w-24 h-16 object-cover rounded hidden" alt="Preview">
+                        <img
+                          id="hero-home-preview"
+                          class="w-24 h-16 object-cover rounded hidden"
+                          alt="Preview"
+                        />
                       </div>
-                      <button onclick="selectHeroMedia('home')" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                      <button
+                        onclick="selectHeroMedia('home')"
+                        class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm"
+                      >
                         📁 Select Media
                       </button>
                     </div>
-                    
+
                     <div class="grid grid-cols-2 gap-4">
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Height (px)</label>
-                        <input type="number" id="hero-home-height" min="400" max="1000" value="600" 
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-2"
+                          >Height (px)</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-home-height"
+                          min="400"
+                          max="1000"
+                          value="600"
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                       </div>
                       <div id="hero-home-speed-container" class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Playback Speed</label>
-                        <input type="number" id="hero-home-speed" min="0.5" max="2.0" step="0.1" value="1.0" 
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-2"
+                          >Playback Speed</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-home-speed"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                       </div>
                     </div>
 
-                    <input type="hidden" id="hero-home-url">
-                    <input type="hidden" id="hero-home-type">
+                    <input type="hidden" id="hero-home-url" />
+                    <input type="hidden" id="hero-home-type" />
 
                     <div class="flex space-x-2">
-                      <button onclick="saveHeroSettings('home')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                      <button
+                        onclick="saveHeroSettings('home')"
+                        class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                      >
                         💾 Save
                       </button>
-                      <button onclick="resetHeroSettings('home')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm">
+                      <button
+                        onclick="resetHeroSettings('home')"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+                      >
                         🔄 Reset
                       </button>
                     </div>
@@ -534,37 +592,76 @@
                     <div class="bg-gray-50 p-4 rounded-lg">
                       <div class="flex items-start justify-between mb-3">
                         <div class="flex-1">
-                          <h4 class="text-sm font-medium text-gray-900 mb-1">Current Background</h4>
-                          <p class="text-xs text-gray-500" id="hero-events-current">No custom background set (using gradient)</p>
+                          <h4 class="text-sm font-medium text-gray-900 mb-1">
+                            Current Background
+                          </h4>
+                          <p
+                            class="text-xs text-gray-500"
+                            id="hero-events-current"
+                          >
+                            No custom background set (using gradient)
+                          </p>
                         </div>
-                        <img id="hero-events-preview" class="w-24 h-16 object-cover rounded hidden" alt="Preview">
+                        <img
+                          id="hero-events-preview"
+                          class="w-24 h-16 object-cover rounded hidden"
+                          alt="Preview"
+                        />
                       </div>
-                      <button onclick="selectHeroMedia('events')" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                      <button
+                        onclick="selectHeroMedia('events')"
+                        class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm"
+                      >
                         📁 Select Media
                       </button>
                     </div>
-                    
+
                     <div class="grid grid-cols-2 gap-4">
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Height (px)</label>
-                        <input type="number" id="hero-events-height" min="400" max="1000" value="600" 
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-2"
+                          >Height (px)</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-events-height"
+                          min="400"
+                          max="1000"
+                          value="600"
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                       </div>
                       <div id="hero-events-speed-container" class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Playback Speed</label>
-                        <input type="number" id="hero-events-speed" min="0.5" max="2.0" step="0.1" value="1.0" 
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-2"
+                          >Playback Speed</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-events-speed"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                       </div>
                     </div>
 
-                    <input type="hidden" id="hero-events-url">
-                    <input type="hidden" id="hero-events-type">
+                    <input type="hidden" id="hero-events-url" />
+                    <input type="hidden" id="hero-events-type" />
 
                     <div class="flex space-x-2">
-                      <button onclick="saveHeroSettings('events')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                      <button
+                        onclick="saveHeroSettings('events')"
+                        class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                      >
                         💾 Save
                       </button>
-                      <button onclick="resetHeroSettings('events')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm">
+                      <button
+                        onclick="resetHeroSettings('events')"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+                      >
                         🔄 Reset
                       </button>
                     </div>
@@ -577,37 +674,76 @@
                     <div class="bg-gray-50 p-4 rounded-lg">
                       <div class="flex items-start justify-between mb-3">
                         <div class="flex-1">
-                          <h4 class="text-sm font-medium text-gray-900 mb-1">Current Background</h4>
-                          <p class="text-xs text-gray-500" id="hero-menu-current">No custom background set (using gradient)</p>
+                          <h4 class="text-sm font-medium text-gray-900 mb-1">
+                            Current Background
+                          </h4>
+                          <p
+                            class="text-xs text-gray-500"
+                            id="hero-menu-current"
+                          >
+                            No custom background set (using gradient)
+                          </p>
                         </div>
-                        <img id="hero-menu-preview" class="w-24 h-16 object-cover rounded hidden" alt="Preview">
+                        <img
+                          id="hero-menu-preview"
+                          class="w-24 h-16 object-cover rounded hidden"
+                          alt="Preview"
+                        />
                       </div>
-                      <button onclick="selectHeroMedia('menu')" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                      <button
+                        onclick="selectHeroMedia('menu')"
+                        class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm"
+                      >
                         📁 Select Media
                       </button>
                     </div>
-                    
+
                     <div class="grid grid-cols-2 gap-4">
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Height (px)</label>
-                        <input type="number" id="hero-menu-height" min="400" max="1000" value="600" 
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-2"
+                          >Height (px)</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-menu-height"
+                          min="400"
+                          max="1000"
+                          value="600"
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                       </div>
                       <div id="hero-menu-speed-container" class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Playback Speed</label>
-                        <input type="number" id="hero-menu-speed" min="0.5" max="2.0" step="0.1" value="1.0" 
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-2"
+                          >Playback Speed</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-menu-speed"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                       </div>
                     </div>
 
-                    <input type="hidden" id="hero-menu-url">
-                    <input type="hidden" id="hero-menu-type">
+                    <input type="hidden" id="hero-menu-url" />
+                    <input type="hidden" id="hero-menu-type" />
 
                     <div class="flex space-x-2">
-                      <button onclick="saveHeroSettings('menu')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                      <button
+                        onclick="saveHeroSettings('menu')"
+                        class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                      >
                         💾 Save
                       </button>
-                      <button onclick="resetHeroSettings('menu')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm">
+                      <button
+                        onclick="resetHeroSettings('menu')"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+                      >
                         🔄 Reset
                       </button>
                     </div>
@@ -620,37 +756,76 @@
                     <div class="bg-gray-50 p-4 rounded-lg">
                       <div class="flex items-start justify-between mb-3">
                         <div class="flex-1">
-                          <h4 class="text-sm font-medium text-gray-900 mb-1">Current Background</h4>
-                          <p class="text-xs text-gray-500" id="hero-parties-current">No custom background set (using gradient)</p>
+                          <h4 class="text-sm font-medium text-gray-900 mb-1">
+                            Current Background
+                          </h4>
+                          <p
+                            class="text-xs text-gray-500"
+                            id="hero-parties-current"
+                          >
+                            No custom background set (using gradient)
+                          </p>
                         </div>
-                        <img id="hero-parties-preview" class="w-24 h-16 object-cover rounded hidden" alt="Preview">
+                        <img
+                          id="hero-parties-preview"
+                          class="w-24 h-16 object-cover rounded hidden"
+                          alt="Preview"
+                        />
                       </div>
-                      <button onclick="selectHeroMedia('parties')" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                      <button
+                        onclick="selectHeroMedia('parties')"
+                        class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm"
+                      >
                         📁 Select Media
                       </button>
                     </div>
-                    
+
                     <div class="grid grid-cols-2 gap-4">
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Height (px)</label>
-                        <input type="number" id="hero-parties-height" min="400" max="1000" value="600" 
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-2"
+                          >Height (px)</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-parties-height"
+                          min="400"
+                          max="1000"
+                          value="600"
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                       </div>
                       <div id="hero-parties-speed-container" class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Playback Speed</label>
-                        <input type="number" id="hero-parties-speed" min="0.5" max="2.0" step="0.1" value="1.0" 
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-2"
+                          >Playback Speed</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-parties-speed"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                       </div>
                     </div>
 
-                    <input type="hidden" id="hero-parties-url">
-                    <input type="hidden" id="hero-parties-type">
+                    <input type="hidden" id="hero-parties-url" />
+                    <input type="hidden" id="hero-parties-type" />
 
                     <div class="flex space-x-2">
-                      <button onclick="saveHeroSettings('parties')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                      <button
+                        onclick="saveHeroSettings('parties')"
+                        class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                      >
                         💾 Save
                       </button>
-                      <button onclick="resetHeroSettings('parties')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm">
+                      <button
+                        onclick="resetHeroSettings('parties')"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+                      >
                         🔄 Reset
                       </button>
                     </div>
@@ -663,37 +838,76 @@
                     <div class="bg-gray-50 p-4 rounded-lg">
                       <div class="flex items-start justify-between mb-3">
                         <div class="flex-1">
-                          <h4 class="text-sm font-medium text-gray-900 mb-1">Current Background</h4>
-                          <p class="text-xs text-gray-500" id="hero-contact-current">No custom background set (using gradient)</p>
+                          <h4 class="text-sm font-medium text-gray-900 mb-1">
+                            Current Background
+                          </h4>
+                          <p
+                            class="text-xs text-gray-500"
+                            id="hero-contact-current"
+                          >
+                            No custom background set (using gradient)
+                          </p>
                         </div>
-                        <img id="hero-contact-preview" class="w-24 h-16 object-cover rounded hidden" alt="Preview">
+                        <img
+                          id="hero-contact-preview"
+                          class="w-24 h-16 object-cover rounded hidden"
+                          alt="Preview"
+                        />
                       </div>
-                      <button onclick="selectHeroMedia('contact')" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                      <button
+                        onclick="selectHeroMedia('contact')"
+                        class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm"
+                      >
                         📁 Select Media
                       </button>
                     </div>
-                    
+
                     <div class="grid grid-cols-2 gap-4">
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Height (px)</label>
-                        <input type="number" id="hero-contact-height" min="400" max="1000" value="600" 
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-2"
+                          >Height (px)</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-contact-height"
+                          min="400"
+                          max="1000"
+                          value="600"
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                       </div>
                       <div id="hero-contact-speed-container" class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Playback Speed</label>
-                        <input type="number" id="hero-contact-speed" min="0.5" max="2.0" step="0.1" value="1.0" 
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-2"
+                          >Playback Speed</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-contact-speed"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                       </div>
                     </div>
 
-                    <input type="hidden" id="hero-contact-url">
-                    <input type="hidden" id="hero-contact-type">
+                    <input type="hidden" id="hero-contact-url" />
+                    <input type="hidden" id="hero-contact-type" />
 
                     <div class="flex space-x-2">
-                      <button onclick="saveHeroSettings('contact')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                      <button
+                        onclick="saveHeroSettings('contact')"
+                        class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                      >
                         💾 Save
                       </button>
-                      <button onclick="resetHeroSettings('contact')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm">
+                      <button
+                        onclick="resetHeroSettings('contact')"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+                      >
                         🔄 Reset
                       </button>
                     </div>
@@ -796,6 +1010,90 @@
         class="hidden mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg"
       >
         Settings saved successfully!
+      </div>
+    </div>
+
+    <!-- Media Selection Modal -->
+    <div
+      id="mediaSelectionModal"
+      class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-200"
+      aria-hidden="true"
+    >
+      <div class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm" onclick="closeMediaSelectionModal()"></div>
+      <div class="absolute inset-0 flex items-center justify-center px-4">
+        <div class="relative bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
+          <!-- Header -->
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <h3 class="text-xl font-semibold text-gray-900">Select Hero Background</h3>
+            <button
+              onclick="closeMediaSelectionModal()"
+              class="text-gray-400 hover:text-gray-600 transition"
+              aria-label="Close"
+            >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Tabs -->
+          <div class="border-b border-gray-200">
+            <nav class="flex -mb-px" role="tablist">
+              <button
+                class="media-tab px-6 py-3 text-sm font-medium border-b-2 border-emerald-500 text-emerald-600"
+                data-tab="default"
+                onclick="switchMediaTab('default')"
+              >
+                Default Media
+              </button>
+              <button
+                class="media-tab px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700"
+                data-tab="uploaded"
+                onclick="switchMediaTab('uploaded')"
+              >
+                Uploaded Media
+              </button>
+            </nav>
+          </div>
+
+          <!-- Content -->
+          <div class="p-6 overflow-y-auto max-h-[calc(90vh-12rem)]">
+            <!-- Default Media Tab -->
+            <div id="defaultMediaTab" class="media-tab-content">
+              <div id="defaultMediaGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Will be populated by JavaScript -->
+              </div>
+            </div>
+
+            <!-- Uploaded Media Tab -->
+            <div id="uploadedMediaTab" class="media-tab-content hidden">
+              <div id="uploadedMediaLoading" class="text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+                <p class="text-gray-600 mt-2">Loading media files...</p>
+              </div>
+              <div id="uploadedMediaGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden">
+                <!-- Will be populated by JavaScript -->
+              </div>
+              <div id="uploadedMediaEmpty" class="text-center py-8 hidden">
+                <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <p class="text-gray-500">No media files found</p>
+                <p class="text-sm text-gray-400 mt-2">Upload files from the Media Library</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+            <button
+              onclick="closeMediaSelectionModal()"
+              class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1630,46 +1928,219 @@
       // ========================================
 
       // Tab switching for hero pages
-      document.querySelectorAll('.hero-page-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
+      document.querySelectorAll(".hero-page-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
           const page = tab.dataset.page;
-          
+
           // Update tab styles
-          document.querySelectorAll('.hero-page-tab').forEach(t => {
-            t.classList.remove('border-emerald-500', 'text-emerald-600');
-            t.classList.add('border-transparent', 'text-gray-500');
+          document.querySelectorAll(".hero-page-tab").forEach((t) => {
+            t.classList.remove("border-emerald-500", "text-emerald-600");
+            t.classList.add("border-transparent", "text-gray-500");
           });
-          tab.classList.remove('border-transparent', 'text-gray-500');
-          tab.classList.add('border-emerald-500', 'text-emerald-600');
-          
+          tab.classList.remove("border-transparent", "text-gray-500");
+          tab.classList.add("border-emerald-500", "text-emerald-600");
+
           // Show selected page content
-          document.querySelectorAll('.hero-page-content').forEach(content => {
-            content.classList.add('hidden');
+          document.querySelectorAll(".hero-page-content").forEach((content) => {
+            content.classList.add("hidden");
           });
-          document.querySelector(`.hero-page-content[data-page="${page}"]`).classList.remove('hidden');
+          document
+            .querySelector(`.hero-page-content[data-page="${page}"]`)
+            .classList.remove("hidden");
         });
       });
+
+      // Default media from repo
+      const defaultMedia = [
+        {
+          name: 'St. Pete Hero Video',
+          url: '/assets/media/videos/hero/st-pete-hero.mp4',
+          type: 'video',
+          thumbnail: '/assets/media/videos/hero/st-pete-hero.mp4'
+        },
+        {
+          name: 'Sarasota Hero Video',
+          url: '/assets/media/videos/hero/sarasota-hero.mp4',
+          type: 'video',
+          thumbnail: '/assets/media/videos/hero/sarasota-hero.mp4'
+        }
+      ];
 
       // Select media for hero background
       async function selectHeroMedia(page) {
         // Store current page for callback
         window.currentHeroPage = page;
-        
-        // Open media library in select mode
-        const mediaWindow = window.open(
-          `media.html?mode=select&context=${encodeURIComponent(page + ' page hero background')}`,
-          'selectMedia',
-          'width=1200,height=800,resizable=yes,scrollbars=yes'
-        );
 
-        // If popup was blocked, provide fallback instructions
-        if (!mediaWindow || mediaWindow.closed || typeof mediaWindow.closed === 'undefined') {
-          alert('Please allow popups for this site, or navigate to the Media Library and copy the public URL of your desired image/video.');
+        // Show modal
+        openMediaSelectionModal();
+
+        // Load default media
+        renderDefaultMedia();
+
+        // Switch to default tab
+        switchMediaTab('default');
+      }
+
+      // Open media selection modal
+      function openMediaSelectionModal() {
+        const modal = document.getElementById('mediaSelectionModal');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => {
+          modal.classList.remove('opacity-0');
+          modal.classList.add('opacity-100');
+        });
+      }
+
+      // Close media selection modal
+      function closeMediaSelectionModal() {
+        const modal = document.getElementById('mediaSelectionModal');
+        modal.classList.remove('opacity-100');
+        modal.classList.add('opacity-0');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+        }, 200);
+        document.body.style.overflow = '';
+      }
+
+      // Switch media tab
+      function switchMediaTab(tabName) {
+        // Update tab buttons
+        document.querySelectorAll('.media-tab').forEach(tab => {
+          if (tab.dataset.tab === tabName) {
+            tab.classList.remove('border-transparent', 'text-gray-500');
+            tab.classList.add('border-emerald-500', 'text-emerald-600');
+          } else {
+            tab.classList.remove('border-emerald-500', 'text-emerald-600');
+            tab.classList.add('border-transparent', 'text-gray-500');
+          }
+        });
+
+        // Show/hide tab content
+        document.querySelectorAll('.media-tab-content').forEach(content => {
+          content.classList.add('hidden');
+        });
+        document.getElementById(`${tabName}MediaTab`).classList.remove('hidden');
+
+        // Load uploaded media if switching to that tab
+        if (tabName === 'uploaded') {
+          loadUploadedMedia();
         }
       }
 
-      // Handle media selection callback
-      window.handleMediaSelection = function(url, type, name) {
+      // Render default media grid
+      function renderDefaultMedia() {
+        const grid = document.getElementById('defaultMediaGrid');
+        
+        grid.innerHTML = defaultMedia.map(media => `
+          <div class="relative group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-emerald-500"
+               onclick="selectMedia('${media.url}', '${media.type}', '${media.name}')">
+            <div class="aspect-video bg-gray-100 flex items-center justify-center">
+              ${media.type === 'video' ? `
+                <video src="${media.thumbnail}" class="w-full h-full object-cover" muted></video>
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div class="bg-black/60 rounded-full p-3">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                </div>
+              ` : `
+                <img src="${media.url}" alt="${media.name}" class="w-full h-full object-cover" />
+              `}
+            </div>
+            <div class="p-3">
+              <p class="text-sm font-medium text-gray-900 truncate">${media.name}</p>
+              <p class="text-xs text-gray-500 mt-1">${media.type}</p>
+            </div>
+            <div class="absolute inset-0 bg-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <button class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium">
+                Select
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Load uploaded media from Supabase
+      async function loadUploadedMedia() {
+        const loadingEl = document.getElementById('uploadedMediaLoading');
+        const gridEl = document.getElementById('uploadedMediaGrid');
+        const emptyEl = document.getElementById('uploadedMediaEmpty');
+
+        loadingEl.classList.remove('hidden');
+        gridEl.classList.add('hidden');
+        emptyEl.classList.add('hidden');
+
+        try {
+          const { data, error } = await supabase.storage
+            .from('media')
+            .list('', {
+              limit: 500,
+              offset: 0,
+              sortBy: { column: 'created_at', order: 'desc' }
+            });
+
+          if (error) throw error;
+
+          // Filter to only images and videos
+          const mediaFiles = data.filter(file => {
+            const ext = file.name.split('.').pop().toLowerCase();
+            return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'mp4', 'webm', 'mov'].includes(ext);
+          });
+
+          loadingEl.classList.add('hidden');
+
+          if (mediaFiles.length === 0) {
+            emptyEl.classList.remove('hidden');
+            return;
+          }
+
+          gridEl.classList.remove('hidden');
+          gridEl.innerHTML = mediaFiles.map(file => {
+            const isVideo = ['mp4', 'webm', 'mov'].includes(file.name.split('.').pop().toLowerCase());
+            const mediaType = isVideo ? 'video' : 'image';
+            const publicUrl = `${supabase.supabaseUrl}/storage/v1/object/public/media/${file.name}`;
+
+            return `
+              <div class="relative group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-emerald-500"
+                   onclick="selectMedia('${publicUrl}', '${mediaType}', '${file.name}')">
+                <div class="aspect-video bg-gray-100 flex items-center justify-center">
+                  ${isVideo ? `
+                    <video src="${publicUrl}" class="w-full h-full object-cover" muted preload="metadata"></video>
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div class="bg-black/60 rounded-full p-3">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z"/>
+                        </svg>
+                      </div>
+                    </div>
+                  ` : `
+                    <img src="${publicUrl}" alt="${file.name}" class="w-full h-full object-cover" loading="lazy" />
+                  `}
+                </div>
+                <div class="p-3">
+                  <p class="text-sm font-medium text-gray-900 truncate">${file.name}</p>
+                  <p class="text-xs text-gray-500 mt-1">${mediaType}</p>
+                </div>
+                <div class="absolute inset-0 bg-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <button class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium">
+                    Select
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } catch (error) {
+          console.error('Error loading uploaded media:', error);
+          loadingEl.classList.add('hidden');
+          emptyEl.classList.remove('hidden');
+          emptyEl.querySelector('p').textContent = 'Error loading media files';
+        }
+      }
+
+      // Select media handler
+      function selectMedia(url, type, name) {
         const page = window.currentHeroPage;
         if (!page) return;
 
@@ -1680,9 +2151,9 @@
         // Update preview and current text
         const currentText = document.getElementById(`hero-${page}-current`);
         const preview = document.getElementById(`hero-${page}-preview`);
-        
+
         currentText.textContent = `${type}: ${name}`;
-        
+
         if (type === 'image') {
           preview.src = url;
           preview.classList.remove('hidden');
@@ -1698,55 +2169,72 @@
           speedContainer.classList.add('hidden');
         }
 
+        // Close modal
+        closeMediaSelectionModal();
+
+        // Show confirmation
         alert(`Selected: ${name}\n\nDon't forget to click "Save" to apply your changes!`);
-      };
+      }
+
+      // Make functions globally available
+      window.selectHeroMedia = selectHeroMedia;
+      window.closeMediaSelectionModal = closeMediaSelectionModal;
+      window.switchMediaTab = switchMediaTab;
+      window.selectMedia = selectMedia;
 
       // Load hero settings for a specific page
       async function loadHeroSettings(page) {
         try {
           const { data, error } = await supabase
-            .from('page_hero_settings')
-            .select('*')
-            .eq('location', currentLocation)
-            .eq('page', page)
+            .from("page_hero_settings")
+            .select("*")
+            .eq("location", currentLocation)
+            .eq("page", page)
             .maybeSingle();
 
-          if (error && error.code !== 'PGRST116') throw error;
+          if (error && error.code !== "PGRST116") throw error;
 
           if (data) {
             // Update UI with loaded data
-            document.getElementById(`hero-${page}-url`).value = data.media_url || '';
-            document.getElementById(`hero-${page}-type`).value = data.media_type || '';
-            document.getElementById(`hero-${page}-height`).value = data.height || 600;
-            document.getElementById(`hero-${page}-speed`).value = data.playback_speed || 1.0;
+            document.getElementById(`hero-${page}-url`).value =
+              data.media_url || "";
+            document.getElementById(`hero-${page}-type`).value =
+              data.media_type || "";
+            document.getElementById(`hero-${page}-height`).value =
+              data.height || 600;
+            document.getElementById(`hero-${page}-speed`).value =
+              data.playback_speed || 1.0;
 
             // Update current text and preview
             const currentText = document.getElementById(`hero-${page}-current`);
             const preview = document.getElementById(`hero-${page}-preview`);
-            
+
             if (data.media_url) {
-              const fileName = data.media_url.split('/').pop();
+              const fileName = data.media_url.split("/").pop();
               currentText.textContent = `${data.media_type}: ${fileName}`;
-              
-              if (data.media_type === 'image') {
+
+              if (data.media_type === "image") {
                 preview.src = data.media_url;
-                preview.classList.remove('hidden');
+                preview.classList.remove("hidden");
               }
 
               // Show/hide playback speed for videos
-              const speedContainer = document.getElementById(`hero-${page}-speed-container`);
-              if (data.media_type === 'video') {
-                speedContainer.classList.remove('hidden');
+              const speedContainer = document.getElementById(
+                `hero-${page}-speed-container`
+              );
+              if (data.media_type === "video") {
+                speedContainer.classList.remove("hidden");
               } else {
-                speedContainer.classList.add('hidden');
+                speedContainer.classList.add("hidden");
               }
             } else {
-              currentText.textContent = 'No custom background set (using gradient)';
-              preview.classList.add('hidden');
+              currentText.textContent =
+                "No custom background set (using gradient)";
+              preview.classList.add("hidden");
             }
           }
         } catch (error) {
-          console.error('Error loading hero settings:', error);
+          console.error("Error loading hero settings:", error);
         }
       }
 
@@ -1755,11 +2243,15 @@
         try {
           const url = document.getElementById(`hero-${page}-url`).value;
           const type = document.getElementById(`hero-${page}-type`).value;
-          const height = parseInt(document.getElementById(`hero-${page}-height`).value);
-          const speed = parseFloat(document.getElementById(`hero-${page}-speed`).value);
+          const height = parseInt(
+            document.getElementById(`hero-${page}-height`).value
+          );
+          const speed = parseFloat(
+            document.getElementById(`hero-${page}-speed`).value
+          );
 
           if (!url) {
-            alert('Please select a media file first.');
+            alert("Please select a media file first.");
             return;
           }
 
@@ -1769,71 +2261,80 @@
             media_url: url,
             media_type: type,
             height: height,
-            playback_speed: speed
+            playback_speed: speed,
           };
 
           const { error } = await supabase
-            .from('page_hero_settings')
-            .upsert(settings, { onConflict: 'location,page' });
+            .from("page_hero_settings")
+            .upsert(settings, { onConflict: "location,page" });
 
           if (error) throw error;
 
           // Log the change
-          await window.Logger.log('hero_settings_updated', {
+          await window.Logger.log("hero_settings_updated", {
             page: page,
             location: currentLocation,
             media_type: type,
-            height: height
+            height: height,
           });
 
           alert(`Hero settings saved for ${page} page!`);
           await loadHeroSettings(page);
         } catch (error) {
-          console.error('Error saving hero settings:', error);
-          alert('Error saving hero settings. Please try again.');
+          console.error("Error saving hero settings:", error);
+          alert("Error saving hero settings. Please try again.");
         }
       }
 
       // Reset hero settings for a specific page
       async function resetHeroSettings(page) {
-        if (!confirm(`Reset hero background for ${page} page to default gradient?`)) {
+        if (
+          !confirm(
+            `Reset hero background for ${page} page to default gradient?`
+          )
+        ) {
           return;
         }
 
         try {
           const { error } = await supabase
-            .from('page_hero_settings')
+            .from("page_hero_settings")
             .delete()
-            .eq('location', currentLocation)
-            .eq('page', page);
+            .eq("location", currentLocation)
+            .eq("page", page);
 
           if (error) throw error;
 
           // Log the change
-          await window.Logger.log('hero_settings_reset', {
+          await window.Logger.log("hero_settings_reset", {
             page: page,
-            location: currentLocation
+            location: currentLocation,
           });
 
           // Clear UI
-          document.getElementById(`hero-${page}-url`).value = '';
-          document.getElementById(`hero-${page}-type`).value = '';
+          document.getElementById(`hero-${page}-url`).value = "";
+          document.getElementById(`hero-${page}-type`).value = "";
           document.getElementById(`hero-${page}-height`).value = 600;
           document.getElementById(`hero-${page}-speed`).value = 1.0;
-          document.getElementById(`hero-${page}-current`).textContent = 'No custom background set (using gradient)';
-          document.getElementById(`hero-${page}-preview`).classList.add('hidden');
-          document.getElementById(`hero-${page}-speed-container`).classList.add('hidden');
+          document.getElementById(`hero-${page}-current`).textContent =
+            "No custom background set (using gradient)";
+          document
+            .getElementById(`hero-${page}-preview`)
+            .classList.add("hidden");
+          document
+            .getElementById(`hero-${page}-speed-container`)
+            .classList.add("hidden");
 
           alert(`Hero background reset for ${page} page!`);
         } catch (error) {
-          console.error('Error resetting hero settings:', error);
-          alert('Error resetting hero settings. Please try again.');
+          console.error("Error resetting hero settings:", error);
+          alert("Error resetting hero settings. Please try again.");
         }
       }
 
       // Load hero settings for all pages on init
       async function loadAllHeroSettings() {
-        const pages = ['home', 'events', 'menu', 'parties', 'contact'];
+        const pages = ["home", "events", "menu", "parties", "contact"];
         for (const page of pages) {
           await loadHeroSettings(page);
         }

@@ -145,19 +145,6 @@
     </style>
   </head>
   <body class="bg-gray-100 min-h-screen">
-    <!-- Selection Mode Banner -->
-    <div id="selection-mode-banner" class="hidden bg-emerald-600 text-white py-3 px-4">
-      <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <div class="flex items-center">
-          <span class="text-lg font-semibold mr-2">📁 Selection Mode:</span>
-          <span id="selection-context">Select a file for hero background</span>
-        </div>
-        <button onclick="cancelMediaSelection()" class="px-4 py-1 bg-white text-emerald-600 rounded hover:bg-gray-100 font-medium">
-          Cancel
-        </button>
-      </div>
-    </div>
-
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <!-- Page Header -->
@@ -1517,16 +1504,6 @@
         const grid = document.getElementById("mediaGrid");
         const loading = document.getElementById("loadingState");
         const empty = document.getElementById("emptyState");
-        const selectionMode = isSelectionMode();
-
-        // Show/hide selection mode banner
-        const banner = document.getElementById('selection-mode-banner');
-        if (selectionMode && banner) {
-          banner.classList.remove('hidden');
-          document.getElementById('selection-context').textContent = `Select a file for ${getSelectionContext()}`;
-        } else if (banner) {
-          banner.classList.add('hidden');
-        }
 
         loading.classList.add("hidden");
 
@@ -1545,21 +1522,8 @@
             (file) => `
           <div class="media-item ${
             selectedFiles.has(file.id) ? "selected" : ""
-          }" data-file-id="${file.id}" ${selectionMode ? `onclick="selectMediaFile('${file.name}', ${file.isImage}, ${file.isVideo})"` : ''}>
-            <!-- Checkbox overlay or Selection button -->
-            ${selectionMode ? `
-              <div class="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
-                <button 
-                  onclick="selectMediaFile('${file.name}', ${file.isImage}, ${file.isVideo}); event.stopPropagation();"
-                  class="w-full px-3 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition-colors font-medium text-sm flex items-center justify-center gap-2"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                  Select
-                </button>
-              </div>
-            ` : `
+          }" data-file-id="${file.id}">
+            <!-- Checkbox overlay -->
             <div class="absolute top-2 left-2 z-10">
               <input 
                 type="checkbox" 
@@ -1569,7 +1533,6 @@
                 onclick="event.stopPropagation()"
               />
             </div>
-            `}
             ${
               file.isVideo
                 ? `
@@ -2445,56 +2408,6 @@
       } catch (e) {
         console.warn("Media: ensureEventListeners failed initially", e);
       }
-
-      // ========================================
-      // Media Selection Functions (for Hero Backgrounds)
-      // ========================================
-
-      // Check if in selection mode
-      function isSelectionMode() {
-        const params = new URLSearchParams(window.location.search);
-        return params.get('mode') === 'select';
-      }
-
-      // Get selection context
-      function getSelectionContext() {
-        const params = new URLSearchParams(window.location.search);
-        return params.get('context') || 'hero background';
-      }
-
-      // Cancel media selection
-      function cancelMediaSelection() {
-        window.close();
-        // If window.close() doesn't work (not opened by script), go back
-        if (!window.closed) {
-          window.history.back();
-        }
-      }
-
-      // Select media file
-      function selectMediaFile(fileName, isImage, isVideo) {
-        const publicUrl = `${supabase.supabaseUrl}/storage/v1/object/public/media/${fileName}`;
-        const mediaType = isImage ? 'image' : (isVideo ? 'video' : 'unknown');
-
-        // If opened from site-settings, use callback
-        if (window.opener && window.opener.handleMediaSelection) {
-          window.opener.handleMediaSelection(publicUrl, mediaType, fileName);
-          window.close();
-        } else {
-          // Fallback: store in sessionStorage and close
-          sessionStorage.setItem('selectedMedia', JSON.stringify({
-            url: publicUrl,
-            type: mediaType,
-            name: fileName
-          }));
-          alert(`Selected: ${fileName}\n\nPlease refresh the Site Settings page to see the selected media.`);
-          window.close();
-        }
-      }
-
-      // Make selection functions globally available
-      window.cancelMediaSelection = cancelMediaSelection;
-      window.selectMediaFile = selectMediaFile;
 
       // Note: Logout button is handled by shared/navigation.js
     </script>

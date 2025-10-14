@@ -3,12 +3,14 @@
 ## ✅ Completed (Phase 1)
 
 ### 1. Database Schema
+
 - ✅ Created `supabase/migrations/create_page_hero_settings.sql`
 - ✅ Table structure with location, page, media_type, media_url, height, playback_speed
 - ✅ RLS policies for public read and admin write
 - ✅ Indexes and triggers
 
-### 2. Admin UI  
+### 2. Admin UI
+
 - ✅ Added "Page Hero Backgrounds" accordion section to `admin/site-settings.html`
 - ✅ Tab-based interface for 5 pages (Home, Events, Menu, Parties, Contact)
 - ✅ Each page has:
@@ -19,6 +21,7 @@
   - Save and Reset buttons
 
 ### 3. JavaScript Functions
+
 - ✅ Tab switching functionality
 - ✅ `loadHeroSettings(page)` - Load settings from database
 - ✅ `saveHeroSettings(page)` - Save/update settings with upsert
@@ -27,6 +30,7 @@
 - ✅ Logging integration for changes
 
 ### 4. Frontend - Home Page
+
 - ✅ Updated `assets/js/components/hero.js` to:
   - Fetch custom settings from `page_hero_settings` table
   - Support custom images with `bg-cover bg-center`
@@ -36,6 +40,7 @@
   - Handle errors gracefully
 
 ### 5. Other Pages Hero Sections ✅ COMPLETED
+
 - ✅ Created reusable `assets/js/utils/page-hero.js` utility
 - ✅ Converted `pages/calendar.html` - Now uses `<div id="events-hero-root"></div>`
 - ✅ Converted `pages/menu.html` - Now uses `<div id="menu-hero-root"></div>`
@@ -44,6 +49,7 @@
 - ✅ All pages fetch settings from database and fallback to gradients
 
 ### 6. Media Library Integration ✅ COMPLETED
+
 - ✅ Added selection mode banner to `admin/media.html`
 - ✅ Implemented URL parameter detection (`?mode=select`)
 - ✅ Replaced checkboxes with "Select" buttons in selection mode
@@ -56,6 +62,7 @@
 ## 🔄 In Progress / TODO (Phase 4)
 
 ### 7. Testing (Manual Testing Needed)
+
 - [ ] **FIRST**: Run database migration in Supabase SQL Editor
 - [ ] Test with image backgrounds on all pages
 - [ ] Test with video backgrounds on all pages
@@ -67,6 +74,7 @@
 - [ ] Test cross-location functionality (st-pete vs sarasota)
 
 ### 8. Documentation (Low Priority)
+
 - [ ] Update `.docs/PROJECT_FEATURES.md` with detailed feature documentation
 - [ ] Include:
   - Feature overview
@@ -133,4 +141,3 @@ To apply the database migration:
 - No preview of video playback speed in admin (must test on live page)
 - No drag-and-drop media upload (relies on existing media library)
 - No image optimization (uses original file sizes)
-
