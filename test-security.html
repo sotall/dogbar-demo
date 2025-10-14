@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Security Test - Dog Bar</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #0ea5e9;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #0284c7;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    #results {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-height: 600px;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+    .secure {
+      color: #4ade80;
+    }
+    .vulnerable {
+      color: #f87171;
+    }
+    .info {
+      color: #60a5fa;
+    }
+    .warning {
+      color: #fbbf24;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔒 Dog Bar Security Test Suite</h1>
+  
+  <div class="test-section">
+    <h2>📦 Storage Security Tests</h2>
+    <p>Test if file uploads can be bypassed via direct API calls</p>
+    <button onclick="testStorage()">Run Storage Tests</button>
+  </div>
+  
+  <div class="test-section">
+    <h2>🔐 RLS Policy Tests</h2>
+    <p>Test if database access is properly restricted</p>
+    <button onclick="testRLS()">Run RLS Tests</button>
+  </div>
+  
+  <div class="test-section">
+    <h2>🛡️ XSS Protection Tests</h2>
+    <p>Instructions for manual XSS testing</p>
+    <button onclick="testXSS()">View XSS Test Instructions</button>
+  </div>
+  
+  <div class="test-section">
+    <h2>🚀 Run All Tests</h2>
+    <button onclick="runAllTests()" style="background: #10b981;">Run Complete Security Audit</button>
+    <button onclick="clearResults()" style="background: #6b7280;">Clear Results</button>
+  </div>
+  
+  <pre id="results">Click a button to run security tests...</pre>
+  
+  <script>
+    const supabase = window.supabase.createClient(
+      'https://pkomfbezaollhvcpezaw.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0'
+    );
+    
+    const log = (msg, type = 'info') => {
+      const results = document.getElementById('results');
+      const className = type === 'secure' ? 'secure' : 
+                       type === 'vulnerable' ? 'vulnerable' : 
+                       type === 'warning' ? 'warning' : 'info';
+      results.innerHTML += `<span class="${className}">${msg}</span>\n`;
+      results.scrollTop = results.scrollHeight;
+    };
+    
+    function clearResults() {
+      document.getElementById('results').innerHTML = '';
+    }
+    
+    async function testStorage() {
+      log('\n========================================', 'info');
+      log('STORAGE SECURITY TESTS', 'info');
+      log('========================================\n', 'info');
+      
+      // Test 1: Unauthenticated upload attempt
+      log('Test 1: Unauthenticated PHP File Upload', 'warning');
+      try {
+        const phpFile = new File(['<?php echo "hacked"; ?>'], 'hack.php', { type: 'application/x-php' });
+        const { data, error } = await supabase.storage.from('media').upload('hack.php', phpFile);
+        
+        if (error) {
+          log(`  Result: ✅ BLOCKED - ${error.message}`, 'secure');
+          log(`  Details: ${error.statusCode || 'Policy violation'}`, 'info');
+        } else {
+          log(`  Result: ❌ VULNERABLE - Upload succeeded!`, 'vulnerable');
+          log(`  Details: File uploaded to ${data.path}`, 'vulnerable');
+        }
+      } catch (e) {
+        log(`  Result: ✅ BLOCKED - ${e.message}`, 'secure');
+      }
+      
+      // Test 2: Unauthenticated .exe upload
+      log('\nTest 2: Unauthenticated EXE File Upload', 'warning');
+      try {
+        const exeFile = new File(['MZ'], 'virus.exe', { type: 'application/x-msdownload' });
+        const { data, error } = await supabase.storage.from('media').upload('virus.exe', exeFile);
+        
+        if (error) {
+          log(`  Result: ✅ BLOCKED - ${error.message}`, 'secure');
+        } else {
+          log(`  Result: ❌ VULNERABLE - Upload succeeded!`, 'vulnerable');
+        }
+      } catch (e) {
+        log(`  Result: ✅ BLOCKED - ${e.message}`, 'secure');
+      }
+      
+      // Test 3: Large file upload (20MB)
+      log('\nTest 3: Oversized File Upload (20MB)', 'warning');
+      try {
+        const bigFile = new File([new ArrayBuffer(20 * 1024 * 1024)], 'big.jpg', { type: 'image/jpeg' });
+        const { data, error } = await supabase.storage.from('media').upload('big-test-' + Date.now() + '.jpg', bigFile);
+        
+        if (error) {
+          log(`  Result: ✅ BLOCKED - ${error.message}`, 'secure');
+        } else {
+          log(`  Result: ❌ VULNERABLE - Large file uploaded!`, 'vulnerable');
+        }
+      } catch (e) {
+        log(`  Result: ✅ BLOCKED - ${e.message}`, 'secure');
+      }
+      
+      // Test 4: Path traversal attempt
+      log('\nTest 4: Path Traversal Attack', 'warning');
+      try {
+        const normalFile = new File(['test'], '../../etc/passwd.jpg', { type: 'image/jpeg' });
+        const { data, error } = await supabase.storage.from('media').upload('../../etc/passwd.jpg', normalFile);
+        
+        if (error) {
+          log(`  Result: ✅ BLOCKED - ${error.message}`, 'secure');
+        } else {
+          log(`  Result: ❌ VULNERABLE - Path traversal worked!`, 'vulnerable');
+          log(`  Uploaded to: ${data.path}`, 'vulnerable');
+        }
+      } catch (e) {
+        log(`  Result: ✅ BLOCKED - ${e.message}`, 'secure');
+      }
+      
+      // Test 5: HTML file with JavaScript
+      log('\nTest 5: HTML File with JavaScript', 'warning');
+      try {
+        const htmlFile = new File(['<script>alert("XSS")</script>'], 'hack.html', { type: 'text/html' });
+        const { data, error } = await supabase.storage.from('media').upload('hack.html', htmlFile);
+        
+        if (error) {
+          log(`  Result: ✅ BLOCKED - ${error.message}`, 'secure');
+        } else {
+          log(`  Result: ❌ VULNERABLE - HTML file uploaded!`, 'vulnerable');
+        }
+      } catch (e) {
+        log(`  Result: ✅ BLOCKED - ${e.message}`, 'secure');
+      }
+      
+      log('\n✓ Storage tests complete', 'info');
+    }
+    
+    async function testRLS() {
+      log('\n========================================', 'info');
+      log('RLS POLICY TESTS', 'info');
+      log('========================================\n', 'info');
+      
+      // Test 1: Read admin_users without authentication
+      log('Test 1: Read admin_users Table (Unauthenticated)', 'warning');
+      try {
+        const { data, error } = await supabase.from('admin_users').select('*');
+        
+        if (error) {
+          log(`  Result: ✅ BLOCKED - ${error.message}`, 'secure');
+        } else if (data && data.length === 0) {
+          log(`  Result: ✅ SECURE - Empty result (policy block)`, 'secure');
+        } else {
+          log(`  Result: ❌ VULNERABLE - Retrieved ${data.length} records!`, 'vulnerable');
+          log(`  Data: ${JSON.stringify(data.slice(0, 2))}`, 'vulnerable');
+        }
+      } catch (e) {
+        log(`  Result: ✅ BLOCKED - ${e.message}`, 'secure');
+      }
+      
+      // Test 2: Read draft/unpublished events
+      log('\nTest 2: Read Draft Events (Unauthenticated)', 'warning');
+      try {
+        const { data, error } = await supabase
+          .from('events')
+          .select('*')
+          .eq('status', 'draft');
+        
+        if (error) {
+          log(`  Result: ✅ BLOCKED - ${error.message}`, 'secure');
+        } else if (data && data.length === 0) {
+          log(`  Result: ✅ SECURE - No draft events visible`, 'secure');
+        } else {
+          log(`  Result: ❌ VULNERABLE - Retrieved ${data.length} draft events!`, 'vulnerable');
+        }
+      } catch (e) {
+        log(`  Result: ✅ BLOCKED - ${e.message}`, 'secure');
+      }
+      
+      // Test 3: Try to update an event
+      log('\nTest 3: Update Event (Unauthenticated)', 'warning');
+      try {
+        const { data, error } = await supabase
+          .from('events')
+          .update({ title: 'HACKED BY SECURITY TEST' })
+          .eq('id', '00000000-0000-0000-0000-000000000000'); // Non-existent ID
+        
+        if (error) {
+          log(`  Result: ✅ BLOCKED - ${error.message}`, 'secure');
+        } else {
+          log(`  Result: ❌ VULNERABLE - Update succeeded!`, 'vulnerable');
+        }
+      } catch (e) {
+        log(`  Result: ✅ BLOCKED - ${e.message}`, 'secure');
+      }
+      
+      // Test 4: Try to delete an event
+      log('\nTest 4: Delete Event (Unauthenticated)', 'warning');
+      try {
+        const { data, error } = await supabase
+          .from('events')
+          .delete()
+          .eq('id', '00000000-0000-0000-0000-000000000000');
+        
+        if (error) {
+          log(`  Result: ✅ BLOCKED - ${error.message}`, 'secure');
+        } else {
+          log(`  Result: ❌ VULNERABLE - Delete succeeded!`, 'vulnerable');
+        }
+      } catch (e) {
+        log(`  Result: ✅ BLOCKED - ${e.message}`, 'secure');
+      }
+      
+      // Test 5: Try to read admin_logs
+      log('\nTest 5: Read Admin Logs (Unauthenticated)', 'warning');
+      try {
+        const { data, error } = await supabase.from('admin_logs').select('*').limit(1);
+        
+        if (error) {
+          log(`  Result: ✅ BLOCKED - ${error.message}`, 'secure');
+        } else if (data && data.length === 0) {
+          log(`  Result: ✅ SECURE - No logs visible`, 'secure');
+        } else {
+          log(`  Result: ❌ VULNERABLE - Retrieved ${data.length} log entries!`, 'vulnerable');
+        }
+      } catch (e) {
+        log(`  Result: ✅ BLOCKED - ${e.message}`, 'secure');
+      }
+      
+      // Test 6: Try to read site_content
+      log('\nTest 6: Read Site Content (Unauthenticated)', 'warning');
+      try {
+        const { data, error } = await supabase.from('site_content').select('*');
+        
+        if (error) {
+          log(`  Result: ⚠️  ERROR - ${error.message}`, 'warning');
+          log(`  Note: Site content SHOULD be publicly readable`, 'info');
+        } else if (data && data.length > 0) {
+          log(`  Result: ✅ EXPECTED - Site content is public (${data.length} records)`, 'secure');
+          log(`  Note: This is correct - public pages need this data`, 'info');
+        } else {
+          log(`  Result: No data found`, 'info');
+        }
+      } catch (e) {
+        log(`  Result: ERROR - ${e.message}`, 'warning');
+      }
+      
+      log('\n✓ RLS tests complete', 'info');
+    }
+    
+    function testXSS() {
+      log('\n========================================', 'info');
+      log('XSS PROTECTION TEST INSTRUCTIONS', 'info');
+      log('========================================\n', 'info');
+      
+      log('Manual testing required for XSS vulnerabilities.\n', 'warning');
+      
+      log('STEP 1: Test Admin Events Page', 'info');
+      log('  1. Go to admin/events.html', 'info');
+      log('  2. Create a new event with this title:', 'info');
+      log('     <script>alert("XSS")</script>', 'vulnerable');
+      log('  3. Save and view the events table', 'info');
+      log('  4. Check browser:', 'info');
+      log('     ❌ Alert fires = VULNERABLE', 'vulnerable');
+      log('     ✅ Shows as text = SECURE\n', 'secure');
+      
+      log('STEP 2: Test Dashboard Recent Activity', 'info');
+      log('  1. Go to admin/dashboard.html', 'info');
+      log('  2. Check if the test event shows in recent activity', 'info');
+      log('  3. Verify JavaScript doesn\'t execute\n', 'info');
+      
+      log('STEP 3: Test Public Event Display', 'info');
+      log('  1. Go to pages/calendar.html', 'info');
+      log('  2. Check if event displays on public calendar', 'info');
+      log('  3. Verify XSS payload is escaped\n', 'info');
+      
+      log('STEP 4: Test Image Tags', 'info');
+      log('  1. Create event with title:', 'info');
+      log('     <img src=x onerror=alert("XSS2")>', 'vulnerable');
+      log('  2. Verify it doesn\'t trigger\n', 'info');
+      
+      log('STEP 5: Test Form Inputs', 'info');
+      log('  1. Try submitting contact form with HTML/JS', 'info');
+      log('  2. Check if it\'s sanitized before storage/display\n', 'info');
+      
+      log('After testing, delete the test events!', 'warning');
+    }
+    
+    async function runAllTests() {
+      clearResults();
+      log('🔒 COMPREHENSIVE SECURITY AUDIT', 'info');
+      log('Starting all automated tests...\n', 'info');
+      
+      await testStorage();
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      await testRLS();
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      testXSS();
+      
+      log('\n========================================', 'info');
+      log('AUDIT COMPLETE', 'info');
+      log('========================================', 'info');
+      log('\nReview results above and fix any ❌ VULNERABLE items.', 'warning');
+      log('Document findings in SECURITY-AUDIT-REPORT.md', 'info');
+    }
+  </script>
+</body>
+</html>
+
