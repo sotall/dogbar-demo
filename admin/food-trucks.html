@@ -20,10 +20,9 @@
     <!-- Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    <!-- Shared Utilities -->
-    <script type="module" src="shared/logger.js"></script>
-
     <!-- Shared Scripts -->
+    <script type="module" src="shared/theme-manager.js"></script>
+    <script type="module" src="shared/logger.js"></script>
     <script type="module" src="shared/permissions.js"></script>
     <script type="module" src="shared/navigation.js"></script>
 
@@ -33,7 +32,7 @@
       }
     </style>
   </head>
-  <body class="bg-gray-100 min-h-screen">
+  <body class="bg-white dark:bg-gray-900 min-h-screen transition-colors">
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <!-- Page Header -->

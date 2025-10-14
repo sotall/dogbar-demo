@@ -19,6 +19,9 @@
 
     <!-- Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Shared Scripts -->
+    <script type="module" src="shared/theme-manager.js"></script>
 
     <style>
       body {
@@ -27,7 +30,7 @@
     </style>
   </head>
   <body
-    class="bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 min-h-screen flex items-center justify-center p-4"
+    class="bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 dark:from-gray-800 dark:via-gray-900 dark:to-black min-h-screen flex items-center justify-center p-4 transition-colors"
   >
     <!-- Login Card -->
     <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">

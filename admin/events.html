@@ -11,8 +11,6 @@
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
 
-    <script type="module" src="shared/permissions.js"></script>
-
     <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
@@ -22,10 +20,10 @@
     <!-- Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    <!-- Shared Utilities -->
+    <!-- Shared Scripts -->
+    <script type="module" src="shared/theme-manager.js"></script>
+    <script type="module" src="shared/permissions.js"></script>
     <script type="module" src="shared/logger.js"></script>
-
-    <!-- Shared Navigation -->
     <script type="module" src="shared/navigation.js"></script>
 
     <style>
@@ -253,7 +251,7 @@
       }
     </style>
   </head>
-  <body class="bg-gray-100 min-h-screen">
+  <body class="bg-white dark:bg-gray-900 min-h-screen transition-colors">
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <!-- Page Header -->
