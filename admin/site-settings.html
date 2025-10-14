@@ -1019,19 +1019,38 @@
       class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-200"
       aria-hidden="true"
     >
-      <div class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm" onclick="closeMediaSelectionModal()"></div>
+      <div
+        class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm"
+        onclick="closeMediaSelectionModal()"
+      ></div>
       <div class="absolute inset-0 flex items-center justify-center px-4">
-        <div class="relative bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
+        <div
+          class="relative bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden"
+        >
           <!-- Header -->
-          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-            <h3 class="text-xl font-semibold text-gray-900">Select Hero Background</h3>
+          <div
+            class="flex items-center justify-between px-6 py-4 border-b border-gray-200"
+          >
+            <h3 class="text-xl font-semibold text-gray-900">
+              Select Hero Background
+            </h3>
             <button
               onclick="closeMediaSelectionModal()"
               class="text-gray-400 hover:text-gray-600 transition"
               aria-label="Close"
             >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
               </svg>
             </button>
           </div>
@@ -1060,7 +1079,10 @@
           <div class="p-6 overflow-y-auto max-h-[calc(90vh-12rem)]">
             <!-- Default Media Tab -->
             <div id="defaultMediaTab" class="media-tab-content">
-              <div id="defaultMediaGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div
+                id="defaultMediaGrid"
+                class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+              >
                 <!-- Will be populated by JavaScript -->
               </div>
             </div>
@@ -1068,29 +1090,91 @@
             <!-- Uploaded Media Tab -->
             <div id="uploadedMediaTab" class="media-tab-content hidden">
               <div id="uploadedMediaLoading" class="text-center py-8">
-                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+                <div
+                  class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"
+                ></div>
                 <p class="text-gray-600 mt-2">Loading media files...</p>
               </div>
-              <div id="uploadedMediaGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden">
+              <div
+                id="uploadedMediaGrid"
+                class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden"
+              >
                 <!-- Will be populated by JavaScript -->
               </div>
               <div id="uploadedMediaEmpty" class="text-center py-8 hidden">
-                <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                <svg
+                  class="mx-auto h-12 w-12 text-gray-400 mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
                 </svg>
                 <p class="text-gray-500">No media files found</p>
-                <p class="text-sm text-gray-400 mt-2">Upload files from the Media Library</p>
+                <p class="text-sm text-gray-400 mt-2">
+                  Upload files from the Media Library
+                </p>
               </div>
             </div>
           </div>
 
           <!-- Footer -->
-          <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+          <div
+            class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end"
+          >
             <button
               onclick="closeMediaSelectionModal()"
               class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
             >
               Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-[60] space-y-2 max-w-md"></div>
+
+    <!-- Confirmation Modal -->
+    <div
+      id="confirmModal"
+      class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-200"
+      aria-hidden="true"
+    >
+      <div class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm" onclick="closeConfirmModal(false)"></div>
+      <div class="absolute inset-0 flex items-center justify-center px-4">
+        <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+          <div class="p-6">
+            <div class="flex items-start gap-4">
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 flex-shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2" id="confirmModalTitle">Confirm Action</h3>
+                <p class="text-gray-600" id="confirmModalMessage">Are you sure?</p>
+              </div>
+            </div>
+          </div>
+          <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
+            <button
+              onclick="closeConfirmModal(false)"
+              class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+            >
+              Cancel
+            </button>
+            <button
+              onclick="closeConfirmModal(true)"
+              class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+            >
+              Confirm
             </button>
           </div>
         </div>
@@ -1924,6 +2008,103 @@
       }
 
       // ========================================
+      // Toast Notifications
+      // ========================================
+
+      function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toastId = `toast-${Date.now()}`;
+        
+        const bgColors = {
+          success: 'bg-emerald-600',
+          error: 'bg-red-600',
+          info: 'bg-blue-600',
+          warning: 'bg-yellow-600'
+        };
+        
+        const icons = {
+          success: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
+          error: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
+          info: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
+          warning: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>'
+        };
+
+        const toast = document.createElement('div');
+        toast.id = toastId;
+        toast.className = `${bgColors[type]} text-white px-6 py-4 rounded-lg shadow-2xl flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0`;
+        toast.innerHTML = `
+          <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            ${icons[type]}
+          </svg>
+          <span class="flex-1 font-medium">${message}</span>
+          <button onclick="dismissToast('${toastId}')" class="text-white/80 hover:text-white transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        `;
+
+        container.appendChild(toast);
+
+        // Animate in
+        requestAnimationFrame(() => {
+          toast.classList.remove('translate-x-full', 'opacity-0');
+        });
+
+        // Auto-dismiss after 4 seconds (except errors)
+        if (type !== 'error') {
+          setTimeout(() => {
+            dismissToast(toastId);
+          }, 4000);
+        }
+      }
+
+      function dismissToast(toastId) {
+        const toast = document.getElementById(toastId);
+        if (!toast) return;
+
+        toast.classList.add('translate-x-full', 'opacity-0');
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }
+
+      // Confirmation Modal
+      let confirmModalResolve = null;
+
+      function showConfirmModal(title, message) {
+        return new Promise((resolve) => {
+          confirmModalResolve = resolve;
+          
+          document.getElementById('confirmModalTitle').textContent = title;
+          document.getElementById('confirmModalMessage').textContent = message;
+          
+          const modal = document.getElementById('confirmModal');
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+          requestAnimationFrame(() => {
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+          });
+        });
+      }
+
+      function closeConfirmModal(confirmed) {
+        const modal = document.getElementById('confirmModal');
+        modal.classList.remove('opacity-100');
+        modal.classList.add('opacity-0');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+        }, 200);
+        document.body.style.overflow = '';
+        
+        if (confirmModalResolve) {
+          confirmModalResolve(confirmed);
+          confirmModalResolve = null;
+        }
+      }
+
+      // ========================================
       // Hero Settings Functions
       // ========================================
 
@@ -1953,17 +2134,17 @@
       // Default media from repo
       const defaultMedia = [
         {
-          name: 'St. Pete Hero Video',
-          url: '/assets/media/videos/hero/st-pete-hero.mp4',
-          type: 'video',
-          thumbnail: '/assets/media/videos/hero/st-pete-hero.mp4'
+          name: "St. Pete Hero Video",
+          url: "/assets/media/videos/hero/st-pete-hero.mp4",
+          type: "video",
+          thumbnail: "/assets/media/videos/hero/st-pete-hero.mp4",
         },
         {
-          name: 'Sarasota Hero Video',
-          url: '/assets/media/videos/hero/sarasota-hero.mp4',
-          type: 'video',
-          thumbnail: '/assets/media/videos/hero/sarasota-hero.mp4'
-        }
+          name: "Sarasota Hero Video",
+          url: "/assets/media/videos/hero/sarasota-hero.mp4",
+          type: "video",
+          thumbnail: "/assets/media/videos/hero/sarasota-hero.mp4",
+        },
       ];
 
       // Select media for hero background
@@ -1978,65 +2159,73 @@
         renderDefaultMedia();
 
         // Switch to default tab
-        switchMediaTab('default');
+        switchMediaTab("default");
       }
 
       // Open media selection modal
       function openMediaSelectionModal() {
-        const modal = document.getElementById('mediaSelectionModal');
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        const modal = document.getElementById("mediaSelectionModal");
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
         requestAnimationFrame(() => {
-          modal.classList.remove('opacity-0');
-          modal.classList.add('opacity-100');
+          modal.classList.remove("opacity-0");
+          modal.classList.add("opacity-100");
         });
       }
 
       // Close media selection modal
       function closeMediaSelectionModal() {
-        const modal = document.getElementById('mediaSelectionModal');
-        modal.classList.remove('opacity-100');
-        modal.classList.add('opacity-0');
+        const modal = document.getElementById("mediaSelectionModal");
+        modal.classList.remove("opacity-100");
+        modal.classList.add("opacity-0");
         setTimeout(() => {
-          modal.classList.add('hidden');
+          modal.classList.add("hidden");
         }, 200);
-        document.body.style.overflow = '';
+        document.body.style.overflow = "";
       }
 
       // Switch media tab
       function switchMediaTab(tabName) {
         // Update tab buttons
-        document.querySelectorAll('.media-tab').forEach(tab => {
+        document.querySelectorAll(".media-tab").forEach((tab) => {
           if (tab.dataset.tab === tabName) {
-            tab.classList.remove('border-transparent', 'text-gray-500');
-            tab.classList.add('border-emerald-500', 'text-emerald-600');
+            tab.classList.remove("border-transparent", "text-gray-500");
+            tab.classList.add("border-emerald-500", "text-emerald-600");
           } else {
-            tab.classList.remove('border-emerald-500', 'text-emerald-600');
-            tab.classList.add('border-transparent', 'text-gray-500');
+            tab.classList.remove("border-emerald-500", "text-emerald-600");
+            tab.classList.add("border-transparent", "text-gray-500");
           }
         });
 
         // Show/hide tab content
-        document.querySelectorAll('.media-tab-content').forEach(content => {
-          content.classList.add('hidden');
+        document.querySelectorAll(".media-tab-content").forEach((content) => {
+          content.classList.add("hidden");
         });
-        document.getElementById(`${tabName}MediaTab`).classList.remove('hidden');
+        document
+          .getElementById(`${tabName}MediaTab`)
+          .classList.remove("hidden");
 
         // Load uploaded media if switching to that tab
-        if (tabName === 'uploaded') {
+        if (tabName === "uploaded") {
           loadUploadedMedia();
         }
       }
 
       // Render default media grid
       function renderDefaultMedia() {
-        const grid = document.getElementById('defaultMediaGrid');
-        
-        grid.innerHTML = defaultMedia.map(media => `
+        const grid = document.getElementById("defaultMediaGrid");
+
+        grid.innerHTML = defaultMedia
+          .map(
+            (media) => `
           <div class="relative group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-emerald-500"
-               onclick="selectMedia('${media.url}', '${media.type}', '${media.name}')">
+               onclick="selectMedia('${media.url}', '${media.type}', '${
+              media.name
+            }')">
             <div class="aspect-video bg-gray-100 flex items-center justify-center">
-              ${media.type === 'video' ? `
+              ${
+                media.type === "video"
+                  ? `
                 <video src="${media.thumbnail}" class="w-full h-full object-cover" muted></video>
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div class="bg-black/60 rounded-full p-3">
@@ -2045,12 +2234,16 @@
                     </svg>
                   </div>
                 </div>
-              ` : `
+              `
+                  : `
                 <img src="${media.url}" alt="${media.name}" class="w-full h-full object-cover" />
-              `}
+              `
+              }
             </div>
             <div class="p-3">
-              <p class="text-sm font-medium text-gray-900 truncate">${media.name}</p>
+              <p class="text-sm font-medium text-gray-900 truncate">${
+                media.name
+              }</p>
               <p class="text-xs text-gray-500 mt-1">${media.type}</p>
             </div>
             <div class="absolute inset-0 bg-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -2059,54 +2252,72 @@
               </button>
             </div>
           </div>
-        `).join('');
+        `
+          )
+          .join("");
       }
 
       // Load uploaded media from Supabase
       async function loadUploadedMedia() {
-        const loadingEl = document.getElementById('uploadedMediaLoading');
-        const gridEl = document.getElementById('uploadedMediaGrid');
-        const emptyEl = document.getElementById('uploadedMediaEmpty');
+        const loadingEl = document.getElementById("uploadedMediaLoading");
+        const gridEl = document.getElementById("uploadedMediaGrid");
+        const emptyEl = document.getElementById("uploadedMediaEmpty");
 
-        loadingEl.classList.remove('hidden');
-        gridEl.classList.add('hidden');
-        emptyEl.classList.add('hidden');
+        loadingEl.classList.remove("hidden");
+        gridEl.classList.add("hidden");
+        emptyEl.classList.add("hidden");
 
         try {
           const { data, error } = await supabase.storage
-            .from('media')
-            .list('', {
+            .from("media")
+            .list("", {
               limit: 500,
               offset: 0,
-              sortBy: { column: 'created_at', order: 'desc' }
+              sortBy: { column: "created_at", order: "desc" },
             });
 
           if (error) throw error;
 
           // Filter to only images and videos
-          const mediaFiles = data.filter(file => {
-            const ext = file.name.split('.').pop().toLowerCase();
-            return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'mp4', 'webm', 'mov'].includes(ext);
+          const mediaFiles = data.filter((file) => {
+            const ext = file.name.split(".").pop().toLowerCase();
+            return [
+              "jpg",
+              "jpeg",
+              "png",
+              "gif",
+              "webp",
+              "mp4",
+              "webm",
+              "mov",
+            ].includes(ext);
           });
 
-          loadingEl.classList.add('hidden');
+          loadingEl.classList.add("hidden");
 
           if (mediaFiles.length === 0) {
-            emptyEl.classList.remove('hidden');
+            emptyEl.classList.remove("hidden");
             return;
           }
 
-          gridEl.classList.remove('hidden');
-          gridEl.innerHTML = mediaFiles.map(file => {
-            const isVideo = ['mp4', 'webm', 'mov'].includes(file.name.split('.').pop().toLowerCase());
-            const mediaType = isVideo ? 'video' : 'image';
-            const publicUrl = `${supabase.supabaseUrl}/storage/v1/object/public/media/${file.name}`;
+          gridEl.classList.remove("hidden");
+          gridEl.innerHTML = mediaFiles
+            .map((file) => {
+              const isVideo = ["mp4", "webm", "mov"].includes(
+                file.name.split(".").pop().toLowerCase()
+              );
+              const mediaType = isVideo ? "video" : "image";
+              const publicUrl = `${supabase.supabaseUrl}/storage/v1/object/public/media/${file.name}`;
 
-            return `
+              return `
               <div class="relative group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-emerald-500"
-                   onclick="selectMedia('${publicUrl}', '${mediaType}', '${file.name}')">
+                   onclick="selectMedia('${publicUrl}', '${mediaType}', '${
+                file.name
+              }')">
                 <div class="aspect-video bg-gray-100 flex items-center justify-center">
-                  ${isVideo ? `
+                  ${
+                    isVideo
+                      ? `
                     <video src="${publicUrl}" class="w-full h-full object-cover" muted preload="metadata"></video>
                     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <div class="bg-black/60 rounded-full p-3">
@@ -2115,12 +2326,16 @@
                         </svg>
                       </div>
                     </div>
-                  ` : `
+                  `
+                      : `
                     <img src="${publicUrl}" alt="${file.name}" class="w-full h-full object-cover" loading="lazy" />
-                  `}
+                  `
+                  }
                 </div>
                 <div class="p-3">
-                  <p class="text-sm font-medium text-gray-900 truncate">${file.name}</p>
+                  <p class="text-sm font-medium text-gray-900 truncate">${
+                    file.name
+                  }</p>
                   <p class="text-xs text-gray-500 mt-1">${mediaType}</p>
                 </div>
                 <div class="absolute inset-0 bg-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -2130,12 +2345,13 @@
                 </div>
               </div>
             `;
-          }).join('');
+            })
+            .join("");
         } catch (error) {
-          console.error('Error loading uploaded media:', error);
-          loadingEl.classList.add('hidden');
-          emptyEl.classList.remove('hidden');
-          emptyEl.querySelector('p').textContent = 'Error loading media files';
+          console.error("Error loading uploaded media:", error);
+          loadingEl.classList.add("hidden");
+          emptyEl.classList.remove("hidden");
+          emptyEl.querySelector("p").textContent = "Error loading media files";
         }
       }
 
@@ -2154,26 +2370,28 @@
 
         currentText.textContent = `${type}: ${name}`;
 
-        if (type === 'image') {
+        if (type === "image") {
           preview.src = url;
-          preview.classList.remove('hidden');
+          preview.classList.remove("hidden");
         } else {
-          preview.classList.add('hidden');
+          preview.classList.add("hidden");
         }
 
         // Show/hide playback speed for videos
-        const speedContainer = document.getElementById(`hero-${page}-speed-container`);
-        if (type === 'video') {
-          speedContainer.classList.remove('hidden');
+        const speedContainer = document.getElementById(
+          `hero-${page}-speed-container`
+        );
+        if (type === "video") {
+          speedContainer.classList.remove("hidden");
         } else {
-          speedContainer.classList.add('hidden');
+          speedContainer.classList.add("hidden");
         }
 
         // Close modal
         closeMediaSelectionModal();
 
-        // Show confirmation
-        alert(`Selected: ${name}\n\nDon't forget to click "Save" to apply your changes!`);
+        // Show confirmation toast
+        showToast(`Selected: ${name}`, 'success');
       }
 
       // Make functions globally available
@@ -2251,7 +2469,7 @@
           );
 
           if (!url) {
-            alert("Please select a media file first.");
+            showToast("Please select a media file first.", "warning");
             return;
           }
 
@@ -2272,7 +2490,7 @@
 
           // Log the change (optional - won't break if logger unavailable)
           try {
-            if (window.Logger && typeof window.Logger.log === 'function') {
+            if (window.Logger && typeof window.Logger.log === "function") {
               await window.Logger.log("hero_settings_updated", {
                 page: page,
                 location: currentLocation,
@@ -2281,24 +2499,25 @@
               });
             }
           } catch (logError) {
-            console.warn('Failed to log hero settings update:', logError);
+            console.warn("Failed to log hero settings update:", logError);
           }
 
-          alert(`Hero settings saved for ${page} page!`);
+          showToast(`Hero settings saved for ${page} page!`, 'success');
           await loadHeroSettings(page);
         } catch (error) {
           console.error("Error saving hero settings:", error);
-          alert("Error saving hero settings. Please try again.");
+          showToast("Error saving hero settings. Please try again.", "error");
         }
       }
 
       // Reset hero settings for a specific page
       async function resetHeroSettings(page) {
-        if (
-          !confirm(
-            `Reset hero background for ${page} page to default gradient?`
-          )
-        ) {
+        const confirmed = await showConfirmModal(
+          'Reset Hero Background',
+          `Reset hero background for ${page} page to default gradient? This cannot be undone.`
+        );
+
+        if (!confirmed) {
           return;
         }
 
@@ -2313,14 +2532,14 @@
 
           // Log the change (optional - won't break if logger unavailable)
           try {
-            if (window.Logger && typeof window.Logger.log === 'function') {
+            if (window.Logger && typeof window.Logger.log === "function") {
               await window.Logger.log("hero_settings_reset", {
                 page: page,
                 location: currentLocation,
               });
             }
           } catch (logError) {
-            console.warn('Failed to log hero settings reset:', logError);
+            console.warn("Failed to log hero settings reset:", logError);
           }
 
           // Clear UI
@@ -2337,10 +2556,10 @@
             .getElementById(`hero-${page}-speed-container`)
             .classList.add("hidden");
 
-          alert(`Hero background reset for ${page} page!`);
+          showToast(`Hero background reset for ${page} page!`, 'success');
         } catch (error) {
           console.error("Error resetting hero settings:", error);
-          alert("Error resetting hero settings. Please try again.");
+          showToast("Error resetting hero settings. Please try again.", "error");
         }
       }
 
