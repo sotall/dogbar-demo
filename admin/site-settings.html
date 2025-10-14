@@ -464,43 +464,82 @@
             <div class="accordion-content">
               <p class="text-sm text-gray-600 mb-4">
                 Customize the hero section background for each page with images
-                or videos from your media library. Changes are saved when you click
-                "Save Settings" at the bottom of the page.
+                or videos from your media library. Changes are saved when you
+                click "Save Settings" at the bottom of the page.
               </p>
 
               <!-- Page Cards -->
               <div class="space-y-3">
                 <!-- Home Page -->
-                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:border-emerald-300 transition-colors">
+                <div
+                  class="bg-white border border-gray-200 rounded-lg p-4 hover:border-emerald-300 transition-colors"
+                >
                   <div class="flex flex-col lg:flex-row lg:items-center gap-4">
                     <!-- Page Label -->
                     <div class="w-32 flex-shrink-0">
-                      <h4 class="text-sm font-semibold text-gray-900">🏠 Home</h4>
+                      <h4 class="text-sm font-semibold text-gray-900">
+                        🏠 Home
+                      </h4>
                     </div>
-                    
+
                     <!-- Preview -->
-                    <div class="relative w-20 h-14 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded border border-gray-300 overflow-hidden">
-                      <img id="hero-home-preview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Preview" />
+                    <div
+                      class="relative w-20 h-14 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded border border-gray-300 overflow-hidden"
+                    >
+                      <img
+                        id="hero-home-preview"
+                        class="absolute inset-0 w-full h-full object-cover hidden"
+                        alt="Preview"
+                      />
                     </div>
-                    
+
                     <!-- Controls -->
-                    <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2">
-                      <button onclick="selectHeroMedia('home')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-medium hover:bg-emerald-700 transition-colors whitespace-nowrap">
+                    <div
+                      class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2"
+                    >
+                      <button
+                        onclick="selectHeroMedia('home')"
+                        class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-medium hover:bg-emerald-700 transition-colors whitespace-nowrap"
+                      >
                         📁 Select
                       </button>
-                      <button id="hero-home-delete-btn" onclick="deleteHeroMedia('home')" class="hidden px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors whitespace-nowrap">
+                      <button
+                        id="hero-home-delete-btn"
+                        onclick="deleteHeroMedia('home')"
+                        class="hidden px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors whitespace-nowrap"
+                      >
                         🗑️ Clear
                       </button>
                       <div class="flex items-center gap-2 sm:ml-auto">
-                        <label class="text-xs text-gray-600 whitespace-nowrap">Height:</label>
-                        <input type="number" id="hero-home-height" min="400" max="1000" value="600" class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                        <label class="text-xs text-gray-600 whitespace-nowrap"
+                          >Height:</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-home-height"
+                          min="400"
+                          max="1000"
+                          value="600"
+                          class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                         <span class="text-xs text-gray-500">px</span>
-                        <label class="text-xs text-gray-600 whitespace-nowrap ml-2">Speed:</label>
-                        <input type="number" id="hero-home-speed" min="0.5" max="2.0" step="0.1" value="1.0" class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                        <label
+                          class="text-xs text-gray-600 whitespace-nowrap ml-2"
+                          >Speed:</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-home-speed"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                          class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                         <span class="text-xs text-gray-500">x</span>
                       </div>
                     </div>
-                    
+
                     <!-- Hidden inputs -->
                     <input type="hidden" id="hero-home-url" />
                     <input type="hidden" id="hero-home-type" />
@@ -508,36 +547,75 @@
                 </div>
 
                 <!-- Events Page -->
-                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:border-emerald-300 transition-colors">
+                <div
+                  class="bg-white border border-gray-200 rounded-lg p-4 hover:border-emerald-300 transition-colors"
+                >
                   <div class="flex flex-col lg:flex-row lg:items-center gap-4">
                     <!-- Page Label -->
                     <div class="w-32 flex-shrink-0">
-                      <h4 class="text-sm font-semibold text-gray-900">📅 Events</h4>
+                      <h4 class="text-sm font-semibold text-gray-900">
+                        📅 Events
+                      </h4>
                     </div>
-                    
+
                     <!-- Preview -->
-                    <div class="relative w-20 h-14 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded border border-gray-300 overflow-hidden">
-                      <img id="hero-events-preview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Preview" />
+                    <div
+                      class="relative w-20 h-14 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded border border-gray-300 overflow-hidden"
+                    >
+                      <img
+                        id="hero-events-preview"
+                        class="absolute inset-0 w-full h-full object-cover hidden"
+                        alt="Preview"
+                      />
                     </div>
-                    
+
                     <!-- Controls -->
-                    <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2">
-                      <button onclick="selectHeroMedia('events')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-medium hover:bg-emerald-700 transition-colors whitespace-nowrap">
+                    <div
+                      class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2"
+                    >
+                      <button
+                        onclick="selectHeroMedia('events')"
+                        class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-medium hover:bg-emerald-700 transition-colors whitespace-nowrap"
+                      >
                         📁 Select
                       </button>
-                      <button id="hero-events-delete-btn" onclick="deleteHeroMedia('events')" class="hidden px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors whitespace-nowrap">
+                      <button
+                        id="hero-events-delete-btn"
+                        onclick="deleteHeroMedia('events')"
+                        class="hidden px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors whitespace-nowrap"
+                      >
                         🗑️ Clear
                       </button>
                       <div class="flex items-center gap-2 sm:ml-auto">
-                        <label class="text-xs text-gray-600 whitespace-nowrap">Height:</label>
-                        <input type="number" id="hero-events-height" min="400" max="1000" value="600" class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                        <label class="text-xs text-gray-600 whitespace-nowrap"
+                          >Height:</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-events-height"
+                          min="400"
+                          max="1000"
+                          value="600"
+                          class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                         <span class="text-xs text-gray-500">px</span>
-                        <label class="text-xs text-gray-600 whitespace-nowrap ml-2">Speed:</label>
-                        <input type="number" id="hero-events-speed" min="0.5" max="2.0" step="0.1" value="1.0" class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                        <label
+                          class="text-xs text-gray-600 whitespace-nowrap ml-2"
+                          >Speed:</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-events-speed"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                          class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                         <span class="text-xs text-gray-500">x</span>
                       </div>
                     </div>
-                    
+
                     <!-- Hidden inputs -->
                     <input type="hidden" id="hero-events-url" />
                     <input type="hidden" id="hero-events-type" />
@@ -545,36 +623,75 @@
                 </div>
 
                 <!-- Menu Page -->
-                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:border-emerald-300 transition-colors">
+                <div
+                  class="bg-white border border-gray-200 rounded-lg p-4 hover:border-emerald-300 transition-colors"
+                >
                   <div class="flex flex-col lg:flex-row lg:items-center gap-4">
                     <!-- Page Label -->
                     <div class="w-32 flex-shrink-0">
-                      <h4 class="text-sm font-semibold text-gray-900">🍔 Menu</h4>
+                      <h4 class="text-sm font-semibold text-gray-900">
+                        🍔 Menu
+                      </h4>
                     </div>
-                    
+
                     <!-- Preview -->
-                    <div class="relative w-20 h-14 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded border border-gray-300 overflow-hidden">
-                      <img id="hero-menu-preview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Preview" />
+                    <div
+                      class="relative w-20 h-14 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded border border-gray-300 overflow-hidden"
+                    >
+                      <img
+                        id="hero-menu-preview"
+                        class="absolute inset-0 w-full h-full object-cover hidden"
+                        alt="Preview"
+                      />
                     </div>
-                    
+
                     <!-- Controls -->
-                    <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2">
-                      <button onclick="selectHeroMedia('menu')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-medium hover:bg-emerald-700 transition-colors whitespace-nowrap">
+                    <div
+                      class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2"
+                    >
+                      <button
+                        onclick="selectHeroMedia('menu')"
+                        class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-medium hover:bg-emerald-700 transition-colors whitespace-nowrap"
+                      >
                         📁 Select
                       </button>
-                      <button id="hero-menu-delete-btn" onclick="deleteHeroMedia('menu')" class="hidden px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors whitespace-nowrap">
+                      <button
+                        id="hero-menu-delete-btn"
+                        onclick="deleteHeroMedia('menu')"
+                        class="hidden px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors whitespace-nowrap"
+                      >
                         🗑️ Clear
                       </button>
                       <div class="flex items-center gap-2 sm:ml-auto">
-                        <label class="text-xs text-gray-600 whitespace-nowrap">Height:</label>
-                        <input type="number" id="hero-menu-height" min="400" max="1000" value="600" class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                        <label class="text-xs text-gray-600 whitespace-nowrap"
+                          >Height:</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-menu-height"
+                          min="400"
+                          max="1000"
+                          value="600"
+                          class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                         <span class="text-xs text-gray-500">px</span>
-                        <label class="text-xs text-gray-600 whitespace-nowrap ml-2">Speed:</label>
-                        <input type="number" id="hero-menu-speed" min="0.5" max="2.0" step="0.1" value="1.0" class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                        <label
+                          class="text-xs text-gray-600 whitespace-nowrap ml-2"
+                          >Speed:</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-menu-speed"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                          class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                         <span class="text-xs text-gray-500">x</span>
                       </div>
                     </div>
-                    
+
                     <!-- Hidden inputs -->
                     <input type="hidden" id="hero-menu-url" />
                     <input type="hidden" id="hero-menu-type" />
@@ -582,36 +699,75 @@
                 </div>
 
                 <!-- Parties Page -->
-                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:border-emerald-300 transition-colors">
+                <div
+                  class="bg-white border border-gray-200 rounded-lg p-4 hover:border-emerald-300 transition-colors"
+                >
                   <div class="flex flex-col lg:flex-row lg:items-center gap-4">
                     <!-- Page Label -->
                     <div class="w-32 flex-shrink-0">
-                      <h4 class="text-sm font-semibold text-gray-900">🎉 Parties</h4>
+                      <h4 class="text-sm font-semibold text-gray-900">
+                        🎉 Parties
+                      </h4>
                     </div>
-                    
+
                     <!-- Preview -->
-                    <div class="relative w-20 h-14 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded border border-gray-300 overflow-hidden">
-                      <img id="hero-parties-preview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Preview" />
+                    <div
+                      class="relative w-20 h-14 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded border border-gray-300 overflow-hidden"
+                    >
+                      <img
+                        id="hero-parties-preview"
+                        class="absolute inset-0 w-full h-full object-cover hidden"
+                        alt="Preview"
+                      />
                     </div>
-                    
+
                     <!-- Controls -->
-                    <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2">
-                      <button onclick="selectHeroMedia('parties')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-medium hover:bg-emerald-700 transition-colors whitespace-nowrap">
+                    <div
+                      class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2"
+                    >
+                      <button
+                        onclick="selectHeroMedia('parties')"
+                        class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-medium hover:bg-emerald-700 transition-colors whitespace-nowrap"
+                      >
                         📁 Select
                       </button>
-                      <button id="hero-parties-delete-btn" onclick="deleteHeroMedia('parties')" class="hidden px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors whitespace-nowrap">
+                      <button
+                        id="hero-parties-delete-btn"
+                        onclick="deleteHeroMedia('parties')"
+                        class="hidden px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors whitespace-nowrap"
+                      >
                         🗑️ Clear
                       </button>
                       <div class="flex items-center gap-2 sm:ml-auto">
-                        <label class="text-xs text-gray-600 whitespace-nowrap">Height:</label>
-                        <input type="number" id="hero-parties-height" min="400" max="1000" value="600" class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                        <label class="text-xs text-gray-600 whitespace-nowrap"
+                          >Height:</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-parties-height"
+                          min="400"
+                          max="1000"
+                          value="600"
+                          class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                         <span class="text-xs text-gray-500">px</span>
-                        <label class="text-xs text-gray-600 whitespace-nowrap ml-2">Speed:</label>
-                        <input type="number" id="hero-parties-speed" min="0.5" max="2.0" step="0.1" value="1.0" class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                        <label
+                          class="text-xs text-gray-600 whitespace-nowrap ml-2"
+                          >Speed:</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-parties-speed"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                          class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                         <span class="text-xs text-gray-500">x</span>
                       </div>
                     </div>
-                    
+
                     <!-- Hidden inputs -->
                     <input type="hidden" id="hero-parties-url" />
                     <input type="hidden" id="hero-parties-type" />
@@ -619,36 +775,75 @@
                 </div>
 
                 <!-- Contact Page -->
-                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:border-emerald-300 transition-colors">
+                <div
+                  class="bg-white border border-gray-200 rounded-lg p-4 hover:border-emerald-300 transition-colors"
+                >
                   <div class="flex flex-col lg:flex-row lg:items-center gap-4">
                     <!-- Page Label -->
                     <div class="w-32 flex-shrink-0">
-                      <h4 class="text-sm font-semibold text-gray-900">📧 Contact</h4>
+                      <h4 class="text-sm font-semibold text-gray-900">
+                        📧 Contact
+                      </h4>
                     </div>
-                    
+
                     <!-- Preview -->
-                    <div class="relative w-20 h-14 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded border border-gray-300 overflow-hidden">
-                      <img id="hero-contact-preview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Preview" />
+                    <div
+                      class="relative w-20 h-14 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded border border-gray-300 overflow-hidden"
+                    >
+                      <img
+                        id="hero-contact-preview"
+                        class="absolute inset-0 w-full h-full object-cover hidden"
+                        alt="Preview"
+                      />
                     </div>
-                    
+
                     <!-- Controls -->
-                    <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2">
-                      <button onclick="selectHeroMedia('contact')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-medium hover:bg-emerald-700 transition-colors whitespace-nowrap">
+                    <div
+                      class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2"
+                    >
+                      <button
+                        onclick="selectHeroMedia('contact')"
+                        class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-medium hover:bg-emerald-700 transition-colors whitespace-nowrap"
+                      >
                         📁 Select
                       </button>
-                      <button id="hero-contact-delete-btn" onclick="deleteHeroMedia('contact')" class="hidden px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors whitespace-nowrap">
+                      <button
+                        id="hero-contact-delete-btn"
+                        onclick="deleteHeroMedia('contact')"
+                        class="hidden px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors whitespace-nowrap"
+                      >
                         🗑️ Clear
                       </button>
                       <div class="flex items-center gap-2 sm:ml-auto">
-                        <label class="text-xs text-gray-600 whitespace-nowrap">Height:</label>
-                        <input type="number" id="hero-contact-height" min="400" max="1000" value="600" class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                        <label class="text-xs text-gray-600 whitespace-nowrap"
+                          >Height:</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-contact-height"
+                          min="400"
+                          max="1000"
+                          value="600"
+                          class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                         <span class="text-xs text-gray-500">px</span>
-                        <label class="text-xs text-gray-600 whitespace-nowrap ml-2">Speed:</label>
-                        <input type="number" id="hero-contact-speed" min="0.5" max="2.0" step="0.1" value="1.0" class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                        <label
+                          class="text-xs text-gray-600 whitespace-nowrap ml-2"
+                          >Speed:</label
+                        >
+                        <input
+                          type="number"
+                          id="hero-contact-speed"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                          class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        />
                         <span class="text-xs text-gray-500">x</span>
                       </div>
                     </div>
-                    
+
                     <!-- Hidden inputs -->
                     <input type="hidden" id="hero-contact-url" />
                     <input type="hidden" id="hero-contact-type" />
@@ -1954,7 +2149,9 @@
 
             // Update preview and delete button
             const preview = document.getElementById(`hero-${page}-preview`);
-            const deleteBtn = document.getElementById(`hero-${page}-delete-btn`);
+            const deleteBtn = document.getElementById(
+              `hero-${page}-delete-btn`
+            );
 
             if (data.media_url) {
               // Show preview image if it's an image type
@@ -1964,7 +2161,7 @@
               } else {
                 preview.classList.add("hidden");
               }
-              
+
               // Show delete button
               deleteBtn.classList.remove("hidden");
             } else {
@@ -1981,14 +2178,18 @@
       // Save all hero settings (called by global Save button)
       async function saveAllHeroSettings() {
         try {
-          const pages = ['home', 'events', 'menu', 'parties', 'contact'];
+          const pages = ["home", "events", "menu", "parties", "contact"];
           const savePromises = [];
 
           for (const page of pages) {
             const url = document.getElementById(`hero-${page}-url`).value;
             const type = document.getElementById(`hero-${page}-type`).value;
-            const height = parseInt(document.getElementById(`hero-${page}-height`).value) || 600;
-            const speed = parseFloat(document.getElementById(`hero-${page}-speed`).value) || 1.0;
+            const height =
+              parseInt(document.getElementById(`hero-${page}-height`).value) ||
+              600;
+            const speed =
+              parseFloat(document.getElementById(`hero-${page}-speed`).value) ||
+              1.0;
 
             // Only save if there's a URL set (media selected)
             if (url) {
@@ -2004,7 +2205,7 @@
               savePromises.push(
                 supabase
                   .from("page_hero_settings")
-                  .upsert(settings, { onConflict: ['location', 'page'] })
+                  .upsert(settings, { onConflict: ["location", "page"] })
               );
             } else {
               // If no URL, delete any existing settings for this page
@@ -2022,7 +2223,7 @@
           const results = await Promise.all(savePromises);
 
           // Check for errors
-          const errors = results.filter(r => r.error);
+          const errors = results.filter((r) => r.error);
           if (errors.length > 0) {
             throw new Error(`Failed to save ${errors.length} hero settings`);
           }
@@ -2056,8 +2257,6 @@
 
       // Make functions globally available
       window.selectHeroMedia = selectHeroMedia;
-      window.saveHeroSettings = saveHeroSettings;
-      window.resetHeroSettings = resetHeroSettings;
 
       // Load hero settings when page loads
       loadAllHeroSettings();
