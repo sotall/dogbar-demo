@@ -28,10 +28,12 @@
             </p>
           </div>
           <button
-            id="createUserBtn"
+            id="showCreateUserBtn"
             class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+            style="display: none;"
+            onclick="toggleCreateUserForm()"
           >
-            Create New Account
+            + Create New User
           </button>
         </div>
 
@@ -74,12 +76,6 @@
             </div>
           </form>
         </div>
-
-        <button id="showCreateUserBtn" onclick="toggleCreateUserForm()" 
-                class="mb-4 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
-                style="display: none;">
-          + Create New User
-        </button>
 
         <!-- User Type Tabs -->
         <div class="border-b border-gray-200 mb-6">
@@ -927,7 +923,6 @@
         // Tab switching
         const adminTab = document.getElementById("adminTab");
         const customerTab = document.getElementById("customerTab");
-        const createUserBtn = document.getElementById("createUserBtn");
         const closeModal = document.getElementById("closeModal");
         const cancelBtn = document.getElementById("cancelBtn");
 
@@ -936,9 +931,6 @@
         }
         if (customerTab) {
           customerTab.addEventListener("click", () => switchTab("customer"));
-        }
-        if (createUserBtn) {
-          createUserBtn.addEventListener("click", () => openUserModal());
         }
         if (closeModal) {
           closeModal.addEventListener("click", closeUserModal);
