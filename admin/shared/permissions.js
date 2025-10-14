@@ -116,11 +116,11 @@ class PermissionManager {
         throw new Error("You do not have admin access");
       }
 
-      // Get the actual role from admin_users table for UI purposes
+      // Get the actual role from admin_users table for UI purposes (query by id to satisfy RLS self-select policy)
       const { data: userData, error: userError } = await this.supabase
         .from("admin_users")
         .select("role")
-        .eq("email", user.email)
+        .eq("id", user.id)
         .single();
 
       if (userError || !userData) {

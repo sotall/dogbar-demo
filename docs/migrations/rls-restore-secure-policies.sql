@@ -29,6 +29,11 @@ USING (
   )
 );
 
+-- Allow authenticated users to read their own record to support login/permission checks (prevents recursion issues)
+CREATE POLICY "admin_users_select_self"
+ON admin_users FOR SELECT
+USING (auth.uid() = id);
+
 CREATE POLICY "secure_admin_users_insert"
 ON admin_users FOR INSERT
 WITH CHECK (

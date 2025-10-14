@@ -183,11 +183,20 @@
             // Clear failed attempts on successful login
             clearFailedAttempts(email);
 
-            // Check if user exists in our admin_users table
+            // Resolve authenticated user id
+            const authUserId = data?.user?.id || (
+              (await supabase.auth.getUser()).data?.user?.id
+            );
+
+            if (!authUserId) {
+              throw new Error("Authentication failed: missing user id");
+            }
+
+            // Check if user exists in our admin_users table (query by id to satisfy RLS self-select policy)
             const { data: userData, error: userError } = await supabase
               .from("admin_users")
               .select("role, status")
-              .eq("email", email)
+              .eq("id", authUserId)
               .single();
 
             if (userError || !userData) {
