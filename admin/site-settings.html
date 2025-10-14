@@ -2270,13 +2270,19 @@
 
           if (error) throw error;
 
-          // Log the change
-          await window.Logger.log("hero_settings_updated", {
-            page: page,
-            location: currentLocation,
-            media_type: type,
-            height: height,
-          });
+          // Log the change (optional - won't break if logger unavailable)
+          try {
+            if (window.Logger && typeof window.Logger.log === 'function') {
+              await window.Logger.log("hero_settings_updated", {
+                page: page,
+                location: currentLocation,
+                media_type: type,
+                height: height,
+              });
+            }
+          } catch (logError) {
+            console.warn('Failed to log hero settings update:', logError);
+          }
 
           alert(`Hero settings saved for ${page} page!`);
           await loadHeroSettings(page);
@@ -2305,11 +2311,17 @@
 
           if (error) throw error;
 
-          // Log the change
-          await window.Logger.log("hero_settings_reset", {
-            page: page,
-            location: currentLocation,
-          });
+          // Log the change (optional - won't break if logger unavailable)
+          try {
+            if (window.Logger && typeof window.Logger.log === 'function') {
+              await window.Logger.log("hero_settings_reset", {
+                page: page,
+                location: currentLocation,
+              });
+            }
+          } catch (logError) {
+            console.warn('Failed to log hero settings reset:', logError);
+          }
 
           // Clear UI
           document.getElementById(`hero-${page}-url`).value = "";
