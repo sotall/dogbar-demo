@@ -188,9 +188,23 @@
     </div>
 
     <script>
+      // Create stateless client that cannot reuse sessions
+      const noopStorage = { 
+        getItem: () => null, 
+        setItem: () => {}, 
+        removeItem: () => {} 
+      };
+      
       const supabase = window.supabase.createClient(
         "https://pkomfbezaollhvcpezaw.supabase.co",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0",
+        {
+          auth: { 
+            persistSession: false, 
+            autoRefreshToken: false, 
+            storage: noopStorage 
+          }
+        }
       );
 
       const log = (msg, type = "info") => {
@@ -219,6 +233,14 @@
         log("\n========================================", "info");
         log("STORAGE SECURITY TESTS", "info");
         log("========================================\n", "info");
+        
+        // Check authentication status
+        const { data: { user } = { user: null } } = await supabase.auth.getUser();
+        log(`Authentication Status: ${user ? 'AUTHENTICATED (unexpected for security test)' : 'UNAUTHENTICATED (expected)'}`, user ? "vulnerable" : "secure");
+        if (user) {
+          log(`⚠️  WARNING: Test may show false results due to active session`, "warning");
+        }
+        log("", "info");
 
         // Test 1: Unauthenticated upload attempt
         log("Test 1: Unauthenticated PHP File Upload", "warning");
@@ -332,6 +354,14 @@
         log("\n========================================", "info");
         log("RLS POLICY TESTS", "info");
         log("========================================\n", "info");
+        
+        // Check authentication status
+        const { data: { user } = { user: null } } = await supabase.auth.getUser();
+        log(`Authentication Status: ${user ? 'AUTHENTICATED (unexpected for security test)' : 'UNAUTHENTICATED (expected)'}`, user ? "vulnerable" : "secure");
+        if (user) {
+          log(`⚠️  WARNING: Test may show false results due to active session`, "warning");
+        }
+        log("", "info");
 
         // Test 1: Read admin_users without authentication
         log("Test 1: Read admin_users Table (Unauthenticated)", "warning");
