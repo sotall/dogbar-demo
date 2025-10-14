@@ -52,27 +52,7 @@
             Upload, organize, and manage your media files
           </p>
         </div>
-        <div class="flex gap-4">
-          <button
-            id="cleanupBtn"
-            class="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors flex items-center"
-            title="Clean up orphaned files and refresh media list"
-          >
-            <svg
-              class="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              ></path>
-            </svg>
-            Cleanup
-          </button>
+        <div>
           <button
             id="refreshBtn"
             class="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors flex items-center"
@@ -177,54 +157,6 @@
             await mediaManager.refresh();
             refreshBtn.disabled = false;
             refreshBtn.querySelector("svg").classList.remove("animate-spin");
-          });
-        }
-
-        // Cleanup button
-        const cleanupBtn = document.getElementById("cleanupBtn");
-        if (cleanupBtn) {
-          cleanupBtn.addEventListener("click", async () => {
-            if (
-              !confirm(
-                "This will scan for and remove orphaned files that don't match any database records. Continue?"
-              )
-            ) {
-              return;
-            }
-
-            cleanupBtn.disabled = true;
-            cleanupBtn.textContent = "Cleaning up...";
-
-            try {
-              // Get all files from storage
-              const { data: storageFiles, error: storageError } =
-                await supabase.storage.from("media").list("", {
-                  limit: 1000,
-              offset: 0,
-            });
-
-              if (storageError) throw storageError;
-
-              console.log(`Found ${storageFiles.length} files in storage`);
-
-              // For now, just refresh the list
-              // In a real scenario, you'd compare with database records
-              // and remove orphaned files
-
-              alert("Cleanup complete!");
-              await mediaManager.refresh();
-        } catch (error) {
-              console.error("Cleanup error:", error);
-              alert("Cleanup failed. Check console for details.");
-            } finally {
-              cleanupBtn.disabled = false;
-              cleanupBtn.innerHTML = `
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                  </svg>
-                Cleanup
-              `;
-            }
           });
         }
 
