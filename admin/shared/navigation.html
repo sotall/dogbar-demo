@@ -10,7 +10,7 @@
     }
   }
 </style>
-<nav class="bg-white shadow-lg">
+<nav class="bg-white dark:bg-gray-800 shadow-lg transition-colors">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
       <div class="flex items-center">
@@ -24,13 +24,49 @@
             class="h-8 w-auto mr-3 drop-shadow transition-transform duration-150 ease-in-out active:scale-95 hover:scale-105 cursor-pointer"
           />
         </a>
-        <h1 class="text-xl font-bold text-gray-900" id="pageTitle">
+        <h1
+          class="text-xl font-bold text-gray-900 dark:text-white transition-colors"
+          id="pageTitle"
+        >
           Admin Portal
         </h1>
       </div>
       <div class="flex items-center space-x-4">
+        <!-- Dark Mode Toggle -->
+        <button
+          id="darkModeToggle"
+          class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+          title="Toggle Dark Mode"
+        >
+          <!-- Sun icon (shown in dark mode) -->
+          <svg
+            id="sunIcon"
+            class="hidden dark:block w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <!-- Moon icon (shown in light mode) -->
+          <svg
+            id="moonIcon"
+            class="block dark:hidden w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            />
+          </svg>
+        </button>
         <!-- Hide email and logout on mobile (< 768px), show on tablet+ -->
-        <span class="hidden md:inline text-gray-600" id="userEmail"
+        <span
+          class="hidden md:inline text-gray-600 dark:text-gray-300 transition-colors"
+          id="userEmail"
           >Loading...</span
         >
         <button
@@ -42,7 +78,7 @@
         <!-- Hamburger Menu Button -->
         <button
           id="hamburgerBtn"
-          class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500"
+          class="p-2 rounded-md text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500 transition-colors"
         >
           <svg
             class="h-6 w-6"
@@ -67,21 +103,23 @@
 <div id="mobileMenu" class="hidden fixed inset-0 z-50">
   <div
     id="mobileMenuOverlay"
-    class="fixed inset-0 bg-gray-600 bg-opacity-75"
+    class="fixed inset-0 bg-gray-600 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-80"
   ></div>
   <div
     id="mobileDrawer"
-    class="fixed inset-y-0 right-0 w-80 bg-white shadow-xl"
+    class="fixed inset-y-0 right-0 w-80 bg-white dark:bg-gray-800 shadow-xl transition-colors"
   >
     <div class="flex flex-col h-full">
       <!-- Menu Header -->
       <div
-        class="flex items-center justify-between p-4 border-b border-gray-200"
+        class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700"
       >
-        <h2 class="text-lg font-semibold text-gray-900">Admin Menu</h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Admin Menu
+        </h2>
         <button
           id="closeMenuBtn"
-          class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+          class="p-2 rounded-md text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           <svg
             class="h-6 w-6"
@@ -105,7 +143,7 @@
           <li>
             <a
               href="dashboard.html"
-              class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+              class="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
             >
               <svg
                 class="w-5 h-5 mr-3"
@@ -132,7 +170,7 @@
           <li>
             <a
               href="events.html"
-              class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+              class="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
             >
               <svg
                 class="w-5 h-5 mr-3"
@@ -153,7 +191,7 @@
           <li>
             <a
               href="food-trucks.html"
-              class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+              class="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
             >
               <svg
                 class="w-5 h-5 mr-3"
@@ -174,7 +212,7 @@
           <li>
             <a
               href="media.html"
-              class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+              class="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
             >
               <svg
                 class="w-5 h-5 mr-3"
@@ -195,7 +233,7 @@
           <li>
             <a
               href="site-settings.html"
-              class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+              class="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
             >
               <svg
                 class="w-5 h-5 mr-3"
@@ -223,7 +261,7 @@
           <li>
             <a
               href="users.html"
-              class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+              class="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
             >
               <svg
                 class="w-5 h-5 mr-3"
@@ -244,7 +282,7 @@
           <li>
             <a
               href="logs.html"
-              class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+              class="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
             >
               <svg
                 class="w-5 h-5 mr-3"
@@ -265,7 +303,7 @@
           <li>
             <a
               href="schema-inspector.html"
-              class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+              class="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
             >
               <svg
                 class="w-5 h-5 mr-3"
@@ -287,17 +325,20 @@
       </div>
 
       <!-- User Section -->
-      <div class="mt-8 pt-4 border-t border-gray-200">
+      <div class="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700">
         <div class="px-4 py-2">
-          <p class="text-sm text-gray-600">Logged in as:</p>
-          <p class="text-sm font-medium text-gray-900" id="menuUserEmail">
+          <p class="text-sm text-gray-600 dark:text-gray-400">Logged in as:</p>
+          <p
+            class="text-sm font-medium text-gray-900 dark:text-white"
+            id="menuUserEmail"
+          >
             Loading...
           </p>
         </div>
         <div class="px-4 py-2">
           <a
             href="login.html"
-            class="flex items-center text-sm text-red-600 hover:text-red-700"
+            class="flex items-center text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
           >
             <svg
               class="w-4 h-4 mr-2"

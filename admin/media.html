@@ -21,6 +21,7 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
     <!-- Shared Scripts -->
+    <script type="module" src="shared/theme-manager.js"></script>
     <script type="module" src="shared/permissions.js"></script>
     <script type="module" src="shared/navigation.js"></script>
     <script type="module" src="shared/media-selector.js"></script>
@@ -28,19 +29,26 @@
     <style>
       body {
         font-family: "Inter", sans-serif;
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         min-height: 100vh;
+      }
+
+      body:not(.dark) {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      }
+      
+      body.dark {
+        background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
       }
     </style>
   </head>
-  <body class="bg-gray-100 min-h-screen">
+  <body class="bg-white dark:bg-gray-900 min-h-screen transition-colors">
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <!-- Page Header -->
       <div class="flex justify-between items-center mb-8">
         <div>
-          <h2 class="text-3xl font-bold text-gray-900">Media Library</h2>
-          <p class="text-gray-600">
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Media Library</h2>
+          <p class="text-gray-600 dark:text-gray-400 transition-colors">
             Upload, organize, and manage your media files
           </p>
         </div>
@@ -89,22 +97,25 @@
 
       <!-- Media Grid Container (MediaSelector will render here) -->
       <div id="mediaGrid"></div>
-    </div>
+      </div>
 
     <script type="module">
       // Wait for all dependencies to load
       async function initMediaPage() {
         // Wait for PermissionManager to be initialized with currentUser
-        let attempts = 0;
-        while (!window.PermissionManager || !window.PermissionManager.currentUser) {
+          let attempts = 0;
+          while (
+            !window.PermissionManager ||
+          !window.PermissionManager.currentUser
+        ) {
           if (attempts >= 50) {
             console.error("PermissionManager not initialized");
             alert("Failed to load permission system. Please refresh the page.");
             return;
+            }
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            attempts++;
           }
-          await new Promise((resolve) => setTimeout(resolve, 100));
-          attempts++;
-        }
 
         // Wait for MediaSelector class
         attempts = 0;
@@ -116,8 +127,8 @@
         if (!window.MediaSelector) {
           console.error("MediaSelector not loaded");
           alert("Failed to load media selector. Please refresh the page.");
-          return;
-        }
+            return;
+          }
 
         // Check admin permissions (PermissionManager.init() already verified admin status)
         if (!window.PermissionManager.currentUser) {
@@ -189,8 +200,8 @@
               const { data: storageFiles, error: storageError } =
                 await supabase.storage.from("media").list("", {
                   limit: 1000,
-                  offset: 0,
-                });
+              offset: 0,
+            });
 
               if (storageError) throw storageError;
 
@@ -202,15 +213,15 @@
 
               alert("Cleanup complete!");
               await mediaManager.refresh();
-            } catch (error) {
+        } catch (error) {
               console.error("Cleanup error:", error);
               alert("Cleanup failed. Check console for details.");
             } finally {
               cleanupBtn.disabled = false;
               cleanupBtn.innerHTML = `
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                </svg>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
                 Cleanup
               `;
             }
@@ -223,7 +234,7 @@
       // Initialize when DOM is ready
       if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initMediaPage);
-      } else {
+        } else {
         initMediaPage();
       }
     </script>

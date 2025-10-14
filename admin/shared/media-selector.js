@@ -402,6 +402,9 @@ class MediaSelector {
       html += this.renderBulkToolbar();
     }
 
+    // Force dark mode for MediaSelector component (stays dark in both light/dark themes)
+    html += `<div class="dark">`;
+
     // ONE DARK container wrapping filters, header, AND grid
     html += `<div class="bg-gradient-to-br from-gray-900 via-black to-gray-900 rounded-lg shadow-xl overflow-hidden">`;
 
@@ -423,6 +426,9 @@ class MediaSelector {
     html += `</div>`;
 
     // Close main container
+    html += `</div>`;
+
+    // Close dark mode wrapper
     html += `</div>`;
 
     container.innerHTML = html;

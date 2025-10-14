@@ -143,6 +143,16 @@ class AdminNavigation {
       });
     }
 
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    if (darkModeToggle) {
+      darkModeToggle.addEventListener("click", () => {
+        if (window.ThemeManager) {
+          window.ThemeManager.toggle();
+        }
+      });
+    }
+
     // Logout button
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
