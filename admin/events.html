@@ -1028,12 +1028,12 @@
                                 }" alt="${event.title}">
                             </div>
                             <div class="ml-4 min-w-0 flex-1">
-                                <div class="text-sm font-medium text-gray-900 break-words">${
+                                <div class="text-sm font-medium text-gray-900 break-words">${InputSanitizer.sanitizeHTML(
                                   event.title
-                                }</div>
-                                <div class="text-sm text-gray-500 break-words">${
+                                )}</div>
+                                <div class="text-sm text-gray-500 break-words">${InputSanitizer.sanitizeHTML(
                                   event.description || "No description"
-                                }</div>
+                                )}</div>
                                 <!-- Image Slots -->
                                 <div class="event-image-slots mt-2">
                                     <div class="image-slot ${

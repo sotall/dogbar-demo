@@ -384,9 +384,9 @@
                                     </div>`
                                 }
                                 <div>
-                                    <h3 class="text-lg font-medium text-gray-900">${
+                                    <h3 class="text-lg font-medium text-gray-900">${InputSanitizer.sanitizeHTML(
                                       truck.name
-                                    }</h3>
+                                    )}</h3>
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                       truck.is_active
                                         ? "bg-green-100 text-green-800"

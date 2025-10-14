@@ -408,17 +408,17 @@
                 log.occurred_at
               )} ago</div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-emerald-700 font-semibold">${
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-emerald-700 font-semibold">${InputSanitizer.sanitizeHTML(
               log.action
-            }</td>
+            )}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              <div>${log.actor_email || "Unknown"}</div>
-              <div class="text-xs text-gray-500">${log.actor_name || ""}</div>
+              <div>${InputSanitizer.sanitizeHTML(log.actor_email || "Unknown")}</div>
+              <div class="text-xs text-gray-500">${InputSanitizer.sanitizeHTML(log.actor_name || "")}</div>
             </td>
             <td class="px-6 py-4 text-sm text-gray-900">
-              <pre class="bg-gray-50 border border-gray-200 rounded-lg p-3 overflow-auto max-h-32 text-xs text-gray-700">${formatDetails(
+              <pre class="bg-gray-50 border border-gray-200 rounded-lg p-3 overflow-auto max-h-32 text-xs text-gray-700">${InputSanitizer.sanitizeHTML(formatDetails(
                 log.details
-              )}</pre>
+              ))}</pre>
             </td>
           `;
 

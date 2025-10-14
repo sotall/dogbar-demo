@@ -1245,26 +1245,26 @@
             row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           <div class="flex flex-col">
-                             <span>${
+                             <span>${InputSanitizer.sanitizeHTML(
                                user.full_name ||
                                [user.first_name, user.last_name]
                                  .filter(Boolean)
                                  .join(" ") ||
                                "N/A"
-                             }</span>
+                             )}</span>
                             ${
                               user.job_title
-                                ? `<span class="text-xs text-gray-500">${user.job_title}</span>`
+                                ? `<span class="text-xs text-gray-500">${InputSanitizer.sanitizeHTML(user.job_title)}</span>`
                                 : ""
                             }
                           </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <div class="flex flex-col">
-                            <span>${user.email}</span>
+                            <span>${InputSanitizer.sanitizeHTML(user.email)}</span>
                             ${
                               user.phone
-                                ? `<span class="text-xs text-gray-400">${user.phone}</span>`
+                                ? `<span class="text-xs text-gray-400">${InputSanitizer.sanitizeHTML(user.phone)}</span>`
                                 : ""
                             }
                           </div>
@@ -1400,18 +1400,18 @@
           data.forEach((customer) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${InputSanitizer.sanitizeHTML(
                           customer.full_name || "N/A"
-                        }</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
+                        )}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${InputSanitizer.sanitizeHTML(
                           customer.email
-                        }</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
+                        )}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${InputSanitizer.sanitizeHTML(
                           customer.phone || "N/A"
-                        }</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
+                        )}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${InputSanitizer.sanitizeHTML(
                           customer.membership_type || "N/A"
-                        }</td>
+                        )}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                               customer.membership_status === "active"

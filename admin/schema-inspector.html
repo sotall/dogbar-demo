@@ -137,7 +137,7 @@
 
             const left = document.createElement("div");
             left.innerHTML = `
-              <div class="font-medium text-gray-900">${tableName}</div>
+              <div class="font-medium text-gray-900">${InputSanitizer.sanitizeHTML(tableName)}</div>
               <div class="text-sm text-gray-500">Click to view details</div>
             `;
 
