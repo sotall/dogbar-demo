@@ -266,22 +266,13 @@ const HeaderComponent = {
     const toggleBackground = () => {
       const threshold = hero?.offsetHeight || 400;
       if (window.scrollY > threshold - 80) {
-        header.classList.add(
-          "bg-gradient-to-r",
-          "from-blue-600/80",
-          "via-cyan-500/75",
-          "to-blue-500/80",
-          "shadow"
-        );
+        header.style.background =
+          "linear-gradient(90deg, rgba(37, 99, 235, 0.82) 0%, rgba(14, 165, 233, 0.78) 50%, rgba(59, 130, 246, 0.82) 100%)";
+        header.style.boxShadow = "0 8px 24px rgba(15, 23, 42, 0.18)";
         header.classList.remove("bg-transparent");
       } else {
-        header.classList.remove(
-          "bg-gradient-to-r",
-          "from-blue-600/80",
-          "via-cyan-500/75",
-          "to-blue-500/80",
-          "shadow"
-        );
+        header.style.background = "transparent";
+        header.style.boxShadow = "none";
         header.classList.add("bg-transparent");
       }
     };

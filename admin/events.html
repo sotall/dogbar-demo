@@ -20,12 +20,15 @@
     <!-- Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
+    <!-- Configuration for GitHub Pages -->
+    <script src="../config.js"></script>
+
     <!-- Shared Scripts -->
     <script type="module" src="shared/theme-manager.js"></script>
     <script type="module" src="shared/permissions.js"></script>
     <script type="module" src="shared/logger.js"></script>
     <script type="module" src="shared/navigation.js"></script>
-    <script src="shared/sanitize.js"></script>
+    <script type="module" src="shared/sanitize.js"></script>
 
     <style>
       body {
@@ -808,8 +811,11 @@
 
     <script type="module">
       // Supabase configuration from environment variables
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const supabaseUrl =
+        import.meta.env.VITE_SUPABASE_URL || window.APP_CONFIG?.supabaseUrl;
+      const supabaseKey =
+        import.meta.env.VITE_SUPABASE_ANON_KEY ||
+        window.APP_CONFIG?.supabaseKey;
 
       // Initialize Supabase client
       const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -1345,419 +1351,428 @@
         // Note: Edit/Delete buttons are in table rows, handled in renderEventsTable
       }
 
-      await applyPermissionUI();
+      // Apply permission UI and set up event handlers
+      (async () => {
+        await applyPermissionUI();
 
-      // Add event button handlers
-      const addEventBtn = document.getElementById("addEventBtn");
-      const addEventBtnEmpty = document.getElementById("addEventBtnEmpty");
+        // Add event button handlers
+        const addEventBtn = document.getElementById("addEventBtn");
+        const addEventBtnEmpty = document.getElementById("addEventBtnEmpty");
 
-      if (addEventBtn) {
-        addEventBtn.addEventListener("click", () => openEventModal());
-      }
-      if (addEventBtnEmpty) {
-        addEventBtnEmpty.addEventListener("click", () => openEventModal());
-      }
-
-      // Modal handlers
-      function openEventModal(eventId = null) {
-        editingEventId = eventId;
-        const modal = document.getElementById("eventModal");
-        const form = document.getElementById("eventForm");
-        const title = document.getElementById("modalTitle");
-
-        if (eventId) {
-          title.textContent = "Edit Event";
-          const event = allEvents.find((e) => e.id === eventId);
-          if (event) {
-            form.title.value = event.title;
-            form.description.value = event.description || "";
-            form.date.value = event.date;
-            form.start_time.value = event.start_time || "";
-            form.end_time.value = event.end_time || "";
-            form.location.value = event.location;
-            form.status.value = event.status;
-            form.event_type.value = event.event_type;
-            form.is_featured.checked = event.is_featured || false;
-
-            // Populate image slots
-            if (event.image_url) {
-              assignImageToSlot({ url: event.image_url }, "card");
-            } else {
-              clearImageSlot("card");
-            }
-
-            if (event.content_image_url) {
-              assignImageToSlot({ url: event.content_image_url }, "content");
-            } else {
-              clearImageSlot("content");
-            }
-          }
-        } else {
-          title.textContent = "Add New Event";
-          form.reset();
-          clearImageSlot("card");
-          clearImageSlot("content");
+        if (addEventBtn) {
+          addEventBtn.addEventListener("click", () => openEventModal());
+        }
+        if (addEventBtnEmpty) {
+          addEventBtnEmpty.addEventListener("click", () => openEventModal());
         }
 
-        modal.classList.remove("hidden");
-      }
+        // Modal handlers
+        function openEventModal(eventId = null) {
+          editingEventId = eventId;
+          const modal = document.getElementById("eventModal");
+          const form = document.getElementById("eventForm");
+          const title = document.getElementById("modalTitle");
 
-      // Close modal
-      document
-        .getElementById("closeModal")
-        .addEventListener("click", closeEventModal);
-      document
-        .getElementById("cancelEvent")
-        .addEventListener("click", closeEventModal);
+          if (eventId) {
+            title.textContent = "Edit Event";
+            const event = allEvents.find((e) => e.id === eventId);
+            if (event) {
+              form.title.value = event.title;
+              form.description.value = event.description || "";
+              form.date.value = event.date;
+              form.start_time.value = event.start_time || "";
+              form.end_time.value = event.end_time || "";
+              form.location.value = event.location;
+              form.status.value = event.status;
+              form.event_type.value = event.event_type;
+              form.is_featured.checked = event.is_featured || false;
 
-      function closeEventModal() {
-        document.getElementById("eventModal").classList.add("hidden");
-        editingEventId = null;
-      }
+              // Populate image slots
+              if (event.image_url) {
+                assignImageToSlot({ url: event.image_url }, "card");
+              } else {
+                clearImageSlot("card");
+              }
 
-      // Form submission
-      const eventFormEl = document.getElementById("eventForm");
-      const saveEventBtn = document.getElementById("saveEventBtn");
-
-      function enableSave(enabled) {
-        if (!saveEventBtn) return;
-        saveEventBtn.disabled = !enabled;
-        saveEventBtn.classList.toggle("opacity-50", !enabled);
-        saveEventBtn.classList.toggle("cursor-not-allowed", !enabled);
-      }
-
-      eventFormEl &&
-        eventFormEl.addEventListener("submit", async function (e) {
-          e.preventDefault();
-          enableSave(false);
-          const formData = new FormData(this);
-          const eventData = Object.fromEntries(formData.entries());
-
-          // Convert checkbox to boolean
-          eventData.is_featured = formData.has("is_featured");
-
-          try {
-            console.log("Saving event...", { editingEventId, eventData });
-            if (editingEventId) {
-              // Update existing event
-              const { error } = await supabase
-                .from("events")
-                .update(eventData)
-                .eq("id", editingEventId);
-
-              if (error) throw error;
-
-              window.auditLogger?.log("event.updated", {
-                event_id: editingEventId,
-                title: eventData.title,
-              });
-            } else {
-              // Create new event
-              const { data: inserted, error } = await supabase
-                .from("events")
-                .insert([eventData])
-                .select();
-
-              if (error) throw error;
-              console.log("Inserted:", inserted);
-
-              if (inserted && inserted[0]?.id) {
-                window.auditLogger?.log("event.created", {
-                  event_id: inserted[0].id,
-                  title: inserted[0].title,
-                });
+              if (event.content_image_url) {
+                assignImageToSlot({ url: event.content_image_url }, "content");
+              } else {
+                clearImageSlot("content");
               }
             }
-
-            // Reload events and close modal
-            await loadEvents();
-            closeEventModal();
-          } catch (error) {
-            console.error("Error saving event:", error);
-            alert("Error saving event. Please try again.");
-          } finally {
-            enableSave(true);
+          } else {
+            title.textContent = "Add New Event";
+            form.reset();
+            clearImageSlot("card");
+            clearImageSlot("content");
           }
-        });
 
-      // Edit event function (called from table)
-      window.editEvent = function (eventId) {
-        openEventModal(eventId);
-      };
-
-      // Delete event function (called from table)
-      window.deleteEvent = async function (eventId) {
-        if (!confirm("Are you sure you want to delete this event?")) return;
-
-        try {
-          const { error } = await supabase
-            .from("events")
-            .delete()
-            .eq("id", eventId);
-
-          if (error) throw error;
-
-          window.auditLogger?.log("event.deleted", {
-            event_id: eventId,
-          });
-
-          await loadEvents();
-        } catch (error) {
-          console.error("Error deleting event:", error);
-          alert("Error deleting event. Please try again.");
+          modal.classList.remove("hidden");
         }
-      };
 
-      // Image Management Functions
-      let imageGallery = [];
-      let draggedImage = null;
-
-      function initializeImageManagement() {
-        // Upload button handlers
+        // Close modal
         document
-          .getElementById("uploadCardImage")
-          .addEventListener("click", () => {
-            document.getElementById("cardImageFile").click();
-          });
-
+          .getElementById("closeModal")
+          .addEventListener("click", closeEventModal);
         document
-          .getElementById("uploadContentImage")
-          .addEventListener("click", () => {
-            document.getElementById("contentImageFile").click();
-          });
+          .getElementById("cancelEvent")
+          .addEventListener("click", closeEventModal);
 
-        // File input handlers
-        document
-          .getElementById("cardImageFile")
-          .addEventListener("change", (e) => {
-            if (e.target.files[0]) {
-              handleImageUpload(e.target.files[0], "card");
+        function closeEventModal() {
+          document.getElementById("eventModal").classList.add("hidden");
+          editingEventId = null;
+        }
+
+        // Form submission
+        const eventFormEl = document.getElementById("eventForm");
+        const saveEventBtn = document.getElementById("saveEventBtn");
+
+        function enableSave(enabled) {
+          if (!saveEventBtn) return;
+          saveEventBtn.disabled = !enabled;
+          saveEventBtn.classList.toggle("opacity-50", !enabled);
+          saveEventBtn.classList.toggle("cursor-not-allowed", !enabled);
+        }
+
+        eventFormEl &&
+          eventFormEl.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            enableSave(false);
+            const formData = new FormData(this);
+            const eventData = Object.fromEntries(formData.entries());
+
+            // Convert checkbox to boolean
+            eventData.is_featured = formData.has("is_featured");
+
+            try {
+              console.log("Saving event...", { editingEventId, eventData });
+              if (editingEventId) {
+                // Update existing event
+                const { error } = await supabase
+                  .from("events")
+                  .update(eventData)
+                  .eq("id", editingEventId);
+
+                if (error) throw error;
+
+                window.auditLogger?.log("event.updated", {
+                  event_id: editingEventId,
+                  title: eventData.title,
+                });
+              } else {
+                // Create new event
+                const { data: inserted, error } = await supabase
+                  .from("events")
+                  .insert([eventData])
+                  .select();
+
+                if (error) throw error;
+                console.log("Inserted:", inserted);
+
+                if (inserted && inserted[0]?.id) {
+                  window.auditLogger?.log("event.created", {
+                    event_id: inserted[0].id,
+                    title: inserted[0].title,
+                  });
+                }
+              }
+
+              // Reload events and close modal
+              await loadEvents();
+              closeEventModal();
+            } catch (error) {
+              console.error("Error saving event:", error);
+              alert("Error saving event. Please try again.");
+            } finally {
+              enableSave(true);
             }
           });
 
-        document
-          .getElementById("contentImageFile")
-          .addEventListener("change", (e) => {
-            if (e.target.files[0]) {
-              handleImageUpload(e.target.files[0], "content");
-            }
-          });
+        // Edit event function (called from table)
+        window.editEvent = function (eventId) {
+          openEventModal(eventId);
+        };
 
-        // Drag and drop handlers for modal slots
-        setupModalDragDrop();
-      }
+        // Delete event function (called from table)
+        window.deleteEvent = async function (eventId) {
+          if (!confirm("Are you sure you want to delete this event?")) return;
 
-      function setupModalDragDrop() {
-        const cardSlot = document.getElementById("cardImageSlot");
-        const contentSlot = document.getElementById("contentImageSlot");
+          try {
+            const { error } = await supabase
+              .from("events")
+              .delete()
+              .eq("id", eventId);
 
-        [cardSlot, contentSlot].forEach((slot) => {
-          slot.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            slot.classList.add("drag-over");
-          });
+            if (error) throw error;
 
-          slot.addEventListener("dragleave", (e) => {
-            e.preventDefault();
-            slot.classList.remove("drag-over");
-          });
-
-          slot.addEventListener("drop", (e) => {
-            e.preventDefault();
-            slot.classList.remove("drag-over");
-
-            if (draggedImage) {
-              const slotType = slot.dataset.slotType;
-              assignImageToSlot(draggedImage, slotType);
-              draggedImage = null;
-            }
-          });
-        });
-      }
-
-      function loadImageGallery() {
-        // Load sample images for the gallery
-        // Sample images for the gallery - using placeholder images
-        const sampleImages = [
-          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
-        ];
-
-        const gallery = document.getElementById("imageGallery");
-        gallery.innerHTML = "";
-
-        sampleImages.forEach((imageUrl, index) => {
-          const img = document.createElement("img");
-          img.src = imageUrl;
-          img.className = "gallery-image";
-          img.draggable = true;
-          img.dataset.imageUrl = imageUrl;
-          img.dataset.imageIndex = index;
-
-          img.addEventListener("dragstart", (e) => {
-            draggedImage = {
-              url: imageUrl,
-              index: index,
-            };
-            img.classList.add("dragging");
-          });
-
-          img.addEventListener("dragend", () => {
-            img.classList.remove("dragging");
-          });
-
-          gallery.appendChild(img);
-        });
-      }
-
-      async function handleImageUpload(file, slotType) {
-        // Validate file
-        if (!file.type.startsWith("image/")) {
-          alert("Please select an image file.");
-          return;
-        }
-
-        if (file.size > 10 * 1024 * 1024) {
-          alert("File size must be less than 10MB.");
-          return;
-        }
-
-        try {
-          // Compress image if needed
-          const compressedFile = await compressImage(file);
-
-          // Generate unique filename
-          const timestamp = Date.now();
-          const fileExt = file.name.split(".").pop();
-          const fileName = `event-${slotType}-${timestamp}.${fileExt}`;
-
-          // Upload to Supabase Storage
-          const { data, error } = await supabase.storage
-            .from("event-images")
-            .upload(fileName, compressedFile, {
-              cacheControl: "3600",
-              upsert: false,
+            window.auditLogger?.log("event.deleted", {
+              event_id: eventId,
             });
 
-          if (error) throw error;
-
-          // Get public URL
-          const { data: urlData } = supabase.storage
-            .from("event-images")
-            .getPublicUrl(fileName);
-
-          const imageUrl = urlData.publicUrl;
-          assignImageToSlot({ url: imageUrl }, slotType);
-        } catch (error) {
-          console.error("Upload error:", error);
-          alert("Upload failed. Please try again.");
-        }
-      }
-
-      function assignImageToSlot(imageData, slotType) {
-        const slot = document.getElementById(`${slotType}ImageSlot`);
-        const preview = document.getElementById(`${slotType}ImagePreview`);
-        const urlInput = document.getElementById(`${slotType}ImageUrl`);
-
-        // Update preview
-        preview.innerHTML = `<img src="${imageData.url}" alt="${slotType} image" class="w-full h-full object-cover rounded-lg" />`;
-
-        // Update hidden input
-        urlInput.value = imageData.url;
-
-        // Update slot appearance
-        slot.classList.add("has-image");
-        slot.querySelector(".drag-hint").textContent = "Click to change image";
-      }
-
-      function clearImageSlot(slotType) {
-        const slot = document.getElementById(`${slotType}ImageSlot`);
-        const preview = document.getElementById(`${slotType}ImagePreview`);
-        const urlInput = document.getElementById(`${slotType}ImageUrl`);
-
-        // Clear preview
-        preview.innerHTML = "";
-
-        // Clear hidden input
-        urlInput.value = "";
-
-        // Update slot appearance
-        slot.classList.remove("has-image");
-        slot.querySelector(".drag-hint").textContent =
-          "Drag image from gallery or click to upload";
-      }
-
-      function compressImage(file) {
-        return new Promise((resolve) => {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-          const img = new Image();
-
-          img.onload = () => {
-            // Calculate new dimensions (max 1200px width)
-            const maxWidth = 1200;
-            const maxHeight = 800;
-            let { width, height } = img;
-
-            if (width > maxWidth) {
-              height = (height * maxWidth) / width;
-              width = maxWidth;
-            }
-
-            if (height > maxHeight) {
-              width = (width * maxHeight) / height;
-              height = maxHeight;
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-
-            // Draw and compress
-            ctx.drawImage(img, 0, 0, width, height);
-            canvas.toBlob(resolve, "image/jpeg", 0.8);
-          };
-
-          img.src = URL.createObjectURL(file);
-        });
-      }
-
-      function updateImagePreview(url) {
-        const preview = document.getElementById("currentImagePreview");
-        const currentImage = document.getElementById("currentImage");
-
-        if (url) {
-          currentImage.src = url;
-          preview.classList.remove("hidden");
-        } else {
-          preview.classList.add("hidden");
-        }
-      }
-
-      function showUploadProgress() {
-        document.getElementById("uploadProgress").classList.remove("hidden");
-        document.getElementById("uploadArea").classList.add("hidden");
-      }
-
-      function hideUploadProgress() {
-        document.getElementById("uploadProgress").classList.add("hidden");
-        document.getElementById("uploadArea").classList.remove("hidden");
-      }
-
-      // Logout handler
-      const logoutBtnEl = document.getElementById("logoutBtn");
-      if (logoutBtnEl) {
-        logoutBtnEl.addEventListener("click", async function () {
-          await supabase.auth.signOut();
-          localStorage.removeItem("admin_user");
-          localStorage.removeItem("admin_session");
-          // Reset PermissionManager cache
-          if (window.PermissionManager) {
-            window.PermissionManager.resetRoleCache();
+            await loadEvents();
+          } catch (error) {
+            console.error("Error deleting event:", error);
+            alert("Error deleting event. Please try again.");
           }
-          window.location.href = "index.html";
-        });
-      }
+        };
+
+        // Image Management Functions
+        let imageGallery = [];
+        let draggedImage = null;
+
+        function initializeImageManagement() {
+          // Upload button handlers
+          document
+            .getElementById("uploadCardImage")
+            .addEventListener("click", () => {
+              document.getElementById("cardImageFile").click();
+            });
+
+          document
+            .getElementById("uploadContentImage")
+            .addEventListener("click", () => {
+              document.getElementById("contentImageFile").click();
+            });
+
+          // File input handlers
+          document
+            .getElementById("cardImageFile")
+            .addEventListener("change", (e) => {
+              if (e.target.files[0]) {
+                handleImageUpload(e.target.files[0], "card");
+              }
+            });
+
+          document
+            .getElementById("contentImageFile")
+            .addEventListener("change", (e) => {
+              if (e.target.files[0]) {
+                handleImageUpload(e.target.files[0], "content");
+              }
+            });
+
+          // Drag and drop handlers for modal slots
+          setupModalDragDrop();
+        }
+
+        function setupModalDragDrop() {
+          const cardSlot = document.getElementById("cardImageSlot");
+          const contentSlot = document.getElementById("contentImageSlot");
+
+          [cardSlot, contentSlot].forEach((slot) => {
+            slot.addEventListener("dragover", (e) => {
+              e.preventDefault();
+              slot.classList.add("drag-over");
+            });
+
+            slot.addEventListener("dragleave", (e) => {
+              e.preventDefault();
+              slot.classList.remove("drag-over");
+            });
+
+            slot.addEventListener("drop", (e) => {
+              e.preventDefault();
+              slot.classList.remove("drag-over");
+
+              if (draggedImage) {
+                const slotType = slot.dataset.slotType;
+                assignImageToSlot(draggedImage, slotType);
+                draggedImage = null;
+              }
+            });
+          });
+        }
+
+        function loadImageGallery() {
+          // Load sample images for the gallery
+          // Sample images for the gallery - using placeholder images
+          const sampleImages = [
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEltYWdlPC90ZXh0Pjwvc3ZnPg==",
+          ];
+
+          const gallery = document.getElementById("imageGallery");
+          gallery.innerHTML = "";
+
+          sampleImages.forEach((imageUrl, index) => {
+            const img = document.createElement("img");
+            img.src = imageUrl;
+            img.className = "gallery-image";
+            img.draggable = true;
+            img.dataset.imageUrl = imageUrl;
+            img.dataset.imageIndex = index;
+
+            img.addEventListener("dragstart", (e) => {
+              draggedImage = {
+                url: imageUrl,
+                index: index,
+              };
+              img.classList.add("dragging");
+            });
+
+            img.addEventListener("dragend", () => {
+              img.classList.remove("dragging");
+            });
+
+            gallery.appendChild(img);
+          });
+        }
+
+        async function handleImageUpload(file, slotType) {
+          // Validate file
+          if (!file.type.startsWith("image/")) {
+            alert("Please select an image file.");
+            return;
+          }
+
+          if (file.size > 10 * 1024 * 1024) {
+            alert("File size must be less than 10MB.");
+            return;
+          }
+
+          try {
+            // Compress image if needed
+            const compressedFile = await compressImage(file);
+
+            // Generate unique filename
+            const timestamp = Date.now();
+            const fileExt = file.name.split(".").pop();
+            const fileName = `event-${slotType}-${timestamp}.${fileExt}`;
+
+            // Upload to Supabase Storage
+            const { data, error } = await supabase.storage
+              .from("event-images")
+              .upload(fileName, compressedFile, {
+                cacheControl: "3600",
+                upsert: false,
+              });
+
+            if (error) throw error;
+
+            // Get public URL
+            const { data: urlData } = supabase.storage
+              .from("event-images")
+              .getPublicUrl(fileName);
+
+            const imageUrl = urlData.publicUrl;
+            assignImageToSlot({ url: imageUrl }, slotType);
+          } catch (error) {
+            console.error("Upload error:", error);
+            alert("Upload failed. Please try again.");
+          }
+        }
+
+        function assignImageToSlot(imageData, slotType) {
+          const slot = document.getElementById(`${slotType}ImageSlot`);
+          const preview = document.getElementById(`${slotType}ImagePreview`);
+          const urlInput = document.getElementById(`${slotType}ImageUrl`);
+
+          // Update preview
+          preview.innerHTML = "";
+          const img = document.createElement("img");
+          img.src = imageData.url;
+          img.alt = `${slotType} image`;
+          img.className = "w-full h-full object-cover rounded-lg";
+          preview.appendChild(img);
+
+          // Update hidden input
+          urlInput.value = imageData.url;
+
+          // Update slot appearance
+          slot.classList.add("has-image");
+          slot.querySelector(".drag-hint").textContent =
+            "Click to change image";
+        }
+
+        function clearImageSlot(slotType) {
+          const slot = document.getElementById(`${slotType}ImageSlot`);
+          const preview = document.getElementById(`${slotType}ImagePreview`);
+          const urlInput = document.getElementById(`${slotType}ImageUrl`);
+
+          // Clear preview
+          preview.innerHTML = "";
+
+          // Clear hidden input
+          urlInput.value = "";
+
+          // Update slot appearance
+          slot.classList.remove("has-image");
+          slot.querySelector(".drag-hint").textContent =
+            "Drag image from gallery or click to upload";
+        }
+
+        function compressImage(file) {
+          return new Promise((resolve) => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const img = new Image();
+
+            img.onload = () => {
+              // Calculate new dimensions (max 1200px width)
+              const maxWidth = 1200;
+              const maxHeight = 800;
+              let { width, height } = img;
+
+              if (width > maxWidth) {
+                height = (height * maxWidth) / width;
+                width = maxWidth;
+              }
+
+              if (height > maxHeight) {
+                width = (width * maxHeight) / height;
+                height = maxHeight;
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+
+              // Draw and compress
+              ctx.drawImage(img, 0, 0, width, height);
+              canvas.toBlob(resolve, "image/jpeg", 0.8);
+            };
+
+            img.src = URL.createObjectURL(file);
+          });
+        }
+
+        function updateImagePreview(url) {
+          const preview = document.getElementById("currentImagePreview");
+          const currentImage = document.getElementById("currentImage");
+
+          if (url) {
+            currentImage.src = url;
+            preview.classList.remove("hidden");
+          } else {
+            preview.classList.add("hidden");
+          }
+        }
+
+        function showUploadProgress() {
+          document.getElementById("uploadProgress").classList.remove("hidden");
+          document.getElementById("uploadArea").classList.add("hidden");
+        }
+
+        function hideUploadProgress() {
+          document.getElementById("uploadProgress").classList.add("hidden");
+          document.getElementById("uploadArea").classList.remove("hidden");
+        }
+
+        // Logout handler
+        const logoutBtnEl = document.getElementById("logoutBtn");
+        if (logoutBtnEl) {
+          logoutBtnEl.addEventListener("click", async function () {
+            await supabase.auth.signOut();
+            localStorage.removeItem("admin_user");
+            localStorage.removeItem("admin_session");
+            // Reset PermissionManager cache
+            if (window.PermissionManager) {
+              window.PermissionManager.resetRoleCache();
+            }
+            window.location.href = "index.html";
+          });
+        }
+      })(); // Close the async function
     </script>
   </body>
 </html>

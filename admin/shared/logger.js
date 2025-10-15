@@ -1,8 +1,7 @@
 class AuditLogger {
   constructor() {
-    this.supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
-    this.supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+    this.supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    this.supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
     this.supabase =
       window.supabaseClient ||
       window.supabase.createClient(this.supabaseUrl, this.supabaseKey);

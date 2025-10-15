@@ -19,7 +19,10 @@
 
     <!-- Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
+
+    <!-- Configuration for GitHub Pages -->
+    <script src="../config.js"></script>
+
     <!-- Shared Scripts -->
     <script type="module" src="shared/theme-manager.js"></script>
 
@@ -131,9 +134,8 @@
 
     <script>
       // Supabase configuration
-      const supabaseUrl = "https://pkomfbezaollhvcpezaw.supabase.co";
-      const supabaseKey =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb21mYmV6YW9sbGh2Y3BlemF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4NjcxMTIsImV4cCI6MjA3NTQ0MzExMn0.E2__i0ieMKMYwx-bzk3rnZ9-ozQLSJxMIm3GhRKt8K0";
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || window.APP_CONFIG?.supabaseUrl;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || window.APP_CONFIG?.supabaseKey;
 
       // Initialize Supabase client
       const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
