@@ -1,6 +1,6 @@
 # Dog Bar Database Schema Documentation
 
-**Last Updated:** October 14, 2025  
+**Last Updated:** January 15, 2025  
 **Database:** Supabase PostgreSQL  
 **Project:** Dog Bar St. Pete & Sarasota
 
@@ -17,6 +17,52 @@ The Dog Bar application uses Supabase (PostgreSQL) with the following key compon
 
 ---
 
+## 🔐 Role-Based Access Control (RBAC) Tables
+
+### `role_permissions` Table
+
+**Purpose:** Defines what actions each role can perform
+
+**Schema:**
+
+```sql
+CREATE TABLE role_permissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  role VARCHAR(50) NOT NULL,
+  action_key VARCHAR(100) NOT NULL,
+  allowed BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(role, action_key)
+);
+```
+
+**Available Roles:**
+
+- `super_admin` (Rank 5) - Full system access
+- `admin` (Rank 4) - Can manage all non-super_admin roles
+- `manager` (Rank 3) - Can manage staff and viewer roles
+- `staff` (Rank 2) - Can manage viewer role (if allowed)
+- `viewer` (Rank 1) - Read-only access
+
+**Available Actions:**
+
+- `users.view`, `users.create`, `users.edit`, `users.delete`
+- `events.view`, `events.create`, `events.edit`, `events.delete`
+- `media.view`, `media.upload`, `media.delete`
+- `site_settings.view`, `site_settings.edit`
+- `logs.view`, `schema.view`, `dashboard.view`
+- `food_trucks.view`, `food_trucks.create`, `food_trucks.edit`, `food_trucks.delete`
+
+**RLS Policies:**
+
+- **SELECT:** Super admins and admins can view all permissions
+- **UPDATE:** Only allow updating roles with lower rank than current user
+- **INSERT:** Only allow creating permissions for lower-rank roles (super_admin only)
+- **DELETE:** Only allow deleting permissions for lower-rank roles (super_admin only)
+
+---
+
 ## 🗃️ Table Structure
 
 ### 1. `admin_users` Table
@@ -29,7 +75,8 @@ The Dog Bar application uses Supabase (PostgreSQL) with the following key compon
 CREATE TABLE admin_users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email VARCHAR(255) UNIQUE NOT NULL,
-  role VARCHAR(50) NOT NULL DEFAULT 'admin',
+  role VARCHAR(50) NOT NULL DEFAULT 'viewer',
+  CONSTRAINT admin_users_role_check CHECK (role IN ('super_admin', 'admin', 'manager', 'staff', 'viewer')),
   status VARCHAR(20) NOT NULL DEFAULT 'active',
   full_name VARCHAR(255),
   first_name VARCHAR(255),

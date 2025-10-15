@@ -1,8 +1,8 @@
 # Dog Bar System Architecture
 
-**Last Updated:** October 14, 2025  
+**Last Updated:** January 15, 2025  
 **Project:** Dog Bar St. Pete & Sarasota  
-**Technology Stack:** Supabase + Vite + Vanilla JavaScript
+**Technology Stack:** Supabase + Vite + Vanilla JavaScript + RBAC
 
 ---
 
@@ -37,6 +37,38 @@
                     │  └─────────────────────┘  │
                     └───────────────────────────┘
 ```
+
+---
+
+## 🔐 Role-Based Access Control (RBAC) System
+
+### Role Hierarchy
+
+```
+super_admin (Rank 5) - Full system access
+    ↓
+admin (Rank 4) - Can manage all non-super_admin roles
+    ↓
+manager (Rank 3) - Can manage staff and viewer roles
+    ↓
+staff (Rank 2) - Can manage viewer role (if allowed)
+    ↓
+viewer (Rank 1) - Read-only access
+```
+
+### Permission Matrix
+
+- **Granular Actions:** Each role has specific permissions for different sections
+- **Hierarchical Enforcement:** Users can only edit roles below their rank
+- **Database Security:** RLS policies enforce permissions at the database level
+- **UI Restrictions:** Frontend disables unauthorized actions with visual feedback
+
+### Security Features
+
+- **Privilege Escalation Prevention:** Cannot modify same-rank or higher-rank roles
+- **Super Admin Protection:** Cannot accidentally lock out super admin accounts
+- **Session Management:** Proper authentication and role checking
+- **Input Sanitization:** XSS protection across all admin interfaces
 
 ---
 

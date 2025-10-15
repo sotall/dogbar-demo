@@ -17,7 +17,7 @@ npm install
 
 # Start development server
 npm run dev
-# → http://localhost:5173
+# → http://localhost:5173 (or 5174 if 5173 is in use)
 
 # Build for production
 npm run build
@@ -35,6 +35,49 @@ VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
+### Database Setup
+
+1. **Apply Migrations:** Run SQL files in `docs/migrations/` in Supabase SQL Editor
+2. **Set up RLS:** Apply `role-hierarchy-rls.sql` for role-based security
+3. **Configure Permissions:** Use the Role & Permissions matrix in Site Settings
+
+---
+
+## ✨ Latest Features (v2.0)
+
+### 🔐 Role-Based Access Control (RBAC)
+
+- **Hierarchical Role System:** super_admin → admin → manager → staff → viewer
+- **Permission Matrix:** Granular control over what each role can do
+- **Role Hierarchy Security:** Users can only edit permissions for roles below their rank
+- **UI Restrictions:** Disabled checkboxes and visual indicators for unauthorized actions
+- **Database Enforcement:** RLS policies prevent privilege escalation
+
+### 🎨 Enhanced Admin Experience
+
+- **Dark Mode:** Complete dark/light theme support across all admin pages
+- **Sticky Navigation:** Fixed top navigation bar for better usability
+- **Widget State Persistence:** Remember expanded/collapsed states across sessions
+- **Toast Notifications:** Non-intrusive feedback instead of browser alerts
+- **Permission-Based UI:** Hide menu items and buttons based on user permissions
+
+### 🛡️ Security Improvements
+
+- **XSS Protection:** Input sanitization across all admin pages
+- **RLS Policies:** Comprehensive row-level security for all tables
+- **File Upload Security:** MIME type validation and size limits
+- **Authentication Guards:** Proper session management and redirects
+- **Security Testing:** Automated test suite for vulnerability detection
+
+### 📊 Admin Portal Features
+
+- **User Management:** Create, edit, delete admin users with role assignment
+- **Event Management:** Full CRUD operations with permission controls
+- **Media Library:** Secure file upload and management
+- **Site Settings:** Multi-location content management with role restrictions
+- **Audit Logs:** Track all admin actions and changes
+- **Database Inspector:** Schema exploration and query tools
+
 ---
 
 ## 📁 Project Structure
@@ -42,13 +85,15 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 See [PROJECT-STRUCTURE.md](PROJECT-STRUCTURE.md) for complete directory organization.
 
 **Key Directories:**
+
 - **`/admin/`** - Admin portal (CMS)
-- **`/pages/`** - Public website pages  
+- **`/pages/`** - Public website pages
 - **`/assets/`** - Static assets (CSS, JS, images)
 - **`/docs/`** - Complete documentation
 - **`/tests/`** - Security and functional testing
 
 **Quick Overview:**
+
 ```
 dogbar/
 ├── admin/                      # Admin portal
@@ -203,9 +248,30 @@ npm run build
 - **🧪 Test Suite Created** - Automated security testing
 - **📁 Project Organization** - Clean directory structure
 
+### 📚 Documentation
+
+**Core Documentation:**
+
+- **`README.md`** - Project overview and getting started
+- **`CHANGELOG.md`** - Version history and changes
+- **`PROJECT-STRUCTURE.md`** - Complete project organization
+
+**Feature Documentation:**
+
+- **`docs/FEATURES-OVERVIEW.md`** - Complete features and capabilities
+- **`docs/SYSTEM-ARCHITECTURE.md`** - System design and RBAC
+- **`docs/DATABASE-SCHEMA.md`** - Database reference with RBAC
+- **`docs/API-ENDPOINTS.md`** - API reference with RBAC endpoints
+
+**Security Documentation:**
+
+- **`docs/security/SECURITY-AUDIT-REPORT.md`** - Complete security audit
+- **`docs/security/SECURITY-TESTING-GUIDE.md`** - Testing procedures
+
 ### 🧪 Testing
 
 **Security Testing:**
+
 ```bash
 # Start dev server
 npm run dev

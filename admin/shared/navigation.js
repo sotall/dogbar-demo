@@ -32,7 +32,9 @@ class AdminNavigation {
       this.setPageTitle();
 
       // Apply permission-based UI after navigation loads
-      this.waitForPermissionManager();
+      await this.waitForPermissionManager();
+      await this.waitForRoleReady();
+      this.filterMenuByPermissions();
 
       console.log("✅ Admin navigation loaded successfully");
     } catch (error) {
@@ -221,6 +223,23 @@ class AdminNavigation {
     this.updateUserEmail();
   }
 
+  // Wait until PermissionManager has resolved role (roleChecked)
+  async waitForRoleReady() {
+    let attempts = 0;
+    const maxAttempts = 50;
+    while (!window.PermissionManager || !window.PermissionManager.roleChecked) {
+      if (attempts >= maxAttempts) {
+        console.warn(
+          "⚠️ PermissionManager role not ready after waiting, skipping menu filter..."
+        );
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      attempts++;
+    }
+    console.log("✅ Permission role is ready!");
+  }
+
   // Update user email from permission manager
   updateUserEmail() {
     console.log("🔍 Updating user email...");
@@ -239,6 +258,48 @@ class AdminNavigation {
       console.log("✅ Email updated to:", user.email);
     } else {
       console.warn("⚠️ No user email available");
+    }
+  }
+
+  // Filter menu items based on user permissions
+  async filterMenuByPermissions() {
+    if (!window.PermissionManager) {
+      console.warn("⚠️ PermissionManager not available for menu filtering");
+      return;
+    }
+
+    try {
+      // If super admin, show everything (no filtering)
+      if (
+        typeof window.PermissionManager.isSuperAdmin === "function" &&
+        window.PermissionManager.isSuperAdmin()
+      ) {
+        console.log("👑 Super admin detected - showing all menu items");
+        return;
+      }
+
+      // Ensure role is ready; if not, avoid hiding everything prematurely
+      if (!window.PermissionManager.roleChecked) {
+        console.warn(
+          "⚠️ Role not ready during filter; skipping filtering to avoid hiding items"
+        );
+        return;
+      }
+
+      await window.PermissionManager.loadMatrix();
+
+      document.querySelectorAll("[data-requires]").forEach(async (link) => {
+        const action = link.dataset.requires;
+        const allowed = await window.PermissionManager.can(action);
+        if (!allowed) {
+          link.style.display = "none";
+          console.log(`🚫 Hidden menu item requiring: ${action}`);
+        } else {
+          console.log(`✅ Showing menu item requiring: ${action}`);
+        }
+      });
+    } catch (error) {
+      console.error("❌ Error filtering menu by permissions:", error);
     }
   }
 }

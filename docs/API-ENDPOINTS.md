@@ -1,8 +1,104 @@
 # Dog Bar API Endpoints Documentation
 
-**Last Updated:** October 14, 2025  
+**Last Updated:** January 15, 2025  
 **Base URL:** `https://pkomfbezaollhvcpezaw.supabase.co`  
-**Authentication:** Supabase JWT tokens
+**Authentication:** Supabase JWT tokens + RBAC permissions
+
+---
+
+## 🔐 Role-Based Access Control (RBAC) Endpoints
+
+### Role Permissions Management
+
+#### Get Role Permissions Matrix
+
+**GET** `/rest/v1/role_permissions`
+
+```javascript
+const { data, error } = await supabase
+  .from("role_permissions")
+  .select("*")
+  .order("role, action_key");
+```
+
+**Response:**
+
+```json
+[
+  {
+    "id": "uuid",
+    "role": "admin",
+    "action_key": "users.create",
+    "allowed": true,
+    "created_at": "2025-01-15T00:00:00Z",
+    "updated_at": "2025-01-15T00:00:00Z"
+  }
+]
+```
+
+#### Update Role Permissions
+
+**PATCH** `/rest/v1/role_permissions`
+
+```javascript
+const { data, error } = await supabase.from("role_permissions").upsert([
+  {
+    role: "manager",
+    action_key: "events.create",
+    allowed: true,
+  },
+]);
+```
+
+**Security:** Only super_admin can modify permissions. Users can only edit roles below their rank.
+
+#### Get Current User Role
+
+**GET** `/rest/v1/admin_users`
+
+```javascript
+const { data, error } = await supabase
+  .from("admin_users")
+  .select("role, status")
+  .eq("id", auth.uid())
+  .single();
+```
+
+### Permission Checking
+
+#### Check User Permission
+
+**JavaScript Client-Side:**
+
+```javascript
+// Check if user can perform action
+const canCreateUsers = await window.PermissionManager.can("users.create");
+
+// Check if user is super admin
+const isSuperAdmin = window.PermissionManager.isSuperAdmin();
+
+// Get user role
+const userRole = window.PermissionManager.getRole();
+```
+
+### Role Hierarchy Functions
+
+#### Get Role Rank
+
+**SQL Function:**
+
+```sql
+SELECT role_rank('admin'); -- Returns 4
+SELECT role_rank('viewer'); -- Returns 1
+```
+
+#### Get Current Admin Role
+
+**SQL Function:**
+
+```sql
+SELECT current_admin_role(); -- Returns current user's role
+```
 
 ---
 

@@ -1128,12 +1128,30 @@
                     </td>
                     <td class="actions-column px-6 py-4 text-sm font-medium">
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <button onclick="editEvent('${
-                              event.id
-                            }')" class="text-emerald-600 hover:text-emerald-900 whitespace-nowrap">Edit</button>
-                            <button onclick="deleteEvent('${
-                              event.id
-                            }')" class="text-red-600 hover:text-red-900 whitespace-nowrap">Delete</button>
+                            ${
+                              window.PermissionManager &&
+                              window.PermissionManager.permissionsMatrix &&
+                              window.PermissionManager.permissionsMatrix[
+                                window.PermissionManager.userRole
+                              ] &&
+                              window.PermissionManager.permissionsMatrix[
+                                window.PermissionManager.userRole
+                              ]["events.edit"]
+                                ? `<button onclick="editEvent('${event.id}')" class="text-emerald-600 hover:text-emerald-900 whitespace-nowrap">Edit</button>`
+                                : ""
+                            }
+                            ${
+                              window.PermissionManager &&
+                              window.PermissionManager.permissionsMatrix &&
+                              window.PermissionManager.permissionsMatrix[
+                                window.PermissionManager.userRole
+                              ] &&
+                              window.PermissionManager.permissionsMatrix[
+                                window.PermissionManager.userRole
+                              ]["events.delete"]
+                                ? `<button onclick="deleteEvent('${event.id}')" class="text-red-600 hover:text-red-900 whitespace-nowrap">Delete</button>`
+                                : ""
+                            }
                         </div>
                     </td>
                 </tr>
@@ -1307,6 +1325,27 @@
           filterEvents();
         });
       }
+
+      // Apply permission-based UI
+      async function applyPermissionUI() {
+        if (!window.PermissionManager) return;
+
+        const canCreate = await window.PermissionManager.can("events.create");
+        const canEdit = await window.PermissionManager.can("events.edit");
+        const canDelete = await window.PermissionManager.can("events.delete");
+
+        // Hide create buttons if no create permission
+        if (!canCreate) {
+          const addEventBtn = document.getElementById("addEventBtn");
+          const addEventBtnEmpty = document.getElementById("addEventBtnEmpty");
+          if (addEventBtn) addEventBtn.style.display = "none";
+          if (addEventBtnEmpty) addEventBtnEmpty.style.display = "none";
+        }
+
+        // Note: Edit/Delete buttons are in table rows, handled in renderEventsTable
+      }
+
+      await applyPermissionUI();
 
       // Add event button handlers
       const addEventBtn = document.getElementById("addEventBtn");

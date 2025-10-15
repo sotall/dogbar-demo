@@ -53,7 +53,7 @@ const HeaderComponent = {
     const paths = this.getPaths();
 
     root.innerHTML = `
-        <header class="absolute top-0 left-0 right-0 z-50 overflow-hidden">
+        <header class="fixed top-0 left-0 right-0 w-full z-50 overflow-hidden transition-colors duration-300">
           <div class="container mx-auto relative">
              <div class="flex items-center py-3">
                <!-- Logo (locked to left) -->
@@ -67,7 +67,7 @@ const HeaderComponent = {
 
                <!-- Desktop Navigation (centered) -->
                <nav class="hidden lg:flex items-center flex-1 justify-center">
-                 <div class="relative rounded-lg py-2 flex items-center space-x-6 bg-white/20 backdrop-blur-md" style="padding-left: 100px; padding-right: 100px;">
+                 <div class="relative rounded-lg py-2 flex items-center space-x-6 bg-white/40 backdrop-blur-md" style="padding-left: 100px; padding-right: 100px;">
                    <a
                      href="${paths.home}?location=${location}"
                      class="text-white/90 hover:text-white transition-all font-medium active:scale-95 hover:scale-105"
@@ -186,6 +186,10 @@ const HeaderComponent = {
 
     // Store location for future checks
     root.dataset.location = location;
+
+    document.body.style.paddingTop = "";
+
+    this.applyScrollBackground();
   },
 
   // Initialize mobile menu functionality
@@ -249,6 +253,42 @@ const HeaderComponent = {
       this.initMobileMenu();
       window.mobileMenuInitialized = true;
     }
+  },
+
+  applyScrollBackground() {
+    const header = document.querySelector("header");
+    const hero = document.getElementById("hero-root");
+
+    if (!header) {
+      return;
+    }
+
+    const toggleBackground = () => {
+      const threshold = hero?.offsetHeight || 400;
+      if (window.scrollY > threshold - 80) {
+        header.classList.add(
+          "bg-gradient-to-r",
+          "from-blue-600/80",
+          "via-cyan-500/75",
+          "to-blue-500/80",
+          "shadow"
+        );
+        header.classList.remove("bg-transparent");
+      } else {
+        header.classList.remove(
+          "bg-gradient-to-r",
+          "from-blue-600/80",
+          "via-cyan-500/75",
+          "to-blue-500/80",
+          "shadow"
+        );
+        header.classList.add("bg-transparent");
+      }
+    };
+
+    toggleBackground();
+    window.removeEventListener("scroll", toggleBackground);
+    window.addEventListener("scroll", toggleBackground, { passive: true });
   },
 };
 

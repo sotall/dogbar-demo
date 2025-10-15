@@ -86,11 +86,12 @@
     <script type="module">
       // Wait for all dependencies to load
       async function initMediaPage() {
-        // Wait for PermissionManager to be initialized with currentUser
+        // Wait for PermissionManager to be initialized with currentUser and role
         let attempts = 0;
         while (
           !window.PermissionManager ||
-          !window.PermissionManager.currentUser
+          !window.PermissionManager.currentUser ||
+          !window.PermissionManager.roleChecked
         ) {
           if (attempts >= 50) {
             console.error("PermissionManager not initialized");
@@ -118,6 +119,22 @@
         if (!window.PermissionManager.currentUser) {
           console.error("Not authenticated");
           return; // PermissionManager already redirected if not admin
+        }
+
+        // Check media view permission (super admins bypass)
+        let canViewMedia = true;
+        if (
+          !(
+            typeof window.PermissionManager.isSuperAdmin === "function" &&
+            window.PermissionManager.isSuperAdmin()
+          )
+        ) {
+          canViewMedia = await window.PermissionManager.can("media.view");
+        }
+        if (!canViewMedia) {
+          alert("You do not have permission to view the media library.");
+          window.location.href = "dashboard.html";
+          return;
         }
 
         // Initialize Supabase

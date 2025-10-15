@@ -69,7 +69,35 @@
       const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
       // Initialize when page loads
-      document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Wait for role to be ready to avoid false blocks
+        let attempts = 0;
+        while (
+          !window.PermissionManager ||
+          !window.PermissionManager.roleChecked
+        ) {
+          if (attempts++ > 50) break;
+          await new Promise((r) => setTimeout(r, 100));
+        }
+
+        // Check schema view permission (super admins bypass)
+        if (window.PermissionManager) {
+          let canViewSchema = true;
+          if (
+            !(
+              typeof window.PermissionManager.isSuperAdmin === "function" &&
+              window.PermissionManager.isSuperAdmin()
+            )
+          ) {
+            canViewSchema = await window.PermissionManager.can("schema.view");
+          }
+          if (!canViewSchema) {
+            alert("You do not have permission to view the database schema.");
+            window.location.href = "dashboard.html";
+            return;
+          }
+        }
+
         checkConnection();
         loadTables();
 
@@ -138,7 +166,9 @@
 
             const left = document.createElement("div");
             left.innerHTML = `
-              <div class="font-medium text-gray-900">${InputSanitizer.sanitizeHTML(tableName)}</div>
+              <div class="font-medium text-gray-900">${InputSanitizer.sanitizeHTML(
+                tableName
+              )}</div>
               <div class="text-sm text-gray-500">Click to view details</div>
             `;
 

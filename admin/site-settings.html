@@ -30,6 +30,7 @@
     <!-- Shared Scripts -->
     <script type="module" src="shared/theme-manager.js"></script>
     <script type="module" src="shared/logger.js"></script>
+    <script type="module" src="shared/actions-registry.js"></script>
     <script type="module" src="shared/permissions.js"></script>
     <script type="module" src="shared/navigation.js"></script>
     <script type="module" src="shared/media-selector.js"></script>
@@ -115,7 +116,11 @@
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <!-- Page Header -->
       <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Site Settings</h2>
+        <h2
+          class="text-3xl font-bold text-gray-900 dark:text-white transition-colors"
+        >
+          Site Settings
+        </h2>
         <p class="text-gray-600 dark:text-gray-300 transition-colors">
           Manage location-specific content, hours, and contact information
         </p>
@@ -123,12 +128,12 @@
 
       <!-- Location Selector -->
       <div class="mb-8">
-        <label class="block text-sm font-medium text-gray-700 mb-2"
+        <label class="block text-lg font-medium text-gray-700 mb-4"
           >Select Location to Edit:</label
         >
         <select
           id="locationSelector"
-          class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+          class="text-xl font-bold px-4 py-3 border-2 border-emerald-500 rounded-lg focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-gray-700 dark:text-white"
         >
           <option value="st-pete">St. Pete</option>
           <option value="sarasota">Sarasota</option>
@@ -136,16 +141,40 @@
       </div>
 
       <!-- Settings Form -->
-      <div class="bg-white dark:bg-gray-800 shadow rounded-lg transition-colors">
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700 transition-colors">
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white transition-colors" id="locationTitle">
-            St. Pete Settings
-          </h3>
+      <div
+        class="bg-white dark:bg-gray-800 shadow rounded-lg transition-colors"
+      >
+        <div
+          class="p-6 border-b border-gray-200 dark:border-gray-700 transition-colors"
+        >
+
+        <!-- Expand/Collapse Controls -->
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex gap-3">
+            <button
+              id="expandAllBtn"
+              class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center gap-2 transition-colors"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+              </svg>
+              Expand All
+            </button>
+            <button
+              id="collapseAllBtn"
+              class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center gap-2 transition-colors"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+              Collapse All
+            </button>
+          </div>
         </div>
 
         <form id="settingsForm" class="p-6 space-y-8">
           <!-- Basic Information -->
-          <details class="accordion-section" data-section="basic-info" open>
+          <details class="accordion-section" data-section="basic-info" data-widget-id="basic-info" open>
             <summary class="accordion-header">
               <span class="accordion-title">Basic Information</span>
               <span class="accordion-icon">▼</span>
@@ -209,8 +238,42 @@
             </div>
           </details>
 
+          <!-- Role & Permissions -->
+          <details class="accordion-section" data-section="role-permissions" data-widget-id="role-permissions">
+            <summary class="accordion-header">
+              <span class="accordion-title">Role & Permissions</span>
+              <span class="accordion-icon">▼</span>
+            </summary>
+            <div class="accordion-content">
+              <p class="text-sm text-gray-600 mb-4">
+                Configure what each role can do. Changes are enforced by RLS;
+                only Super Admins can modify this matrix.
+              </p>
+              <div
+                id="permissionsGrid"
+                class="overflow-x-auto border border-gray-200 rounded-lg"
+              ></div>
+              <div class="mt-4 flex gap-2">
+                <button
+                  type="button"
+                  id="savePermsBtn"
+                  class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
+                >
+                  Save Permissions
+                </button>
+                <button
+                  type="button"
+                  id="resetPermsBtn"
+                  class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                >
+                  Reset to Defaults
+                </button>
+              </div>
+            </div>
+          </details>
+
           <!-- Operating Hours -->
-          <details class="accordion-section" data-section="operating-hours">
+          <details class="accordion-section" data-section="operating-hours" data-widget-id="operating-hours">
             <summary class="accordion-header">
               <span class="accordion-title">Operating Hours</span>
               <span class="accordion-icon">▼</span>
@@ -320,7 +383,7 @@
           </details>
 
           <!-- Stats -->
-          <details class="accordion-section" data-section="location-stats">
+          <details class="accordion-section" data-section="location-stats" data-widget-id="location-stats">
             <summary class="accordion-header">
               <span class="accordion-title">Location Stats</span>
               <span class="accordion-icon">▼</span>
@@ -361,7 +424,7 @@
           </details>
 
           <!-- Social Media -->
-          <details class="accordion-section" data-section="social-media">
+          <details class="accordion-section" data-section="social-media" data-widget-id="social-media">
             <summary class="accordion-header">
               <span class="accordion-title">Social Media</span>
               <span class="accordion-icon">▼</span>
@@ -413,7 +476,7 @@
           </details>
 
           <!-- Hero Section -->
-          <details class="accordion-section" data-section="hero-section">
+          <details class="accordion-section" data-section="hero-section" data-widget-id="hero-section">
             <summary class="accordion-header">
               <span class="accordion-title">Hero Section</span>
               <span class="accordion-icon">▼</span>
@@ -880,7 +943,7 @@
           </details>
 
           <!-- Feature Toggles -->
-          <details class="accordion-section" data-section="feature-toggles">
+          <details class="accordion-section" data-section="feature-toggles" data-widget-id="feature-toggles">
             <summary class="accordion-header">
               <span class="accordion-title">Feature Toggles</span>
               <span class="accordion-icon">▼</span>
@@ -1119,6 +1182,7 @@
 
       // Initialize Supabase client
       const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+      // Actions registry is exposed globally by actions-registry.js
 
       let currentLocation = "st-pete";
       let socialMediaItems = [];
@@ -1223,12 +1287,68 @@
         await checkAuth();
         setupSocialMediaHandlers();
         setupStatsHandlers();
+        await renderPermissionsGrid();
         // Restore accordion states after page loads
         restoreAccordionState();
+        // Setup widget state persistence and expand/collapse controls
+        setupWidgetStatePersistence();
+        setupExpandCollapseControls();
       });
 
       // Save accordion state when sections are toggled
       document.addEventListener("toggle", saveAccordionState, true);
+
+      // Widget state persistence functions
+      function saveWidgetState(location, widgetId, isOpen) {
+        localStorage.setItem(`site-settings-widget-${location}-${widgetId}`, isOpen);
+      }
+
+      function loadWidgetState(location, widgetId) {
+        return localStorage.getItem(`site-settings-widget-${location}-${widgetId}`) === 'true';
+      }
+
+      // Restore widget states on page load and location change
+      function restoreWidgetStates() {
+        const location = document.getElementById('locationSelector').value;
+        document.querySelectorAll('details.accordion-section[data-widget-id]').forEach(details => {
+          const widgetId = details.dataset.widgetId;
+          const isOpen = loadWidgetState(location, widgetId);
+          details.open = isOpen;
+        });
+      }
+
+      // Setup widget state persistence
+      function setupWidgetStatePersistence() {
+        // Add toggle listeners to all details elements
+        document.querySelectorAll('details.accordion-section[data-widget-id]').forEach(details => {
+          details.addEventListener('toggle', (e) => {
+            const location = document.getElementById('locationSelector').value;
+            const widgetId = e.target.dataset.widgetId;
+            saveWidgetState(location, widgetId, e.target.open);
+          });
+        });
+
+        // Restore states when location changes
+        document.getElementById('locationSelector').addEventListener('change', () => {
+          restoreWidgetStates();
+        });
+
+        // Restore states on initial load
+        restoreWidgetStates();
+      }
+
+      // Setup expand/collapse all controls
+      function setupExpandCollapseControls() {
+        document.getElementById('expandAllBtn').addEventListener('click', () => {
+          // Target all details elements with accordion-section class
+          document.querySelectorAll('details.accordion-section').forEach(d => d.open = true);
+        });
+
+        document.getElementById('collapseAllBtn').addEventListener('click', () => {
+          // Target all details elements with accordion-section class
+          document.querySelectorAll('details.accordion-section').forEach(d => d.open = false);
+        });
+      }
 
       // Check authentication
       async function checkAuth() {
@@ -1269,15 +1389,44 @@
             attempts++;
           }
 
-          // Check if user has permission to manage site settings
+          // Check if user has permission to view site settings
           if (
             window.PermissionManager &&
             !window.PermissionManager.hasPermission("manage_settings")
           ) {
-            alert("You do not have permission to manage site settings.");
+            alert("You do not have permission to view site settings.");
             window.location.href = "dashboard.html";
             return;
           }
+
+          // Apply permission-based UI (hide edit controls if no edit permission)
+          async function applyPermissionUI() {
+            if (!window.PermissionManager) return;
+
+            const canEdit = await window.PermissionManager.can(
+              "site_settings.edit"
+            );
+
+            // Hide save buttons and make form read-only if no edit permission
+            if (!canEdit) {
+              const saveButtons = document.querySelectorAll(
+                'button[type="submit"], button:contains("Save")'
+              );
+              saveButtons.forEach((btn) => (btn.style.display = "none"));
+
+              // Make all form inputs read-only
+              const inputs = document.querySelectorAll(
+                "input, textarea, select"
+              );
+              inputs.forEach((input) => {
+                input.readOnly = true;
+                input.disabled = true;
+                input.classList.add("bg-gray-100", "cursor-not-allowed");
+              });
+            }
+          }
+
+          await applyPermissionUI();
 
           // Load initial settings after auth check
           console.log("✅ Auth check passed, loading settings...");
@@ -1437,11 +1586,6 @@
             }
           }
 
-          // Update location title
-          document.getElementById("locationTitle").textContent =
-            currentLocation === "st-pete"
-              ? "St. Pete Settings"
-              : "Sarasota Settings";
         } catch (error) {
           console.error("Error loading settings:", error);
         }
@@ -1689,6 +1833,201 @@
         }, 3000);
       }
 
+      // =======================
+      // Permissions Grid
+      // =======================
+      async function fetchRolePermissions() {
+        const { data, error } = await supabase
+          .from("role_permissions")
+          .select("role, action_key, allowed");
+        if (error) throw error;
+        const matrix = {};
+        const roles = ["super_admin", "admin", "manager", "staff", "viewer"];
+        roles.forEach((r) => (matrix[r] = {}));
+        (data || []).forEach((r) => {
+          matrix[r.role][r.action_key] = r.allowed === true;
+        });
+        return matrix;
+      }
+
+      function gridCheckbox(role, action, checked) {
+        const currentUserRole = window.PermissionManager?.getRole();
+        const currentUserRank = window.ActionsRegistry?.roleRank(currentUserRole) || 0;
+        const targetRoleRank = window.ActionsRegistry?.roleRank(role) || 0;
+        
+        if (role === "super_admin") {
+          return `<input type="checkbox" data-role="${role}" data-action="${action}" checked disabled class="h-4 w-4 text-gray-400 cursor-not-allowed" title="Super Admin always has all permissions">`;
+        }
+        
+        // Check if user can edit this role (target rank must be lower than user's rank)
+        const canEdit = targetRoleRank < currentUserRank;
+        
+        if (!canEdit) {
+          const reason = targetRoleRank === currentUserRank 
+            ? "Cannot edit your own role" 
+            : "Cannot edit higher-ranked roles";
+          return `<input type="checkbox" data-role="${role}" data-action="${action}" ${
+            checked ? "checked" : ""
+          } disabled class="h-4 w-4 text-gray-400 cursor-not-allowed opacity-50" title="${reason}">`;
+        }
+        
+        return `<input type="checkbox" data-role="${role}" data-action="${action}" ${
+          checked ? "checked" : ""
+        } class="h-4 w-4 text-emerald-600">`;
+      }
+
+      async function renderPermissionsGrid() {
+        try {
+          const grid = document.getElementById("permissionsGrid");
+          const ACTIONS =
+            (window.ActionsRegistry && window.ActionsRegistry.ACTIONS) || [];
+          const allRoles = (window.ActionsRegistry &&
+            window.ActionsRegistry.ROLES) || [
+            "super_admin",
+            "admin",
+            "manager",
+            "staff",
+            "viewer",
+          ];
+          const matrix = await fetchRolePermissions();
+
+          // Get current user's role and rank
+          const currentUserRole = window.PermissionManager?.getRole();
+          const currentUserRank = window.ActionsRegistry?.roleRank(currentUserRole) || 0;
+          
+          // Filter roles - only show roles at or below current user's rank
+          const roles = allRoles.filter(role => {
+            const roleRank = window.ActionsRegistry?.roleRank(role) || 0;
+            return roleRank <= currentUserRank; // Include same rank for display, but disable editing
+          });
+
+          // Build user role info header
+          const editableRoles = allRoles.filter(role => {
+            const roleRank = window.ActionsRegistry?.roleRank(role) || 0;
+            return roleRank < currentUserRank; // Only roles below user's rank
+          });
+
+          let html = `
+            <div class="mb-4 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+              <p class="text-sm text-gray-700 dark:text-gray-300">
+                <strong>Your Role:</strong> ${currentUserRole || 'Unknown'} (Rank ${currentUserRank})
+                <br>
+                <strong>You can edit:</strong> ${editableRoles.length > 0 ? editableRoles.join(', ') : 'None'}
+              </p>
+            </div>
+            <table class="min-w-full text-sm"><thead><tr><th class="px-3 py-2 text-left">Action</th>`;
+          
+          roles.forEach((r) => {
+            html += `<th class="px-3 py-2 text-center capitalize">${r.replace(
+              "_",
+              " "
+            )}</th>`;
+          });
+          html += "</tr></thead><tbody>";
+
+          // Group by section
+          const bySection = {};
+          ACTIONS.forEach((a) => {
+            (bySection[a.section] ||= []).push(a);
+          });
+          Object.keys(bySection).forEach((section) => {
+            html += `<tr><td colspan="${
+              roles.length + 1
+            }" class="bg-gray-50 font-semibold px-3 py-2">${section}</td></tr>`;
+            bySection[section].forEach((a) => {
+              html += `<tr><td class="px-3 py-2">${a.label}<div class="text-xs text-gray-400">${a.key}</div></td>`;
+              roles.forEach((r) => {
+                const checked =
+                  r === "super_admin" ? true : Boolean(matrix?.[r]?.[a.key]);
+                html += `<td class="px-3 py-2 text-center">${gridCheckbox(
+                  r,
+                  a.key,
+                  checked
+                )}</td>`;
+              });
+              html += "</tr>";
+            });
+          });
+          html += "</tbody></table>";
+          grid.innerHTML = html;
+
+          // Wire save/reset
+          document.getElementById("savePermsBtn").onclick = savePermissions;
+          document.getElementById("resetPermsBtn").onclick = resetPermissions;
+        } catch (e) {
+          console.error("Render permissions grid failed:", e);
+        }
+      }
+
+      async function savePermissions() {
+        try {
+          const currentUserRole = window.PermissionManager?.getRole();
+          const currentUserRank = window.ActionsRegistry?.roleRank(currentUserRole) || 0;
+          
+          const inputs = Array.from(
+            document.querySelectorAll('#permissionsGrid input[type="checkbox"]:not([disabled])')
+          );
+          
+          // Filter updates - only save for roles below current user's rank
+          const validUpdates = inputs.map((i) => ({
+            role: i.dataset.role,
+            action_key: i.dataset.action,
+            allowed: i.checked,
+          })).filter(update => {
+            const targetRoleRank = window.ActionsRegistry?.roleRank(update.role) || 0;
+            return targetRoleRank < currentUserRank;
+          });
+          
+          // Show warning if some updates were blocked
+          const allInputs = Array.from(document.querySelectorAll('#permissionsGrid input[type="checkbox"]'));
+          const blockedCount = allInputs.length - inputs.length;
+          if (blockedCount > 0) {
+            showToast(`Some changes were not saved - you can only edit roles below your rank (${blockedCount} checkboxes disabled)`, 'warning');
+          }
+          
+          // Upsert in batches
+          while (validUpdates.length) {
+            const chunk = validUpdates.splice(0, 100);
+            const { error } = await supabase
+              .from("role_permissions")
+              .upsert(chunk, { onConflict: ["role", "action_key"] });
+            if (error) throw error;
+          }
+          showToast("Permissions saved");
+        } catch (e) {
+          console.error("Save permissions failed:", e);
+          showToast("Failed to save permissions", 'error');
+        }
+      }
+
+      async function resetPermissions() {
+        if (!confirm("Reset to default permissions?")) return;
+        try {
+          // Disable all except super_admin (which will be re-enabled on server by seed); simplest is set all to false for non-super roles
+          const ACTIONS =
+            (window.ActionsRegistry && window.ActionsRegistry.ACTIONS) || [];
+          const roles = ["admin", "manager", "staff", "viewer"];
+          const rows = [];
+          roles.forEach((r) =>
+            ACTIONS.forEach((a) =>
+              rows.push({ role: r, action_key: a.key, allowed: false })
+            )
+          );
+          while (rows.length) {
+            const chunk = rows.splice(0, 100);
+            const { error } = await supabase
+              .from("role_permissions")
+              .upsert(chunk, { onConflict: ["role", "action_key"] });
+            if (error) throw error;
+          }
+          await renderPermissionsGrid();
+          showToast("Permissions reset");
+        } catch (e) {
+          console.error("Reset permissions failed:", e);
+          alert("Failed to reset permissions");
+        }
+      }
+
       // Social Media Management Functions
       // Helper to ensure mandatory stats rows per location
       function ensureStatsHeader(items) {
@@ -1795,17 +2134,17 @@
           row.className = "grid grid-cols-1 md:grid-cols-5 gap-3 items-center";
           row.innerHTML = `
             <label class="text-sm text-gray-700 md:col-span-1">Main</label>
-            <input 
-              type="text" 
-              class="md:col-span-2 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500" 
+            <input
+              type="text"
+              class="md:col-span-2 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
               value="${InputSanitizer.sanitizeHTML(item.main || "")}"
               oninput="updateStatItem('${item.id}', 'main', this.value)"
               placeholder="e.g. 6,500" />
             <label class="text-sm text-gray-700 md:col-span-1">Sub</label>
             <div class="md:col-span-1 flex items-center gap-2">
-              <input 
-                type="text" 
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500" 
+              <input
+                type="text"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
                 value="${item.sub || ""}"
                 oninput="updateStatItem('${item.id}', 'sub', this.value)"
                 placeholder="e.g. Draft Beers" />
@@ -1866,7 +2205,7 @@
 
           itemDiv.innerHTML = `
               <div class="w-48 flex-shrink-0">
-                <select 
+                <select
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
                   onchange="updateSocialMediaItem(${
                     item.id
@@ -1886,8 +2225,8 @@
                 </select>
               </div>
               <div class="flex-1 min-w-0">
-                <input 
-                  type="url" 
+                <input
+                  type="url"
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
                   placeholder="${getPlaceholderForPlatform(item.platform)}"
                   value="${InputSanitizer.sanitizeHTML(item.url || "")}"
@@ -1896,8 +2235,8 @@
                   }, 'url', this.value)"
                 />
               </div>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 class="text-red-600 hover:text-red-800 p-2 flex-shrink-0"
                 onclick="removeSocialMediaItem(${item.id})"
               >

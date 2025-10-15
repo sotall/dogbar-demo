@@ -13,6 +13,7 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script type="module" src="shared/theme-manager.js"></script>
     <script type="module" src="shared/logger.js"></script>
+    <script type="module" src="shared/actions-registry.js"></script>
     <script type="module" src="shared/permissions.js"></script>
     <script type="module" src="shared/navigation.js"></script>
     <script src="shared/sanitize.js"></script>
@@ -59,7 +60,9 @@
                        class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
               </div>
               <div>
-                <label class="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Role *</label>
+                <label class="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300 flex items-center gap-2">Role *
+                  <span id="roleTooltip" class="text-xs text-gray-500 cursor-help" title="">(capabilities)</span>
+                </label>
                 <select id="newUserRole" required class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                   <option value="viewer">Viewer</option>
                   <option value="admin">Admin</option>
@@ -828,12 +831,65 @@
         }
       }
 
+      // Apply permission-based UI
+      async function applyPermissionUI() {
+        if (!window.PermissionManager) return;
+        
+        const canCreate = await window.PermissionManager.can('users.create');
+        const canEdit = await window.PermissionManager.can('users.edit');
+        const canDelete = await window.PermissionManager.can('users.delete');
+        
+        // Hide create button if no create permission
+        if (!canCreate) {
+          const createBtn = document.getElementById("showCreateUserBtn");
+          if (createBtn) createBtn.style.display = 'none';
+        }
+        
+        // Note: Edit/Delete buttons are in table rows, handled in renderAdminUsersTable
+      }
+
       // Initialize page
       document.addEventListener("DOMContentLoaded", function () {
         checkAuth();
         setupEventListeners();
         loadAdminUsers();
         setupNameAutoFill();
+        applyPermissionUI();
+        // Restrict role options and attach tooltip when ready
+        setTimeout(async () => {
+          try {
+            if (window.PermissionManager) {
+              const roleSelect = document.getElementById('newUserRole');
+              window.PermissionManager.restrictRoleOptions(roleSelect);
+              // Build tooltip from matrix
+              await window.PermissionManager.loadMatrix();
+              const matrix = window.PermissionManager.permissionsMatrix || {};
+              const tooltip = document.getElementById('roleTooltip');
+              function setTooltip() {
+                const role = roleSelect.value;
+                const lines = [];
+                const sections = {};
+                // Build from actions-registry
+                if (window.ActionsRegistry && window.ActionsRegistry.ACTIONS) {
+                  window.ActionsRegistry.ACTIONS.forEach(a => {
+                    const allowed = matrix?.[role]?.[a.key];
+                    if (allowed) {
+                      if (!sections[a.section]) sections[a.section] = [];
+                      sections[a.section].push(a.label);
+                    }
+                  });
+                }
+                Object.keys(sections).forEach(sec => {
+                  lines.push(`${sec}:`);
+                  sections[sec].forEach(lbl => lines.push(`  - ${lbl}`));
+                });
+                tooltip.title = lines.length ? lines.join('\n') : 'Read-only access';
+              }
+              roleSelect.addEventListener('change', setTooltip);
+              setTooltip();
+            }
+          } catch (e) { console.warn('Tooltip init failed', e); }
+        }, 200);
       });
 
       // Show/hide create user form (super_admin only)
@@ -1178,17 +1234,32 @@
         }
         
         try {
-          // First check if email already exists
-          const { data: existingUser } = await supabase
+          // First check if email already exists and enforce role ceiling
+          const { data: existingUsers, error: checkError } = await supabase
             .from('admin_users')
             .select('email')
-            .eq('email', email)
-            .single();
+            .eq('email', email);
             
-          if (existingUser) {
+          if (checkError) {
+            console.warn('Email check failed:', checkError);
+            // Continue anyway - the insert will fail if duplicate
+          }
+            
+          if (existingUsers && existingUsers.length > 0) {
             throw new Error(`User with email ${email} already exists`);
           }
-          
+          // Enforce: cannot create higher role than yourself (UI-level guard; RLS also enforces)
+          try {
+            if (window.PermissionManager) {
+              const myRole = window.PermissionManager.getRole();
+              const rrank = (window.ActionsRegistry && window.ActionsRegistry.roleRank) || (()=>0);
+              if (rrank(role) > rrank(myRole)) {
+                try { showToast('You cannot create an account with a higher role than yours.','warning'); } catch(_) { alert('You cannot create an account with a higher role than yours.'); }
+                return;
+              }
+            }
+          } catch (e) { console.warn('Role ceiling check failed', e); }
+
           // Create auth user using public signup API
           const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
@@ -1231,7 +1302,7 @@
           
           if (dbError) throw dbError;
           
-          alert(`User created successfully! An email confirmation has been sent to ${email}`);
+          try { showToast(`User created successfully. Confirmation sent to ${email}`,'success'); } catch(_) { console.log('User created'); }
           
           // Reset form and hide section
           document.getElementById('createUserForm').reset();
@@ -1247,7 +1318,7 @@
             status: error.status,
             statusText: error.statusText
           });
-          alert(`Failed to create user: ${error.message}`);
+          try { showToast(`Failed to create user: ${error.message}`,'error'); } catch(_) { alert(`Failed to create user: ${error.message}`); }
         }
       }
 
@@ -1373,12 +1444,12 @@
                           </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button onclick="editUser('${
-                              user.id
-                            }', 'admin')" class="text-emerald-600 hover:text-emerald-900 mr-3">Edit</button>
-                            ${user.role === 'super_admin' 
+                            ${window.PermissionManager && window.PermissionManager.permissionsMatrix && window.PermissionManager.permissionsMatrix[window.PermissionManager.userRole] && window.PermissionManager.permissionsMatrix[window.PermissionManager.userRole]['users.edit'] ? 
+                              `<button onclick="editUser('${user.id}', 'admin')" class="text-emerald-600 hover:text-emerald-900 mr-3">Edit</button>` : ''}
+                            ${(user.role === 'super_admin' || user.role === 'Super Admin') 
                               ? '<button disabled class="px-3 py-1 bg-gray-300 text-gray-500 rounded cursor-not-allowed" title="Super admins cannot be deleted">Delete</button>'
-                              : `<button onclick="deleteUser('${user.id}')" class="text-red-600 hover:text-red-900">Delete</button>`
+                              : (window.PermissionManager && window.PermissionManager.permissionsMatrix && window.PermissionManager.permissionsMatrix[window.PermissionManager.userRole] && window.PermissionManager.permissionsMatrix[window.PermissionManager.userRole]['users.delete'] ? 
+                                `<button onclick="deleteUser('${user.id}')" class="text-red-600 hover:text-red-900">Delete</button>` : '')
                             }
                         </td>
                     `;
@@ -1827,13 +1898,19 @@
       // Delete user
       async function deleteUser(userId) {
         // Check if trying to delete super_admin
-        const { data: userData } = await supabase
+        const { data: userData, error: roleError } = await supabase
           .from('admin_users')
           .select('role')
           .eq('id', userId)
           .single();
         
-        if (userData?.role === 'super_admin') {
+        if (roleError) {
+          console.error('Error checking user role:', roleError);
+          alert('Error checking user permissions');
+          return;
+        }
+        
+        if (userData?.role === 'super_admin' || userData?.role === 'Super Admin') {
           alert('Cannot delete super admin accounts!');
           return;
         }
@@ -1849,12 +1926,22 @@
 
           if (fetchError) throw fetchError;
 
-          const { error } = await supabase
+          if (!targetUser) {
+            alert('User not found');
+            return;
+          }
+
+          const { error: deleteError } = await supabase
             .from("admin_users")
             .delete()
             .eq("id", userId);
-          if (error) throw error;
+            
+          if (deleteError) {
+            console.error('Delete error:', deleteError);
+            throw deleteError;
+          }
 
+          // Log the deletion
           if (targetUser?.id) {
             window.auditLogger?.log("admin_user.deleted", {
               user_id: targetUser.id,
@@ -1863,10 +1950,11 @@
             });
           }
 
+          alert(`User ${targetUser.email} deleted successfully`);
           loadAdminUsers();
         } catch (error) {
           console.error("Error deleting user:", error);
-          alert("Error deleting user");
+          alert(`Error deleting user: ${error.message}`);
         }
       }
 

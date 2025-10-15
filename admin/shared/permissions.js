@@ -1,10 +1,14 @@
 // Simplified Permission System using is_admin_user() function
+import { ACTIONS, ROLES, roleRank } from "./actions-registry.js";
+
 class PermissionManager {
   constructor() {
     this.currentUser = null;
     this.userRole = null;
     this.roleChecked = false;
     this.supabase = null;
+    this.permissionsMatrix = null; // { role: { actionKey: boolean } }
+    this.matrixLoadedAt = 0;
   }
 
   // Check if session is valid and not expired
@@ -131,6 +135,9 @@ class PermissionManager {
       this.userRole = userData.role;
       this.roleChecked = true;
 
+      // Preload matrix so legacy hasPermission shim can work quickly
+      await this.loadMatrix(true);
+
       console.log(`✅ User authenticated: ${user.email} (${this.userRole})`);
       return true;
     } catch (error) {
@@ -194,25 +201,82 @@ class PermissionManager {
     return ["admin", "super_admin"].includes(this.userRole);
   }
 
-  // Check if user has a specific permission
-  hasPermission(permission) {
-    if (!this.roleChecked) {
-      console.warn("⚠️ Permissions not yet loaded");
-      return false;
+  // Load role_permissions matrix from DB (cached for 60s)
+  async loadMatrix(force = false) {
+    if (
+      this.permissionsMatrix &&
+      !force &&
+      Date.now() - this.matrixLoadedAt < 60000
+    ) {
+      return this.permissionsMatrix;
     }
+    try {
+      const { data, error } = await this.supabase
+        .from("role_permissions")
+        .select("role, action_key, allowed");
+      if (error) throw error;
+      const matrix = {};
+      for (const role of ROLES) matrix[role] = {};
+      (data || []).forEach((row) => {
+        if (!matrix[row.role]) matrix[row.role] = {};
+        matrix[row.role][row.action_key] = row.allowed === true;
+      });
+      this.permissionsMatrix = matrix;
+      this.matrixLoadedAt = Date.now();
+      return matrix;
+    } catch (e) {
+      console.warn("Failed to load role_permissions matrix:", e);
+      this.permissionsMatrix = this.permissionsMatrix || {};
+      return this.permissionsMatrix;
+    }
+  }
 
-    // Define permission matrix
-    const permissions = {
-      manage_events: ["admin", "super_admin", "editor"],
-      manage_users: ["super_admin"],
-      manage_media: ["admin", "super_admin", "editor"],
-      manage_settings: ["admin", "super_admin"],
-      view_logs: ["super_admin"],
-      manage_food_trucks: ["admin", "super_admin", "editor"],
+  // Check if user has a specific action permission (ACTIONS keys)
+  async can(actionKey) {
+    if (!this.roleChecked) return false;
+    if (this.isSuperAdmin()) return true;
+    const matrix = await this.loadMatrix();
+    return Boolean(matrix?.[this.userRole]?.[actionKey]);
+  }
+
+  // Backward-compatible shim for existing pages using hasPermission('manage_settings', etc.)
+  // Maps legacy keys to the new action keys. Returns boolean, using cached matrix.
+  hasPermission(legacyKey) {
+    const map = {
+      // Page access should check VIEW permissions
+      manage_events: "events.view",
+      manage_users: "users.view",
+      manage_media: "media.view",
+      manage_settings: "site_settings.view",
+      view_logs: "logs.view",
+      manage_food_trucks: "food_trucks.view",
     };
+    const actionKey = map[legacyKey] || legacyKey;
+    if (!this.roleChecked) return false;
+    if (this.isSuperAdmin()) return true;
+    const m = this.permissionsMatrix || {};
+    return Boolean(m?.[this.userRole]?.[actionKey]);
+  }
 
-    const allowedRoles = permissions[permission] || [];
-    return allowedRoles.includes(this.userRole);
+  // Helper for checking write permissions (create/edit/delete)
+  async canEdit(section) {
+    const editActions = {
+      events: "events.edit",
+      users: "users.edit",
+      media: "media.upload",
+      settings: "site_settings.edit",
+      food_trucks: "food_trucks.edit",
+    };
+    return await this.can(editActions[section]);
+  }
+
+  // Restrict a <select> of roles to not exceed current user's rank
+  restrictRoleOptions(selectEl) {
+    const myRank = roleRank(this.userRole);
+    Array.from(selectEl.options).forEach((opt) => {
+      const allowed = roleRank(opt.value) <= myRank;
+      opt.disabled = !allowed;
+    });
   }
 
   // Reset role cache (call when user logs out or changes)
